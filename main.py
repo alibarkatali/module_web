@@ -39,8 +39,6 @@ MAPITEM = {
 	"influence" : 0.0 # distance
 }
 
-
-
 PLAYERINFO = {
 	"cash" : 1000.0, # le budget initial du player
 	"sales" : 0, # nombre de boissons consommes = solde - total, pour toutes les recettes

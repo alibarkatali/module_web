@@ -1,0 +1,75 @@
+<DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body>
+	<div id="gameMap">
+		MAP
+	</div>
+	
+	<div id="gameInfo">
+		<h1>Informations du jour</h1>
+		<span id="weatherToday"></span>
+		<span id="weatherTomorrow"></span>
+		<span id="timer"></span>
+		<span id="cash"></span>
+		<input type="button" id="btnRefreshGameInfo" value="Refresh">
+
+		<h1>Actions pour le lendemain</h1>
+
+		<div id="blocSimul">
+			<h1>Mes achats</h1>
+			<table>
+				<tr>
+					<th>Boisson</th>
+					<th>Coût Unitaire</th>
+					<th>Quantité</th>
+					<th>TTC</th>
+					<th>action</th>
+				</tr>
+				<tr>
+					<td> <input type="text" name="recipe" id="recipe"> </td>
+					<td> <input type="text" name="cost" id="cost"> </td>
+					<td> <input type="text" name="quantity" id="quantity"> </td>
+					<td> <input type="text" name="ttc" id="ttc"> </td>
+					<td> <input type="" name="" id=""> </td>
+				</tr>
+
+				<tr>
+					<td colspan="4">Totaux</td>
+					<td>0</td>
+				</tr>
+			</table>
+
+			<h1>Mes ventes prévisionnelles (Pour demain)</h1>
+			<table>
+				<tr>
+					<th>Boisson</th>
+					<th>Quantité</th>
+					<th>TTC</th>
+				</tr>
+				<tr>
+					<td>0</td>
+					<td>0</td>
+					<td>0</td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="ingredientsInfo">
+
+		</div>
+
+	</div>
+	<div id="playersInfo">
+		<h1>Liste des joueurs</h1>
+		<ul id="playerList"></ul>
+	</div>
+
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+</body>
+</html>
