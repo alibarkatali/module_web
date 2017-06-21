@@ -52,13 +52,13 @@ DRINKINFO = {
 	"price": 0.0
 }
 
-MAP = {
-	"region" : REGION,
-	"ranking" : [] # les noms des players
-	"itemByPlayer" : [], # MAPITEM
-	"playerInfo" : [], # PLAYERINFO
-	"drinkByPlayer" : []#DRINKINFO
-}
+#MAP = {
+#	"region" : REGION,
+#	"ranking" : [] # les noms des players
+#	"itemByPlayer" : [], 
+#	"playerInfo" : [], 
+#	"drinkByPlayer" : [] 
+#}
 
 SALE = {
 	"player" : "None", # nom du player
