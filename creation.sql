@@ -9,7 +9,7 @@
 
 CREATE TABLE Player(
         pl_pseudo   Varchar (255) NOT NULL ,
-        pl_password Varchar (255) NOT NULL ,
+        pl_password Varchar (255) ,
         pl_id       Int NOT NULL AUTO_INCREMENT,
         pl_mail     Varchar (255) ,
         pl_date     Date ,
