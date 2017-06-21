@@ -1,3 +1,4 @@
+
 from flask import Flask, request
 from flask_cors import CORS
 import json
@@ -40,7 +41,7 @@ COORDINATES = {}
 
 PLAYERINFO = {
 	"cash" : 1000.0, # le budget initial du player
-	"sales" : 0, # nombre de boissons consommés = solde - total, pour toutes les recettes
+	"sales" : 0, # nombre de boissons consommes = solde - total, pour toutes les recettes
 	"profit" : 0 # le chiffre d affaire de la vente, si < 0 il a perdu la partie
 }
 
