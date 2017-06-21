@@ -71,7 +71,7 @@ INGREDIENT = []
 INGREDIENT.append({
 			"name" : "sucre",
 			"cost" : 2,
-			"hasAlcohol" : 0, # 0 : non alcolé, 1 : alcolisé,  2 : autres
+			"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
 			"isCold" : 2 # 0 : pas chaud, 1 : chaud,  2 : autres
 		}
 	)
@@ -79,7 +79,7 @@ INGREDIENT.append({
 INGREDIENT.append({
 			"name" : "eau gazeuse",
 			"cost" : 1.5,
-			"hasAlcohol" : 2, # 0 : non alcolé, 1 : alcolisé,  2 : autres
+			"hasAlcohol" : 2, # 0 : non alcole, 1 : alcolise,  2 : autres
 			"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
 		}
 	)
@@ -87,7 +87,7 @@ INGREDIENT.append({
 INGREDIENT.append({
 			"name" : "citrone",
 			"cost" : 3,
-			"hasAlcohol" : 2, # 0 : non alcolé, 1 : alcolisé,  2 : autres
+			"hasAlcohol" : 2, # 0 : non alcole, 1 : alcolise,  2 : autres
 			"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
 		}
 	)
@@ -95,7 +95,7 @@ INGREDIENT.append({
 RECIPE = {
 	"name" : "Limonade",
 	"ingredients" : INGREDIENT,
-	"hasAlcohol" : 0, # 0 : non alcolé, 1 : alcolisé,  2 : autres
+	"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
 	"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
 }
 
