@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 import json
+from db import Db
 
 app = Flask(__name__)
 app.debug = True
