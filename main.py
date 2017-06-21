@@ -105,6 +105,28 @@ RECIPE = {
 	"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
 }
 
+PLAYERACTION = {
+	"name" : "None", # prends une valeur : recipe ou ppurchase ou pub
+}
+
+PLAYERACTIONNEWRECIPE = {
+	"kind" : "recipe",
+	"recipe" : RECIPE
+}
+
+PLAYERACTIONAD = {
+	"kind" : "ad",
+	"location" : COORDINATES
+}
+
+PLAYERACTIONDRINKS = {
+	"kind" : "drink",
+	"prepare" : {
+		"limonade" : 0 
+	}
+}
+
+
 def joinResponse(name):
 	global GAMEINFO
 	GAMEINFO['name'] = name
@@ -120,7 +142,8 @@ def getJSONResponse(data):
 # GET /reset
 @app.route('/reset',methods=['GET'])
 def resetSimulation():
-	return "Reinitialisation d une partie"
+	GAMEINFO = []
+	return '', 200
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R4.1 - Rejoindre une partie
@@ -129,6 +152,22 @@ def resetSimulation():
 def rejoin():
 	data = request.get_json()
 	return getJSONResponse(joinResponse(data['name']))
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# R1/R7 - Commande "Temps"
+# GET /metroloogy
+@app.route('/metroloogy',methods=['GET'])
+def getMetrology():
+	return getJSONResponse(TEMPS)
+
+# R1/R7 - Commande "Temps"
+# POST /metroloogy
+@app.route('/metroloogy',methods=['POST'])
+def setMetrology():
+	data = request.get_json()
+	TEMPS['timestamp'] = data['timestamp']
+	TEMPS['weather'] = data['weather']
+	return getJSONResponse(TEMPS)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R4.2 - Quitter une partie
@@ -148,13 +187,25 @@ def leave(playerName):
 # POST /sales
 @app.route('/sales',methods=['POST'])
 def simulCmd():
-	return "Commande simulateur"
+	data = request.get_json()
+	for sale in data:
+		SALE.append(sale)
+	return getJSONResponse(SALE)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R6 - Instructions du joueur pour le jour suivant
 # POST /actions/<playerName>
 @app.route('/actions/<playerName>',methods=['POST'])
 def simulActions(playerName):
+	data = request.get_json()
+	if not data['actions']:
+		return '"Not find actions"', 412, {'Content-Type' : 'application/json'}
+
+	if not data['simulated']:
+		return '"Not find simulated"', 412, {'Content-Type' : 'application/json'}
+
+	if data['simulated'] == True:
+		
 	return "Instructions du joueur pour le jour suivant"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
