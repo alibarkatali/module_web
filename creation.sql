@@ -1,16 +1,16 @@
-#------------------------------------------------------------
-#        Script SQL
-#------------------------------------------------------------
+--------------------------------------------------------------
+--        Script SQL
+------------------------------------------------------------
 
 
-#------------------------------------------------------------
-# Table: Player
-#------------------------------------------------------------
+------------------------------------------------------------
+-- Table: Player
+------------------------------------------------------------
 
 CREATE TABLE Player(
         pl_pseudo   Varchar (255) NOT NULL ,
         pl_password Varchar (255) ,
-        pl_id       Int NOT NULL AUTO_INCREMENT,
+        pl_id       Int NOT NULL,
         pl_mail     Varchar (255) ,
         pl_date     Date ,
         ga_id      Int ,
@@ -18,12 +18,12 @@ CREATE TABLE Player(
 );
 
 
-#------------------------------------------------------------
-# Table: Ingredient
-#------------------------------------------------------------
+------------------------------------------------------------
+-- Table: Ingredient
+------------------------------------------------------------
 
 CREATE TABLE Ingredient(
-        ing_id      Int NOT NULL AUTO_INCREMENT ,
+        ing_id      Int NOT NULL ,
         ing_nom     Varchar (255) ,
         ing_prix    Float ,
         ing_alcohol Bool ,
@@ -32,12 +32,12 @@ CREATE TABLE Ingredient(
 );
 
 
-#------------------------------------------------------------
-# Table: Recipe
-#------------------------------------------------------------
+------------------------------------------------------------
+-- Table: Recipe
+------------------------------------------------------------
 
 CREATE TABLE Recipe(
-        rec_id      Int NOT NULL AUTO_INCREMENT ,
+        rec_id      Int NOT NULL ,
         rec_nom     Varchar (255) NOT NULL ,
         rec_alcohol Bool ,
         rec_cold    Bool ,
@@ -45,12 +45,12 @@ CREATE TABLE Recipe(
 );
 
 
-#------------------------------------------------------------
-# Table: Game
-#------------------------------------------------------------
+------------------------------------------------------------
+-- Table: Game
+------------------------------------------------------------
 
 CREATE TABLE Game(
-        ga_id       Int NOT NULL AUTO_INCREMENT,
+        ga_id       Int NOT NULL ,
         ga_nom      Varchar (255) NOT NULL ,
         ga_centreX  Float NOT NULL ,
         ga_centreY  Float NOT NULL ,
@@ -60,13 +60,13 @@ CREATE TABLE Game(
 );
 
 
-#------------------------------------------------------------
-# Table: Stand
-#------------------------------------------------------------
+------------------------------------------------------------
+-- Table: Stand
+------------------------------------------------------------
 
 CREATE TABLE Stand(
         loc_coordX Float ,
-        loc_id     Int NOT NULL AUTO_INCREMENT ,
+        loc_id     Int NOT NULL ,
         loc_coordY Float NOT NULL ,
         loc_rayon  Float NOT NULL ,
         pl_id       Int NOT NULL ,
@@ -74,12 +74,12 @@ CREATE TABLE Stand(
 );
 
 
-#------------------------------------------------------------
-# Table: Pub
-#------------------------------------------------------------
+------------------------------------------------------------
+-- Table: Pub
+------------------------------------------------------------
 
 CREATE TABLE Pub(
-        p_id        Int NOT NULL AUTO_INCREMENT ,
+        p_id        Int NOT NULL ,
         p_coordX    Float NOT NULL ,
         p_coordY    Float NOT NULL ,
         p_rayon     Float NOT NULL ,
@@ -88,9 +88,9 @@ CREATE TABLE Pub(
 );
 
 
-#------------------------------------------------------------
-# Table: Achete
-#------------------------------------------------------------
+------------------------------------------------------------
+-- Table: Achete
+------------------------------------------------------------
 
 CREATE TABLE Achete(
         quantite Int ,
@@ -100,9 +100,9 @@ CREATE TABLE Achete(
 );
 
 
-#------------------------------------------------------------
-# Table: Produit
-#------------------------------------------------------------
+------------------------------------------------------------
+-- Table: Produit
+------------------------------------------------------------
 
 CREATE TABLE Produit(
         nombre Int ,
@@ -114,9 +114,9 @@ CREATE TABLE Produit(
 );
 
 
-#------------------------------------------------------------
-# Table: Contains
-#------------------------------------------------------------
+------------------------------------------------------------
+-- Table: Contains
+------------------------------------------------------------
 
 CREATE TABLE Contains(
         ing_id Int NOT NULL ,
@@ -125,11 +125,11 @@ CREATE TABLE Contains(
 );
 
 ALTER TABLE Player ADD CONSTRAINT FK_Player_ga_id FOREIGN KEY (ga_id) REFERENCES Game(ga_id);
-ALTER TABLE Stand ADD CONSTRAINT FK_Stand_p_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
-ALTER TABLE Pub ADD CONSTRAINT FK_Pub_p_id_Player FOREIGN KEY (pl_id_PLAYER) REFERENCES Player(pl_id);
-ALTER TABLE Achete ADD CONSTRAINT FK_Achete_p_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
+ALTER TABLE Stand ADD CONSTRAINT FK_Stand_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
+ALTER TABLE Pub ADD CONSTRAINT FK_Pub_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
+ALTER TABLE Achete ADD CONSTRAINT FK_Achete_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
 ALTER TABLE Achete ADD CONSTRAINT FK_Achete_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
 ALTER TABLE Produit ADD CONSTRAINT FK_Produit_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
-ALTER TABLE Produit ADD CONSTRAINT FK_Produit_p_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
+ALTER TABLE Produit ADD CONSTRAINT FK_Produit_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
 ALTER TABLE Contains ADD CONSTRAINT FK_Contains_ing_id FOREIGN KEY (ing_id) REFERENCES Ingredient(ing_id);
 ALTER TABLE Contains ADD CONSTRAINT FK_Contains_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
