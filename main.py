@@ -10,6 +10,8 @@ CORS(app)
 
 WEATHER = ["RAINNY","CLOUDY","SUNNY","HEATWAVE","THUNDERSTORM"]
 
+COORDINATES = {}
+
 FORECAST = {
 	"dfn" : 0, # aujourdhui = 0, demain = 1
 	"weather" : random.choice(WEATHER)
@@ -37,7 +39,7 @@ MAPITEM = {
 	"influence" : 0.0 # distance
 }
 
-COORDINATES = {}
+
 
 PLAYERINFO = {
 	"cash" : 1000.0, # le budget initial du player
