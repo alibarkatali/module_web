@@ -198,7 +198,7 @@ def simulActions(playerName):
 	if not data['simulated']:
 		return '"Not find simulated"', 412, {'Content-Type' : 'application/json'}
 
-	if data['simulated'] == True:
+	#if data['simulated'] == True:
 		
 	return "Instructions du joueur pour le jour suivant"
 
