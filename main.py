@@ -92,6 +92,22 @@ INGREDIENT.append({
 		}
 	)
 
+INGREDIENT.append({
+			"name" : "cafe moulu",
+			"cost" : 5,
+			"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
+			"isCold" : 1# 0 : pas chaud, 1 : chaud,  2 : autres
+		}
+	)
+
+INGREDIENT.append({
+			"name" : "eau",
+			"cost" : 0,
+			"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
+			"isCold" : 2 # 0 : pas chaud, 1 : chaud,  2 : autres
+		}
+	)
+
 RECIPE = {
 	"name" : "Limonade",
 	"ingredients" : INGREDIENT,
@@ -120,6 +136,74 @@ PLAYERACTIONDRINKS = {
 	}
 }
 
+################################################################
+####	VARIABLES DES TESTS
+
+playersList = []
+recipesList = {}
+
+meteos = {
+	"timestamp" : 0,
+	"weatherToday" : random.choice(WEATHER),
+	"weatherTomorow" : random.choice(WEATHER)
+}
+
+recipesList['Limonade'] = {
+		"name" : "Limonade",
+		"ingredients" : [
+			{
+				"name" : "sucre",
+				"cost" : 2,
+				"hasAlcohol" : 0, 
+				"isCold" : 2 
+			},
+			{
+				"name" : "eau gazeuse",
+				"cost" : 1.5,
+				"hasAlcohol" : 2, 
+				"isCold" : 0 
+			},
+			{
+				"name" : "citrone",
+				"cost" : 3,
+				"hasAlcohol" : 2, 
+				"isCold" : 0 
+			}
+		],
+		"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
+		"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
+	}
+
+recipesList['Cafe'] = {
+		"name" : "Cafe",
+		"ingredients" : [
+			{
+				"name" : "cafe moulu",
+				"cost" : 5,
+				"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
+				"isCold" : 1# 0 : pas chaud, 1 : chaud,  2 : autres
+			},
+			{
+				"name" : "eau",
+				"cost" : 0,
+				"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
+				"isCold" : 2 # 0 : pas chaud, 1 : chaud,  2 : autres
+			},
+			{
+				"name" : "sucre",
+				"cost" : 2,
+				"hasAlcohol" : 0, 
+				"isCold" : 2 
+			}
+		],
+		"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
+		"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
+	}
+
+
+####	FIN VARIABLES DES TESTS
+################################################################
+
 
 def joinResponse(name):
 	global GAMEINFO
@@ -129,9 +213,16 @@ def joinResponse(name):
 
 	return GAMEINFO
 
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fonction : Permet de convert une liste en JSON et ajouter le code de retour.
+# paramsIn : data de type list
+# paramsOut : data de type JSON
 def getJSONResponse(data):
 	return json.dumps(data), 200, {'Content-Type' : 'application/json'}
 
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R8 - Reinitialisation d une partie
 # GET /reset
 @app.route('/reset',methods=['GET'])
@@ -139,20 +230,35 @@ def resetSimulation():
 	GAMEINFO = []
 	return '', 200
 
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R4.1 - Rejoindre une partie
+# R4.1 - Affiche la liste de joueur
+# GET /players
+@app.route('/players',methods=['GET'])
+def getPlayers():
+	return getJSONResponse(playersList)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# R4.2 - Rejoindre une partie
 # POST /players
 @app.route('/players',methods=['POST'])
 def rejoin():
 	data = request.get_json()
-	return getJSONResponse(joinResponse(data['name']))
+	player = data['playerName']
+	# si le joueur n existe pas dans la liste
+	if player not in playersList:
+		playersList.append(data['playerName'])
+
+	return getJSONResponse(joinResponse(data['playerName']))
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R1/R7 - Commande "Temps"
 # GET /metrology
 @app.route('/metrology',methods=['GET'])
-def getMetrology():
-	return getJSONResponse(TEMPS)
+def getMetrology():	
+	return getJSONResponse(meteos)
 
 # R1/R7 - Commande "Temps"
 # POST /metrology
@@ -163,6 +269,7 @@ def setMetrology():
 	TEMPS['weather'] = data['weather']
 	return getJSONResponse(TEMPS)
 
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R4.2 - Quitter une partie
 # DELETE /players/<playerName>
@@ -170,11 +277,12 @@ def setMetrology():
 def leave(playerName):
 	global GAMEINFO
 	if not GAMEINFO['name'] not in GAMEINFO:
-		return '"Not find player"', 412, {'Content-Type' : 'application/json'}
+		return '"Not find player"', 412
 	
 	GAMEINFO['name'].remove()
 
 	return '', 200
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R3 - Commande "simulateur"
@@ -186,6 +294,7 @@ def simulCmd():
 		SALE.append(sale)
 	return getJSONResponse(SALE)
 
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R6 - Instructions du joueur pour le jour suivant
 # POST /actions/<playerName>
@@ -193,14 +302,15 @@ def simulCmd():
 def simulActions(playerName):
 	data = request.get_json()
 	if not data['actions']:
-		return '"Not find actions"', 412, {'Content-Type' : 'application/json'}
+		return '"Not find actions"', 412
 
 	if not data['simulated']:
-		return '"Not find simulated"', 412, {'Content-Type' : 'application/json'}
+		return '"Not find simulated"', 412
 
 	#if data['simulated'] == True:
 		
 	return "Instructions du joueur pour le jour suivant"
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R2 - Obtenir les details d une partie (JAVA)
@@ -209,12 +319,14 @@ def simulActions(playerName):
 def getMap():
 	return "Obtenir les details d une partie (JAVA)"
 
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R5 Obtenir les details d une partie (Client Web)
 # GET /map/<playerName>
 @app.route('/map/<playerName>',methods=['GET'])
 def getPlayerMap(playerName):
 	return "Obtenir les details d une partie (Client Web)"
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R9 - Obtenir la liste des ingredients
@@ -223,6 +335,26 @@ def getPlayerMap(playerName):
 def getIngredients():
 	return getJSONResponse(INGREDIENT)
 
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# R10 - Obtenir la liste des recettes
+# GET /recipes
+@app.route('/recipes',methods=['GET'])
+def getRecipes():
+	return getJSONResponse(recipesList)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# R10 - Obtenir une recette a partie son nom
+# GET /recipes/<name>
+@app.route('/recipes/<name>',methods=['GET'])
+def getRecipeByName(name):
+	print name
+	if name not in recipesList:
+		return '"Not find recipe"', 412
+	else:
+		recipe = recipesList[name]
+	return getJSONResponse(recipe)
 
 if __name__ == "__main__":
     app.run()

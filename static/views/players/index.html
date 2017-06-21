@@ -3,7 +3,7 @@
 <head>
 	<title></title>
 	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<link rel="stylesheet" type="text/css" href="../../css/global.css">
 </head>
 <body>
 	<div id="gameMap">
@@ -12,11 +12,13 @@
 	
 	<div id="gameInfo">
 		<h1>Informations du jour</h1>
-		<span id="weatherToday"></span>
-		<span id="weatherTomorrow"></span>
-		<span id="timer"></span>
-		<span id="cash"></span>
-		<link rel="stylesheet" type="text/css" href="./css/index.css">
+		<div id="gameInfo">
+		Météo d'aujourd'hui : <span id="weatherToday"></span><br>
+		Météo de demain : <span id="weatherTomorrow"></span><br>
+		Temps : <span id="timer"></span><br>
+		Budget : <span id="cash"></span><br>
+		<input type="button" id="btnRefreshGameInfo" value="Refresh">
+		</div>
 
 		<h1>Actions pour le lendemain</h1>
 
@@ -31,11 +33,23 @@
 					<th>action</th>
 				</tr>
 				<tr>
-					<td> <input type="text" name="recipe" id="recipe"> </td>
-					<td> <input type="text" name="cost" id="cost"> </td>
-					<td> <input type="text" name="quantity" id="quantity"> </td>
-					<td> <input type="text" name="ttc" id="ttc"> </td>
-					<td> <input type="" name="" id=""> </td>
+					<td> 
+						<select id="recipes" name="recipes">
+							<option value="">-- selection produit --</option>
+						</select> 
+					</td>
+					<td> 
+						<input type="text" name="cost" id="cost"> 
+					</td>
+					<td> 
+						<input type="text" name="quantity" id="quantity"> 
+					</td>
+					<td> 
+						<input type="text" name="ttc" id="ttc"> 
+					</td>
+					<td> 
+						<input type="" name="" id=""> 
+					</td>
 				</tr>
 
 				<tr>
@@ -69,7 +83,7 @@
 		<ul id="playerList"></ul>
 	</div>
 
-	<script type="text/javascript" src="./js/jquery.js"></script>
-	<script type="text/javascript" src="./js/index.js"></script>
+	<script type="text/javascript" src="../../js/jquery.js"></script>
+	<script type="text/javascript" src="../../js/main.js"></script>
 </body>
 </html>
