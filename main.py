@@ -55,15 +55,9 @@ DRINKINFO = {
 MAP = {
 	"region" : REGION,
 	"ranking" : [] # les noms des players
-	"itemByPlayer" : {
-		MAPITEM
-	},
-	"playerInfo" : {
-		PLAYERINFO
-	},
-	"drinkByPlayer" : {
-		DRINKINFO
-	}
+	"itemByPlayer" : MAPITEM,
+	"playerInfo" : PLAYERINFO,
+	"drinkByPlayer" : DRINKINFO
 }
 
 SALE = {
