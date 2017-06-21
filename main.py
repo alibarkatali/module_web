@@ -151,14 +151,14 @@ def rejoin():
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R1/R7 - Commande "Temps"
-# GET /metroloogy
-@app.route('/metroloogy',methods=['GET'])
+# GET /metrology
+@app.route('/metrology',methods=['GET'])
 def getMetrology():
 	return getJSONResponse(TEMPS)
 
 # R1/R7 - Commande "Temps"
-# POST /metroloogy
-@app.route('/metroloogy',methods=['POST'])
+# POST /metrology
+@app.route('/metrology',methods=['POST'])
 def setMetrology():
 	data = request.get_json()
 	TEMPS['timestamp'] = data['timestamp']
