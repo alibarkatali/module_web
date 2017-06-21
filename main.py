@@ -223,7 +223,7 @@ def getPlayerMap(playerName):
 # GET /ingredients
 @app.route('/ingredients',methods=['GET'])
 def getIngredients():
-	return "Obtenir la liste des ingredients"
+	return getJSONResponse(INGREDIENT)
 
 
 if __name__ == "__main__":
