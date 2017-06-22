@@ -17,10 +17,12 @@ FORECAST = {
 	"weather" : random.choice(WEATHER)
 }
 
-TEMPS = {
-	"timestamp" : 0, # nombre d heure ecoulees depuis le debut du jeu
-	"weather" : random.choice(WEATHER)
-}
+#TEMPS = {
+#	"timestamp" : 0, # nombre d heure ecoulees depuis le debut du jeu
+#	"weather" : random.choice(WEATHER)
+#}
+
+TEMPS = {}
 
 COORDINATESSPAN = {
 	"latitudeSpan" : 0.0,
@@ -266,7 +268,7 @@ def getMetrology():
 def setMetrology():
 	data = request.get_json()
 	TEMPS['timestamp'] = data['timestamp']
-	TEMPS['weather'] = FORECAST
+	TEMPS['weather'] = data['weather']
 	return getJSONResponse(TEMPS)
 
 
