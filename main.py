@@ -254,7 +254,7 @@ def rejoin():
 	playerName = data['playerName']
 	db = Db()
 	Info = db.select("SELECT * FROM Player WHERE pl_pseudo = '@(playerName)'")
-	if Info:
+	if (db.select("SELECT EXISTS(SELECT * FROM Player WHERE pl_pseudo = '@(playerName)'")):
 		return getJSONResponse(playerName)
 	else:
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
@@ -361,11 +361,11 @@ def getRecipes():
 # GET /recipes/<name>
 @app.route('/recipes/<name>',methods=['GET'])
 def getRecipeByName(name):
-	if name not in recipesList:
-		return '"Not find recipe"', 412
+	recipe = db.select("SELECT * FROM Recipe WHERE rec_nom = '@(name)'")
+	if recipe:
+		return getJSONResponse(recipe)
 	else:
-		recipe = recipesList[name]
-	return getJSONResponse(recipe)
+		return '"Recipe Not Found"', 412
 
 if __name__ == "__main__":
     app.run()

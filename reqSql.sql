@@ -16,13 +16,13 @@ WHERE r_mojito.rec_nom = 'Mojito';
 SELECT * FROM Recipe ORDER BY rec_nom;
 
 -- Afficher détail d'une recette à partir de son nom
-SELECT * FROM Recipe WHERE rec_nom = 'Mojito' ORDER BY rec_nom;
+SELECT * FROM Recipe WHERE rec_nom = 'Mojito';
 
 -- Liste des Ingredients 
 SELECT * FROM Ingredient ORDER BY ing_nom;
 
 -- Afficher détail d'un ingrédient à partir de son nom
-SELECT * FROM Ingredient WHERE ing_nom = 'Sucre' ORDER BY ing_nom;
+SELECT * FROM Ingredient WHERE ing_nom = 'Sucre';
 
 -- Afficher la liste des joueurs 
 SELECT pl.* FROM Player pl
