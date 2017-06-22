@@ -145,4 +145,5 @@ $(document).ready(function () {
 	  	if($('#blocSimul') != undefined)
 	 		getRepices();
 	}
+
 })

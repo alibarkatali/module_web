@@ -22,6 +22,8 @@ FORECAST = {
 #	"weather" : random.choice(WEATHER)
 #}
 
+# {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : "RAINNY"}}
+
 TEMPS = {}
 
 COORDINATESSPAN = {
@@ -201,6 +203,7 @@ recipesList['Cafe'] = {
 		"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
 		"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
 	}
+
 
 
 ####	FIN VARIABLES DES TESTS
