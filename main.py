@@ -255,7 +255,7 @@ def rejoin():
 	db = Db()
 	Info = db.select("SELECT * FROM Player WHERE pl_pseudo = @(playerName);")
 	if (Info[0] != NULL):
-		return getJSONResponse(Info)
+		return getJSONResponse("toto caca pipi")
 	else:
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
 		pl_id = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = @(playerName);")
