@@ -18,10 +18,14 @@ FORECAST = {
 	"weather" : random.choice(WEATHER)
 }
 
-TEMPS = {
-	"timestamp" : 0, # nombre d heure ecoulees depuis le debut du jeu
-	"weather" : random.choice(WEATHER)
-}
+#TEMPS = {
+#	"timestamp" : 0, # nombre d heure ecoulees depuis le debut du jeu
+#	"weather" : random.choice(WEATHER)
+#}
+
+# {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : "RAINNY"}}
+
+TEMPS = {}
 
 COORDINATESSPAN = {
 	"latitudeSpan" : 0.0,
@@ -202,6 +206,7 @@ recipesList['Cafe'] = {
 	}
 
 
+
 ####	FIN VARIABLES DES TESTS
 ################################################################
 
@@ -350,7 +355,6 @@ def getRecipes():
 # GET /recipes/<name>
 @app.route('/recipes/<name>',methods=['GET'])
 def getRecipeByName(name):
-	print name
 	if name not in recipesList:
 		return '"Not find recipe"', 412
 	else:
