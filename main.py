@@ -251,26 +251,25 @@ def getPlayers():
 @app.route('/players', methods=['POST'])
 def rejoin():
 	data = request.get_json()
-	player = data['playerName']
+	playerName = data['playerName']
 	db = Db()
-	playerInfo = db.select("SELECT * FROM Player WHERE pl_pseudo = @(player);")
-	return "ICI: " + playerInfo
-	if playerInfo:
-		return getJSONResponse(playerInfo)
+	Info = db.select("SELECT * FROM Player WHERE pl_pseudo = @(playerName);")
+	if Info:
+		return getJSONResponse(Info)
 	else:
-		db.execute("INSERT INTO Player(pl_pseudo) VALUES (@(player));")
-		pl_id = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = @(player);")
-		db.execute("INSERT INTO Stand(loc_coordX, loc_coordY, loc_rayon, pl_id) VALUES ('0', '0', '0', '$(pl_id)');") 
+		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
+		pl_id = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = @(playerName);")
+		db.execute("INSERT INTO Stand(loc_coordX, loc_coordY, loc_rayon, pl_id) VALUES ('0', '0', '0', '$(pl_id)');")
 
 	db.close()
- 	return getJSONResponse(playerInfo)
+ 	return getJSONResponse(Info)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R1/R7 - Commande "Temps"
 # GET /metrology
 @app.route('/metrology',methods=['GET'])
-def getMetrology():	
+def getMetrology():
 	return getJSONResponse(meteos)
 
 # R1/R7 - Commande "Temps"
