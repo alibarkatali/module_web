@@ -262,7 +262,7 @@ def rejoin():
 		db.execute("INSERT INTO Stand(loc_coordX, loc_coordY, loc_rayon, pl_id) VALUES ('0', '0', '0', '$(pl_id)');")
 
 	db.close()
- 	return getJSONResponse(Info)
+ 	return getJSONResponse("chic chac")
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
