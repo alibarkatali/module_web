@@ -126,14 +126,14 @@ $(document).ready(function () {
 	}
 
 	/**
-	*
+	* 
 	*/
 	function resetFormGameJoin () {
 		$('#playerName').val("");
 	}
 
 	/**
-	*
+	* 
 	*/
 	function gameInit () {
 		/* # récupération de la météo */

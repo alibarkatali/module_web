@@ -149,8 +149,10 @@ recipesList = {}
 
 meteos = {
 	"timestamp" : 0,
-	"weatherToday" : random.choice(WEATHER),
-	"weatherTomorow" : random.choice(WEATHER)
+	"weather" : {
+		"dfn" : 0, # aujourdhui = 0, demain = 1
+		"weather" : random.choice(WEATHER)
+	}
 }
 
 recipesList['Limonade'] = {
