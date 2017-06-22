@@ -1,0 +1,28 @@
+<DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/global.css">
+</head>
+<body>
+	<form id="formGameJoin" method="POST">
+		Player Name: <input type="text" name="playerName" id="playerName">
+	</form>
+	<div id="gameMap">
+		MAP
+	</div>
+	<div id="playersInfo">
+		<ul id="playerList"></ul>
+	</div>
+	<div id="gameInfo">
+		Météo d'aujourd'hui : <span id="weatherToday"></span><br>
+		Météo de demain : <span id="weatherTomorrow"></span><br>
+		Temps : <span id="timer"></span><br>
+		<input type="button" id="btnRefreshGameInfo" value="Refresh">
+	</div>
+
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+</body>
+</html>
