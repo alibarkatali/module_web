@@ -259,7 +259,7 @@ def rejoin():
 	else:
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
 		db.execute(""" INSERT INTO stand(loc_coordX, loc_coordY, loc_rayon, pl_id)
-			       SELECT 0,0,0, player.pl_id FROM player player where pl_pseudo = '@(playerName)'; """, data)
+			       SELECT 0,0,0, player.pl_id FROM player player where pl_pseudo = @(playerName); """, data)
 
 	db.close()
  	return getJSONResponse(playerName)
