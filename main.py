@@ -255,16 +255,15 @@ def rejoin():
 	db = Db()
 	Info = db.select("SELECT * FROM Player WHERE pl_pseudo = '@(playerName)'")
 	if Info:
-		return getJSONResponse("toto caca pipi")
+		return getJSONResponse(playerName)
 	else:
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
-		pl_id = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = '@(playerName)'")
 		db.execute(""" INSERT INTO stand(loc_coordX, loc_coordY, loc_rayon, pl_id)
 			       SELECT 0,0,0, player.pl_id FROM player player where pl_pseudo = '@(playerName)';
 			   """)
 
 	db.close()
- 	return getJSONResponse("chic chac")
+ 	return getJSONResponse(playerName)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
