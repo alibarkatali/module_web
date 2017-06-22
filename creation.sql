@@ -13,10 +13,19 @@ CREATE TABLE Player(
         pl_id       Int NOT NULL,
         pl_mail     Varchar (255) ,
         pl_date     Date ,
-        ga_id      Int ,
         PRIMARY KEY (pl_id)
 );
 
+------------------------------------------------------------
+-- Table: Player
+------------------------------------------------------------
+CREATE TABLE Participe(
+		pa_present BOOL NOT NULL
+        ga_id Int NOT NULL
+		pl_id Int NOT NULL
+		PRIMARY KEY (pl_id, ga_id)
+);
+			
 
 ------------------------------------------------------------
 -- Table: Ingredient
@@ -56,6 +65,7 @@ CREATE TABLE Game(
         ga_centreY  Float NOT NULL ,
         ga_largeur  Float NOT NULL ,
         ga_longueur Float NOT NULL ,
+		ga_run      BOOL NOT NULL,
         PRIMARY KEY (ga_id)
 );
 

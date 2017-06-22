@@ -238,7 +238,7 @@ def resetSimulation():
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R4.1 - Affiche la liste de joueur
+# R4.1 - Affiche la liste de joueur - OK -
 # GET /players
 @app.route('/players',methods=['GET'])
 def getPlayers():
@@ -246,7 +246,7 @@ def getPlayers():
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R4.2 - Rejoindre une partie
+# R4.2 - Rejoindre une partie 
 # POST /players
 @app.route('/players',methods=['POST'])
 def rejoin():
@@ -255,7 +255,7 @@ def rejoin():
 	# si le joueur n existe pas dans la liste
 	if player not in playersList:
 		playersList.append(data['playerName'])
-
+# INSERT SI JOUEUR INEXISTANT
 	return getJSONResponse(joinResponse(data['playerName']))
 
 
@@ -279,7 +279,7 @@ def setMetrology():
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R4.2 - Quitter une partie
 # DELETE /players/<playerName>
-@app.route('/players/<playerName>',methods=['DELETE'])
+@app.route('/players/<playerName>', methods=['DELETE'])
 def leave(playerName):
 	global GAMEINFO
 	if not GAMEINFO['name'] not in GAMEINFO:
