@@ -257,7 +257,7 @@ def rejoin():
 	if Info:
 		return getJSONResponse("toto caca pipi")
 	else:
-		db.execute("""INSERT INTO Player(pl_pseudo) VALUES ('@(playerName)');""", data)
+		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
 		pl_id = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = '@(playerName)'")
 		db.execute("""INSERT INTO Stand(loc_coordX, loc_coordY, loc_rayon, pl_id) VALUES ('0', '0', '0', '@(pl_id)');""")
 
