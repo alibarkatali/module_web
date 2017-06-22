@@ -266,7 +266,7 @@ def getMetrology():
 def setMetrology():
 	data = request.get_json()
 	TEMPS['timestamp'] = data['timestamp']
-	TEMPS['weather'] = data['weather']
+	TEMPS['weather'] = FORECAST
 	return getJSONResponse(TEMPS)
 
 
@@ -349,7 +349,6 @@ def getRecipes():
 # GET /recipes/<name>
 @app.route('/recipes/<name>',methods=['GET'])
 def getRecipeByName(name):
-	print name
 	if name not in recipesList:
 		return '"Not find recipe"', 412
 	else:
