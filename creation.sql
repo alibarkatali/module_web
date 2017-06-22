@@ -10,7 +10,7 @@
 CREATE TABLE Player(
         pl_pseudo   Varchar (255) NOT NULL ,
         pl_password Varchar (255) ,
-        pl_id       Int NOT NULL,
+        pl_id       SERIAL NOT NULL,
         pl_mail     Varchar (255) ,
         pl_date     Date ,
         PRIMARY KEY (pl_id)
@@ -102,9 +102,9 @@ CREATE TABLE Pub(
 -- Table: Achete
 ------------------------------------------------------------
 
-CREATE TABLE Achete(
+CREATE TABLE Buy(
         quantite Int ,
-        pl_id     SERIAL NOT NULL ,
+        pl_id    Int NOT NULL ,
         rec_id   Int NOT NULL ,
         PRIMARY KEY (pl_id, rec_id)
 );
@@ -114,7 +114,7 @@ CREATE TABLE Achete(
 -- Table: Produit
 ------------------------------------------------------------
 
-CREATE TABLE Produit(
+CREATE TABLE Make(
         nombre Int ,
         prix   Float NOT NULL ,
         vendu  Int ,
@@ -134,12 +134,13 @@ CREATE TABLE Contains(
         PRIMARY KEY (Ing_id, rec_id )
 );
 
-ALTER TABLE Player ADD CONSTRAINT FK_Player_ga_id FOREIGN KEY (ga_id) REFERENCES Game(ga_id);
 ALTER TABLE Stand ADD CONSTRAINT FK_Stand_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
 ALTER TABLE Pub ADD CONSTRAINT FK_Pub_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
-ALTER TABLE Achete ADD CONSTRAINT FK_Achete_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
-ALTER TABLE Achete ADD CONSTRAINT FK_Achete_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
-ALTER TABLE Produit ADD CONSTRAINT FK_Produit_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
-ALTER TABLE Produit ADD CONSTRAINT FK_Produit_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
+ALTER TABLE Buy ADD CONSTRAINT FK_Buy_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
+ALTER TABLE Buy ADD CONSTRAINT FK_Buy_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
+ALTER TABLE Make ADD CONSTRAINT FK_Make_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
+ALTER TABLE Make ADD CONSTRAINT FK_Make_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
 ALTER TABLE Contains ADD CONSTRAINT FK_Contains_ing_id FOREIGN KEY (ing_id) REFERENCES Ingredient(ing_id);
 ALTER TABLE Contains ADD CONSTRAINT FK_Contains_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
+ALTER TABLE Participe ADD CONSTRAINT FK_Participe_ga_id FOREIGN KEY (ga_id) REFERENCES Game(ga_id);
+ALTER TABLE Participe ADD CONSTRAINT FK_Participe_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
