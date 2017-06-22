@@ -23,11 +23,11 @@ CREATE TABLE Player(
 ------------------------------------------------------------
 
 CREATE TABLE Ingredient(
-        ing_id      Int NOT NULL ,
+        ing_id      SERIAL NOT NULL ,
         ing_nom     Varchar (255) ,
         ing_prix    Float ,
-        ing_alcohol Bool ,
-        ing_cold    Bool ,
+        ing_alcohol Int ,
+        ing_cold    Int ,
         PRIMARY KEY (ing_id)
 );
 
@@ -37,10 +37,10 @@ CREATE TABLE Ingredient(
 ------------------------------------------------------------
 
 CREATE TABLE Recipe(
-        rec_id      Int NOT NULL ,
+        rec_id      SERIAL NOT NULL ,
         rec_nom     Varchar (255) NOT NULL ,
-        rec_alcohol Bool ,
-        rec_cold    Bool ,
+        rec_alcohol Int ,
+        rec_cold    Int ,
         PRIMARY KEY (rec_id)
 );
 
@@ -50,7 +50,7 @@ CREATE TABLE Recipe(
 ------------------------------------------------------------
 
 CREATE TABLE Game(
-        ga_id       Int NOT NULL ,
+        ga_id       SERIAL NOT NULL ,
         ga_nom      Varchar (255) NOT NULL ,
         ga_centreX  Float NOT NULL ,
         ga_centreY  Float NOT NULL ,
@@ -66,7 +66,7 @@ CREATE TABLE Game(
 
 CREATE TABLE Stand(
         loc_coordX Float ,
-        loc_id     Int NOT NULL ,
+        loc_id     SERIAL NOT NULL ,
         loc_coordY Float NOT NULL ,
         loc_rayon  Float NOT NULL ,
         pl_id       Int NOT NULL ,
@@ -79,7 +79,7 @@ CREATE TABLE Stand(
 ------------------------------------------------------------
 
 CREATE TABLE Pub(
-        p_id        Int NOT NULL ,
+        p_id        SERIAL NOT NULL ,
         p_coordX    Float NOT NULL ,
         p_coordY    Float NOT NULL ,
         p_rayon     Float NOT NULL ,
@@ -94,7 +94,7 @@ CREATE TABLE Pub(
 
 CREATE TABLE Achete(
         quantite Int ,
-        pl_id     Int NOT NULL ,
+        pl_id     SERIAL NOT NULL ,
         rec_id   Int NOT NULL ,
         PRIMARY KEY (pl_id, rec_id)
 );

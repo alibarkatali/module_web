@@ -3,6 +3,7 @@ from flask import Flask, request
 from flask_cors import CORS
 import json
 import random
+from db import Db
 
 app = Flask(__name__)
 app.debug = True
