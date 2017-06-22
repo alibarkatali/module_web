@@ -248,15 +248,22 @@ def getPlayers():
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R4.2 - Rejoindre une partie 
 # POST /players
-@app.route('/players',methods=['POST'])
+@app.route('/players', methods=['POST'])
 def rejoin():
 	data = request.get_json()
 	player = data['playerName']
-	# si le joueur n existe pas dans la liste
-	if player not in playersList:
-		playersList.append(data['playerName'])
-# INSERT SI JOUEUR INEXISTANT
-	return getJSONResponse(joinResponse(data['playerName']))
+	db = Db()
+	playerInfo = db.select("SELECT * FROM Player WHERE pl_pseudo = @(player);")
+	return "ICI: " + playerInfo
+	if playerInfo:
+		return getJSONResponse(playerInfo)
+	else:
+		db.execute("INSERT INTO Player(pl_pseudo) VALUES (@(player));")
+		pl_id = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = @(player);")
+		db.execute("INSERT INTO Stand(loc_coordX, loc_coordY, loc_rayon, pl_id) VALUES ('0', '0', '0', '$(pl_id)');") 
+
+	db.close()
+ 	return getJSONResponse(playerInfo)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
