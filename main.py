@@ -221,8 +221,8 @@ def joinResponse(name):
 
 	return GAMEINFO
 
-def CalculeBudget(player):
-	
+#def CalculeBudget(player):
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de convert une liste en JSON et ajouter le code de retour.
