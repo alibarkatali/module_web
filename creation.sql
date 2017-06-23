@@ -25,7 +25,7 @@ CREATE TABLE Player(
 CREATE TABLE Ingredient(
         ing_id      SERIAL NOT NULL ,
         ing_nom     Varchar (255) ,
-        ing_prix    DECIMAL (15,3)  ,
+        ing_prix    Float NOT NULL  ,
         ing_alcohol Int ,
         ing_cold    Int ,
         PRIMARY KEY (ing_id )

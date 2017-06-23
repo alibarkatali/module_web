@@ -9,12 +9,6 @@ app = Flask(__name__)
 app.debug = True
 CORS(app)
 
-class DecimalEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Decimal):
-            return "%.2f" % obj
-        return json.JSONEncoder.default(self, obj)
-
 WEATHER = ["RAINNY","CLOUDY","SUNNY","HEATWAVE","THUNDERSTORM"]
 
 COORDINATES = {}
@@ -357,12 +351,12 @@ def getPlayerMap(playerName):
 @app.route('/ingredients',methods=['GET'])
 def getIngredients():
 	db = Db()
-	ingredient_list = db.select("SELECT ing_nom, ing_alcohol, ing_cold FROM Ingredient")
+
+	ingredient_list = db.select("SELECT ing_nom, ing_prix, ing_alcohol, ing_cold FROM Ingredient")
+
 	db.close()
 
-	ingredient_prix = db.select("SELECT ing_prix FROM Ingredient")
-
-	return makeJsonResponse({ "ingredients": ingredient_prix })
+	return makeJsonResponse({ "ingredients": ingredient_list })
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
