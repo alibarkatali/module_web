@@ -354,7 +354,7 @@ def getIngredients():
 	ingredient_list = db.select("SELECT ing_nom, ing_alcohol, ing_cold FROM Ingredient")
 	db.close()
 
-	ingredient_prix = str(db.select("SELECT ing_prix FROM Ingredient")
+	ingredient_prix = str(db.select("SELECT ing_prix FROM Ingredient"))
 
 	return makeJsonResponse({ "ingredients": ingredient_prix })
 
