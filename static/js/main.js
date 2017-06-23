@@ -34,7 +34,7 @@ $(document).ready(function () {
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-	
+
 	/**
 	*
 	*/
@@ -82,7 +82,7 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				
+
 
 				$.each(result, function( index, value ) {
 					console.log(value)
@@ -91,7 +91,7 @@ $(document).ready(function () {
 
 				//$('#recipes').html("");
 				/*for (var i = 0; i < result.length; i++) {
-					
+
 				};*/
 	    	}
 		});
@@ -99,7 +99,7 @@ $(document).ready(function () {
 
 	function getRepiceByName(name) {
 		$.ajax({
-			url: "/recipes/"+name, 
+			url: "/recipes/"+name,
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
@@ -108,14 +108,14 @@ $(document).ready(function () {
 	    	}
 		});
 	}
-	
+
 	/**
 	*
 	*/
 	function gameRejoin(playerName) {
 		var data = {"playerName": playerName}
 		$.ajax({
-			url: "/players", 
+			url: "/players",
 			data : JSON.stringify(data),
 			type: "POST",
 			contentType: 'application/json',
