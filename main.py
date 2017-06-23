@@ -351,13 +351,13 @@ def getPlayerMap(playerName):
 @app.route('/ingredients',methods=['GET'])
 def getIngredients():
 	db = Db()
-	ingredient_list = db.select("SELECT ing_nom, ing_prix, ing_alcohol, ing_cold FROM Ingredient")
+	ingredient_list = db.select("SELECT ing_nom, ing_alcohol, ing_cold FROM Ingredient")
 	db.close()
 	return makeJsonResponse({ "ingredients": ingredient_list })
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R10 - Obtenir la liste des recettes
+# R10 - Obtenir la liste des recettes -------------- OK ----------
 # GET /recipes
 @app.route('/recipes',methods=['GET'])
 def getRecipes():
