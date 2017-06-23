@@ -248,7 +248,7 @@ def getPlayers():
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R4.2 - Rejoindre une partie 
+# R4.2 - Rejoindre une partie
 # POST /players
 @app.route('/players', methods=['POST'])
 def rejoin():
@@ -257,9 +257,9 @@ def rejoin():
 	db = Db()
 
 	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '" + playerName +"'")
-	
+
 	print (info)
-	
+
 	if len(info) == 0 :
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
 		db.execute(""" INSERT INTO stand(loc_coordX, loc_coordY, loc_rayon, pl_id)
