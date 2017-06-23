@@ -253,7 +253,7 @@ def rejoin():
 	data = request.get_json()
 	playerName = data['playerName']
 	db = Db()
-	
+
 	info = db.select("SELECT * FROM Player WHERE pl_pseudo = '@(playerName)'")
 
 	if len(info) > 0 :
@@ -347,6 +347,7 @@ def getPlayerMap(playerName):
 # GET /ingredients
 @app.route('/ingredients',methods=['GET'])
 def getIngredients():
+	db = Db()
 	Ingredient_List = db.select("SELECT * FROM Ingredient")
 	return makeJsonResponse(Ingredient_List)
 
@@ -356,6 +357,7 @@ def getIngredients():
 # GET /recipes
 @app.route('/recipes',methods=['GET'])
 def getRecipes():
+	db = Db()
 	recipes_List = db.select("SELECT * FROM Recipe")
 	return makeJsonResponse(recipes_List)
 
@@ -365,6 +367,7 @@ def getRecipes():
 # GET /recipes/<name>
 @app.route('/recipes/<name>',methods=['GET'])
 def getRecipeByName(name):
+	db = Db()
 	recipe = db.select("SELECT * FROM Recipe WHERE rec_nom = '@(name)'")
 	if recipe:
 		return makeJsonResponse(recipe)
