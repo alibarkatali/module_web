@@ -260,12 +260,12 @@ def rejoin():
 	#print (info['count'])
 	
 	print (len(info))
-	if len(info) > 1 :
-		return makeJsonResponse(data,400)
-	else:
+	if len(info) == 0 :
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
 		db.execute(""" INSERT INTO stand(loc_coordX, loc_coordY, loc_rayon, pl_id)
 			       SELECT 0,0,0, player.pl_id FROM player player where pl_pseudo = @(playerName); """, data)
+	else:
+		return makeJsonResponse(data,400)
 
 	db.close()
  	return makeJsonResponse(data)
