@@ -308,7 +308,7 @@ def leave(playerName):
 @app.route('/sales',methods=['POST'])
 def simulCmd():
 	data = request.get_json()
-	
+
 	return makeJsonResponse(SALE)
 
 
@@ -351,9 +351,9 @@ def getPlayerMap(playerName):
 @app.route('/ingredients',methods=['GET'])
 def getIngredients():
 	db = Db()
-	Ingredient_List = db.select("SELECT ing_nom, ing_prix, ing_alcohol, ing_cold FROM Ingredient")
+	ingredient_list = db.select("SELECT ing_nom, ing_prix, ing_alcohol, ing_cold FROM Ingredient")
 	db.close()
-	return makeJsonResponse({ "ingredients": Ingredient_List})
+	return makeJsonResponse({ "ingredients": ingredient_list })
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -364,7 +364,7 @@ def getRecipes():
 	db = Db()
 	recipes_List = db.select("SELECT rec_nom FROM Recipe")
 	db.close()
-	return makeJsonResponse(recipes_List)
+	return makeJsonResponse({ "recipes": recipes_List })
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -380,7 +380,6 @@ def getRecipeByName(name):
 		return makeJsonResponse({ "recipe": recipe, "ingredients": ingredients_list } )
 	else:
 		return '"Recipe Not Found"', 412
-	
 	db.close()
 
 if __name__ == "__main__":
