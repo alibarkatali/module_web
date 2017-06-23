@@ -254,7 +254,7 @@ def rejoin():
 	playerName = data['playerName']
 	db = Db()
 
-	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = 'toto'")
+	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '" + playerName +"'")
 	
 	print (info)
 	
