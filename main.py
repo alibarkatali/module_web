@@ -224,8 +224,8 @@ def joinResponse(name):
 # Fonction : Permet de convert une liste en JSON et ajouter le code de retour.
 # paramsIn : data de type list
 # paramsOut : data de type JSON
-def getJSONResponse(data):
-	return json.dumps(data), 200, {'Content-Type': 'application/json'}
+def makeJsonResponse(data,status=200):
+	return json.dumps(data), status, {'Content-Type': 'application/json'}
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -242,7 +242,7 @@ def resetSimulation():
 # GET /players
 @app.route('/players',methods=['GET'])
 def getPlayers():
-	return getJSONResponse(playersList)
+	return makeJsonResponse(playersList)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -253,18 +253,18 @@ def rejoin():
 	data = request.get_json()
 	playerName = data['playerName']
 	db = Db()
-	#Info = db.select("SELECT * FROM Player WHERE pl_pseudo = '@(playerName)'")
-	#if (db.select("SELECT EXISTS(SELECT * FROM Player WHERE pl_pseudo = '@(playerName)')") == 't'):
-	Info = db.select("SELECT COUNT(*) FROM Player WHERE pl_pseudo = '@(playerName)'")
-	if ( Info[0] > 0 ):
-		return getJSONResponse(data)
+	
+	info = db.select("SELECT * FROM Player WHERE pl_pseudo = '@(playerName)'")
+
+	if len(info) > 0 :
+		return makeJsonResponse(data,400)
 	else:
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
 		db.execute(""" INSERT INTO stand(loc_coordX, loc_coordY, loc_rayon, pl_id)
 			       SELECT 0,0,0, player.pl_id FROM player player where pl_pseudo = @(playerName); """, data)
 
 	db.close()
- 	return getJSONResponse(data)
+ 	return makeJsonResponse(data)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -272,7 +272,7 @@ def rejoin():
 # GET /metrology
 @app.route('/metrology',methods=['GET'])
 def getMetrology():
-	return getJSONResponse(meteos)
+	return makeJsonResponse(meteos)
 
 # R1/R7 - Commande "Temps"
 # POST /metrology
@@ -281,7 +281,7 @@ def setMetrology():
 	data = request.get_json()
 	TEMPS['timestamp'] = data['timestamp']
 	TEMPS['weather'] = data['weather']
-	return getJSONResponse(TEMPS)
+	return makeJsonResponse(TEMPS)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -306,7 +306,7 @@ def simulCmd():
 	data = request.get_json()
 	for sale in data:
 		SALE.append(sale)
-	return getJSONResponse(SALE)
+	return makeJsonResponse(SALE)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -348,7 +348,7 @@ def getPlayerMap(playerName):
 @app.route('/ingredients',methods=['GET'])
 def getIngredients():
 	Ingredient_List = db.select("SELECT * FROM Ingredient")
-	return getJSONResponse(Ingredient_List)
+	return makeJsonResponse(Ingredient_List)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -357,7 +357,7 @@ def getIngredients():
 @app.route('/recipes',methods=['GET'])
 def getRecipes():
 	recipes_List = db.select("SELECT * FROM Recipe")
-	return getJSONResponse(recipes_List)
+	return makeJsonResponse(recipes_List)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -367,7 +367,7 @@ def getRecipes():
 def getRecipeByName(name):
 	recipe = db.select("SELECT * FROM Recipe WHERE rec_nom = '@(name)'")
 	if recipe:
-		return getJSONResponse(recipe)
+		return makeJsonResponse(recipe)
 	else:
 		return '"Recipe Not Found"', 412
 
