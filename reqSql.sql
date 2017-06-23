@@ -49,4 +49,3 @@ INSERT INTO Stand(loc_coordX, loc_coordY, loc_rayon, pl_id) VALUES ('ALEA', 'ALE
 
 
 
-

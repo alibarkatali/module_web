@@ -13,6 +13,8 @@ WEATHER = ["RAINNY","CLOUDY","SUNNY","HEATWAVE","THUNDERSTORM"]
 
 COORDINATES = {}
 
+cash_init = 100;
+
 FORECAST = {
 	"dfn" : 0, # aujourdhui = 0, demain = 1
 	"weather" : random.choice(WEATHER)
@@ -306,8 +308,7 @@ def leave(playerName):
 @app.route('/sales',methods=['POST'])
 def simulCmd():
 	data = request.get_json()
-	for sale in data:
-		SALE.append(sale)
+	
 	return makeJsonResponse(SALE)
 
 
@@ -345,7 +346,7 @@ def getPlayerMap(playerName):
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R9 - Obtenir la liste des ingredients - OK
+# R9 - Obtenir la liste des ingredients ----------- OK ---------------
 # GET /ingredients
 @app.route('/ingredients',methods=['GET'])
 def getIngredients():
@@ -372,11 +373,15 @@ def getRecipes():
 @app.route('/recipes/<name>',methods=['GET'])
 def getRecipeByName(name):
 	db = Db()
-	recipe = db.select("SELECT * FROM Recipe WHERE rec_nom = '@(name)'")
-	if recipe:
-		return makeJsonResponse(recipe)
+	recipe = db.select("SELECT rec_nom,rec_alcohol,rec_cold FROM Recipe WHERE rec_nom = '"+ name +"'")
+	ingredient_list = db.select("SELECT ing.ing_nom FROM Ingredient ing INNER JOIN Contains con ON ing.ing_id = con.ing_id INNER JOIN Recipe rec ON rec.rec_id = con.rec_id WHERE rec.rec_nom = '"+ name +"'")
+
+	if len(recipe) > 0:
+		return makeJsonResponse({ "recipe": recipe, "ingredients": ingredients_list } )
 	else:
 		return '"Recipe Not Found"', 412
+	
+	db.close()
 
 if __name__ == "__main__":
     app.run()
