@@ -254,7 +254,7 @@ def rejoin():
 	playerName = data['playerName']
 	db = Db()
 	#Info = db.select("SELECT * FROM Player WHERE pl_pseudo = '@(playerName)'")
-	if (db.select("SELECT EXISTS(SELECT * FROM Player WHERE pl_pseudo = '@(playerName)')")):
+	if (db.select("SELECT EXISTS(SELECT * FROM Player WHERE pl_pseudo = '@(playerName)')") == 't'):
 		return getJSONResponse(playerName)
 	else:
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
@@ -290,7 +290,7 @@ def leave(playerName):
 	global GAMEINFO
 	if not GAMEINFO['name'] not in GAMEINFO:
 		return '"Not find player"', 412
-	
+
 	GAMEINFO['name'].remove()
 
 	return '', 200
@@ -320,7 +320,7 @@ def simulActions(playerName):
 		return '"Not find simulated"', 412
 
 	#if data['simulated'] == True:
-		
+
 	return "Instructions du joueur pour le jour suivant"
 
 
@@ -345,7 +345,8 @@ def getPlayerMap(playerName):
 # GET /ingredients
 @app.route('/ingredients',methods=['GET'])
 def getIngredients():
-	return getJSONResponse(INGREDIENT)
+	Ingredient_List = db.select("SELECT * FROM Ingredient")
+	return getJSONResponse(Ingredient_List)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -353,7 +354,8 @@ def getIngredients():
 # GET /recipes
 @app.route('/recipes',methods=['GET'])
 def getRecipes():
-	return getJSONResponse(recipesList)
+	recipes_List = db.select("SELECT * FROM Recipe")
+	return getJSONResponse(recipes_List)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
