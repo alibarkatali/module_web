@@ -256,8 +256,7 @@ def rejoin():
 	#Info = db.select("SELECT * FROM Player WHERE pl_pseudo = '@(playerName)'")
 	#if (db.select("SELECT EXISTS(SELECT * FROM Player WHERE pl_pseudo = '@(playerName)')") == 't'):
 	Info = db.select("SELECT COUNT(*) FROM Player WHERE pl_pseudo = '@(playerName)'")
-	Info = int(Info)
-	if ( Info > 0 ):
+	if ( Info[0] > 0 ):
 		return getJSONResponse(data)
 	else:
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
