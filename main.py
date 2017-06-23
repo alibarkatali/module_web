@@ -353,6 +353,9 @@ def getIngredients():
 	db = Db()
 	ingredient_list = db.select("SELECT ing_nom, ing_prix, ing_alcohol, ing_cold FROM Ingredient")
 	db.close()
+	for prix in ingredient_list['prix']:
+		ingredient_list['prix'] = str(prix);
+
 	return makeJsonResponse({ "ingredients": ingredient_list })
 
 
