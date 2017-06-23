@@ -254,13 +254,13 @@ def rejoin():
 	playerName = data['playerName']
 	db = Db()
 
-	info = db.select("SELECT COUNT(*) FROM Player WHERE pl_pseudo = '@(playerName)'")
-	info = json.dumps(info)
-	print (info[0][0])
+	info = db.select("SELECT * FROM Player WHERE pl_pseudo = '@(playerName)'")
+	#info = json.dumps(info)
+	#print (info[0][0])
 	#print (info['count'])
 	
-
-	if info[0][0] > 0 :
+	print (len(info))
+	if len(info) > 1 :
 		return makeJsonResponse(data,400)
 	else:
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
