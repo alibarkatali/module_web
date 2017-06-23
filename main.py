@@ -221,6 +221,8 @@ def joinResponse(name):
 
 	return GAMEINFO
 
+def CalculeBudget(player):
+	
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de convert une liste en JSON et ajouter le code de retour.
@@ -256,12 +258,12 @@ def rejoin():
 	playerName = data['playerName']
 	db = Db()
 
-	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '" + playerName +"'")
+	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ playerName +"'")
 
 	print (info)
 
 	if len(info) == 0 :
-		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
+		db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(playerName), 100);""", data)
 		db.execute(""" INSERT INTO stand(loc_coordX, loc_coordY, loc_rayon, pl_id)
 			       SELECT 0,0,0, player.pl_id FROM player player where pl_pseudo = @(playerName); """, data)
 	else:
@@ -360,7 +362,7 @@ def getIngredients():
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R10 - Obtenir la liste des recettes -------------- OK ----------
+# R10 - Obtenir la liste des recettes -------------- OK, MANQUE A AFFICHER LE PRIX ----------
 # GET /recipes
 @app.route('/recipes',methods=['GET'])
 def getRecipes():
@@ -371,7 +373,7 @@ def getRecipes():
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# R10 - Obtenir une recette a partir de son nom
+# R10 - Obtenir une recette a partir de son nom ---------------- OK, MANQUE A AFFICHER LE PRIX --------------------
 # GET /recipes/<name>
 @app.route('/recipes/<name>',methods=['GET'])
 def getRecipeByName(name):
