@@ -380,7 +380,7 @@ def getRecipeByName(name):
 	ingredient_list = db.select("SELECT ing.ing_nom FROM Ingredient ing INNER JOIN Contains con ON ing.ing_id = con.ing_id INNER JOIN Recipe rec ON rec.rec_id = con.rec_id WHERE rec.rec_nom = '"+ name +"'")
 
 	if len(recipe) > 0:
-		return makeJsonResponse({ "recipe": recipe, "ingredients": ingredients_list } )
+		return makeJsonResponse({ "recipe": recipe, "ingredients": ingredient_list } )
 	else:
 		return '"Recipe Not Found"', 412
 	db.close()
