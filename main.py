@@ -255,7 +255,6 @@ def rejoin():
 	db = Db()
 
 	info = db.select("SELECT COUNT(*) FROM Player WHERE pl_pseudo = '@(playerName)'")
-	print (info[0]['count'])
 	info = json.dumps(info)
 	print (info[0]['count'])
 	print (info['count'])
