@@ -254,7 +254,7 @@ def rejoin():
 	playerName = data['playerName']
 	db = Db()
 
-	info = db.select("SELECT * FROM Player WHERE pl_pseudo = '@(playerName)'")
+	info = db.select("SELECT COUNT(*) FROM Player WHERE pl_pseudo = '@(playerName)'")
 
 	if len(info) > 0 :
 		return makeJsonResponse(data,400)
