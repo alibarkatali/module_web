@@ -26,7 +26,7 @@
 
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav navbar-right">
-				<li><a id="username" href="#">Duront</a></li>
+				<li><a id="username" href="#"></a></li>
 			</ul>
 	    </div>
 	  </div>
@@ -37,139 +37,38 @@
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
 				<div class="row">
-					<div class="col-md-3 infobloc">
-						<span id="weatherToday" class="meteotxt">
-							
-						</span>
+					<div class="col-md-3 infobloc weatherToday">
+						<span id="weatherToday" class="meteotxt"></span>
 					</div>
 
-					<div class="col-md-3 infobloc">
-						<span id="weatherTomorrow" class="meteotxt">
-							
-						</span>
+					<div class="col-md-3 infobloc weatherTomorrow">
+						<span id="weatherTomorrow" class="meteotxt"></span>
 					</div>
 					
-					<div class="col-md-3 infobloc">
-						<span id="timer" class="tempstxt">
-							TEMPS
-						</span>
+					<div class="col-md-3 infobloc timer">
+						<span id="timer" class="tempstxt"></span>
 					</div>
 
-					<div class="col-md-3 infobloc">
-						<span class="budgettxt">
-							BUDGET
+					<div class="col-md-3 infobloc budgetplayer">
+						<span id="budgetplayer" class="budgettxt">
+							0
 						</span>
 					</div>
 				</div>
 			</div>
 			
 		</div>
-		<div class="row">
+		
 
-			<!-- BLOC GAUCHE -->
-			<div class="col-md-3">
-				<div class="header">
-					<p class="title1">Stands & Panneaux Pub</p>
-				</div>
-				<div id="gameMap"></div>
-				<button id="addPub" type="button" class="btn btn-primary">Ajouter un PB</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<button id="removePub" type="button" class="btn btn-default">Retirer un PB</button>
-			</div>
-
-			<!-- BLOC CENTRE -->
-			<div class="col-md-6">
-				<div class="header">
-			      <p class="title1">Information du jour <span id="day">#jour</span></p>      
-			    </div>
-
-			      <h4>Action du lendemain</h4> 
-			      <div class="alignLeft">
-			        
-			        <p id="alignCenter">Préparation de vos boissons</p>  
-			        <div class="row">
-			        	<form id="formproduction">
-			        		<div class="col-md-3">
-			        			<button type="button" class="btn btn-default dropdown-toggle form-control" data-toggle="dropdown">		Boisson 
-					            <span class="caret"></span></button>
-					            <ul class="dropdown-menu" role="menu">
-					              <li><a href="#">...</a></li>
-					            </ul>
-			        		</div>
-			        		<div class="col-md-3">
-			        			<input type="number" class="form-control" id="quantity" placeholder="Quantité">
-			        		</div>
-			        		<div class="col-md-3">
-			        			<input type="number" class="form-control" id="prixvente" placeholder="Prix Vente">
-			        		</div>
-			        		<div class="col-md-3">
-			        			<button id="adddrink" type="button" class="btn btn-success form-control">Valider</button>
-			        		</div>
-		        		</form>
-			        </div>
-
-			        <div class="bloccentre">
-					  
-					  	<table class="table table-striped">
-				        <thead>
-				        	<tr>
-				        		<th>Boisson</th>
-				        		<th>Coût U</th>
-				        		<th>Prix V</th>
-				        		<th>QTT</th>
-				        		<th>Coût T</th>
-				        		<th>Prix VT</th>
-				        		<th>Eff ligne</th>
-				        	</tr>
-				        </thead>
-				        <tbody>
-				          <tr>
-				          	<td>..</td>
-				          	<td>..</td>
-				          	<td>..</td>
-				          	<td>..</td>
-				          	<td>..</td>
-				          	<td>..</td>
-				          	<td>
-				          		<a href="#">
-				          			<span class="glyphicon glyphicon-trash"></span>
-				          		</a>
-				          	</td>
-				          </tr>
-				        </tbody>
-				        </table>
-					 
-					</div>
-
-
-			        <div class="alignLeft">
-			          <p>Somme totale du stand : <span id="sumStand">"total"</span>€</p>
-			        </div>
-			        <p class="header">Liste des ingrédients</p>
-			        <div class="btn-group btn-group-justified">
-			          <a href="#" class="btn btn-default">Mojito</a>
-			          <a href="#" class="btn btn-default">Bière</a>
-			          <a href="#" class="btn btn-default">Café</a>
-			        </div></br>
-			        <div class="well well-sm">...</div>
-			        <button id="valAction" type="button" class="btn btn-lg btn-success center-block">Valider l'action</button>
-			      </div>
-			</div>
-
-			<!-- BLOC DROIT -->
-			<div class="col-md-3">
-				<div class="header">
-					<p class="title1">Joueurs en ligne<span id="day">#jour</span></p>
-				</div>
-				<div class="well well-sm">Joueur 1 (argent disponible : XX€)
-					Stand                               12 dispo
-					Mojito 2€                         *6
-					Bière 1€                           *6
-				</div>
-					<button id="reinitial" type="button" class="btn btn-xs btn-danger pull-right">
-						Réinitialisation du jeu
-					</button>
-				</div>
-			</div>
+		<div class="row margintobloc">
+		  <div class="col-md-6 col-md-offset-3">
+		  	<h2 class="center">Rejoindre la partie en cours</h2>
+		  	<div class="center">
+		  		<form id="formGameJoin" method="POST">
+					<input type="text" name="playerName" id="playerName" placeholder="Votre pseudo">
+				</form>
+		  	</div>
+		  </div>
 		</div>
 	</div>
 

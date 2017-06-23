@@ -4,86 +4,173 @@
 	<title></title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="../../css/global.css">
+	<link rel="stylesheet" href="../../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../../fonts/glyphicons-halflings-regular.woff2">
+	<link href='https://fonts.googleapis.com/css?family=Ubuntu:500' rel='stylesheet' type='text/css'>
 </head>
 <body>
-	<div id="gameMap">
-		MAP
-	</div>
+
+
 	
-	<div id="gameInfo">
-		<h1>Informations du jour</h1>
-		<div id="gameInfo">
-		Météo d'aujourd'hui : <span id="weatherToday"></span><br>
-		Météo de demain : <span id="weatherTomorrow"></span><br>
-		Temps : <span id="timer"></span><br>
-		Budget : <span id="cash"></span><br>
-		<input type="button" id="btnRefreshGameInfo" value="Refresh">
+	<nav class="navbar navbar-default navbar-fixed-top">
+	  <div class="container">
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="#">Shaddock Simulator</a>
+	    </div>
+
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li><a id="username" href="#">Duront</a></li>
+			</ul>
+	    </div>
+	  </div>
+	</nav>
+
+
+	<div class="container-fluid bloccontent">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="row">
+					<div class="col-md-3 infobloc weatherToday">
+						<span id="weatherToday" class="meteotxt"></span>
+					</div>
+
+					<div class="col-md-3 infobloc weatherTomorrow">
+						<span id="weatherTomorrow" class="meteotxt"></span>
+					</div>
+					
+					<div class="col-md-3 infobloc timer">
+						<span id="timer" class="tempstxt"></span>
+					</div>
+
+					<div class="col-md-3 infobloc budgetplayer">
+						<span id="budgetplayer" class="budgettxt">
+							0
+						</span>
+					</div>
+				</div>
+			</div>
+			
 		</div>
+		<div class="row margintobloc">
 
-		<h1>Actions pour le lendemain</h1>
+			<!-- BLOC GAUCHE -->
+			<div class="col-md-3">
+				<div class="header">
+					<p class="title1">Stands & Panneaux Pub</p>
+				</div>
+				<div id="gameMap"></div>
+				<button id="addPub" type="button" class="btn btn-primary">Ajouter un PB</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<button id="removePub" type="button" class="btn btn-default">Retirer un PB</button>
+			</div>
 
-		<div id="blocSimul">
-			<h1>Mes achats</h1>
-			<table>
-				<tr>
-					<th>Boisson</th>
-					<th>Coût Unitaire</th>
-					<th>Quantité</th>
-					<th>TTC</th>
-					<th>action</th>
-				</tr>
-				<tr>
-					<td> 
-						<select id="recipes" name="recipes">
-							<option value="">-- selection produit --</option>
-						</select> 
-					</td>
-					<td> 
-						<input type="text" name="cost" id="cost"> 
-					</td>
-					<td> 
-						<input type="text" name="quantity" id="quantity"> 
-					</td>
-					<td> 
-						<input type="text" name="ttc" id="ttc"> 
-					</td>
-					<td> 
-						<input type="" name="" id=""> 
-					</td>
-				</tr>
+			<!-- BLOC CENTRE -->
+			<div class="col-md-6">
+				<div class="header">
+			      <p class="title1">Information du jour <span id="day">#jour</span></p>      
+			    </div>
 
-				<tr>
-					<td colspan="4">Totaux</td>
-					<td>0</td>
-				</tr>
-			</table>
+			      <h4>Action du lendemain</h4> 
+			      <div class="alignLeft">
+			        
+			        <p id="alignCenter">Préparation de vos boissons</p>  
+			        <div class="row">
+			        	<form id="formproduction">
+			        		<div class="col-md-3">
+			        			<select id="recettadd" class="selectpicker">
+			        				<option> select recette </option>
+									<option>Mustard</option>
+									<option>Ketchup</option>
+									<option>Relish</option>
+								</select>
+			        		</div>
+			        		<div class="col-md-3">
+			        			<input id="quantity" type="number" class="form-control" id="quantity" placeholder="Quantité">
+			        		</div>
+			        		<div class="col-md-3">
+			        			<input id="prixvente" type="number" class="form-control" id="prixvente" placeholder="Prix Vente">
+			        		</div>
+			        		<div class="col-md-3">
+			        			<input type="submit" id="btnaddrecette" value="Valider">
+			        		</div>
+		        		</form>
+			        </div>
 
-			<h1>Mes ventes prévisionnelles (Pour demain)</h1>
-			<table>
-				<tr>
-					<th>Boisson</th>
-					<th>Quantité</th>
-					<th>TTC</th>
-				</tr>
-				<tr>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr>
-			</table>
+			        <div class="bloccentre">
+					  
+					  	<table id="playerpipe" class="table table-striped">
+				        <thead>
+				        	<tr>
+				        		<th>Boisson</th>
+				        		<th>Coût U</th>
+				        		<th>Prix V</th>
+				        		<th>QTT</th>
+				        		<th>Coût T</th>
+				        		<th>Prix VT</th>
+				        		<th>Eff ligne</th>
+				        	</tr>
+				        </thead>
+				        <tbody>
+				          <tr>
+				          	<td>..</td>
+				          	<td>..</td>
+				          	<td>..</td>
+				          	<td>..</td>
+				          	<td>..</td>
+				          	<td>..</td>
+				          	<td>
+				          		<a href="#">
+				          			<span class="glyphicon glyphicon-trash"></span>
+				          		</a>
+				          	</td>
+				          </tr>
+				        </tbody>
+				        </table>
+					 
+					</div>
+
+
+			        <div class="alignLeft">
+			          <p>Somme totale du stand : <span id="sumStand">"total"</span>€</p>
+			        </div>
+			        <p class="header">Liste des ingrédients</p>
+			        <div class="btn-group btn-group-justified">
+			          <a href="#" class="btn btn-default">Mojito</a>
+			          <a href="#" class="btn btn-default">Bière</a>
+			          <a href="#" class="btn btn-default">Café</a>
+			        </div></br>
+			        <div class="well well-sm">...</div>
+			        <button id="valAction" type="button" class="btn btn-lg btn-success center-block">Valider l'action</button>
+			      </div>
+			</div>
+
+			<!-- BLOC DROIT -->
+			<div class="col-md-3">
+				<div class="header">
+					<p class="title1">Joueurs en ligne<span id="day">#jour</span></p>
+				</div>
+				<div class="well well-sm">Joueur 1 (argent disponible : XX€)
+					Stand                               12 dispo
+					Mojito 2€                         *6
+					Bière 1€                           *6
+				</div>
+					<button id="reinitial" type="button" class="btn btn-xs btn-danger pull-right">
+						Réinitialisation du jeu
+					</button>
+				</div>
+			</div>
 		</div>
-
-		<div id="ingredientsInfo">
-
-		</div>
-
-	</div>
-	<div id="playersInfo">
-		<h1>Liste des joueurs</h1>
-		<ul id="playerList"></ul>
 	</div>
 
 	<script type="text/javascript" src="../../js/jquery.js"></script>
 	<script type="text/javascript" src="../../js/main.js"></script>
+	<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+	
 </body>
-</html>
+</html>../../

@@ -20,10 +20,27 @@ $(document).ready(function () {
 
 	});
 
+	/* # Ajouter une recette dans le panier du joueur */
+	$( "#formproduction" ).submit(function( event ) {
+	  event.preventDefault();
+
+	  var recette = $('#recettadd').val();
+	  var quantite = parseInt($('#quantity').val());
+	  var prixvente = parseFloat($('#prixvente').val());
+
+	  if(Number.isInteger(quantite)){
+	  	addPlayerPipe(recette,quantite,prixvente);
+	  }
+	  
+
+	});
+
+	/* # raffraichir les données */
 	$('#btnRefreshGameInfo').click(function() {
 		getMetrology();
 	})
 
+	/* # récupérer une recette */
 	if($('#recipes') != undefined){
 		$('#recipes').change(function() {
 			getRepiceByName($(this).val())
@@ -34,6 +51,21 @@ $(document).ready(function () {
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+	/**
+	*
+	*/
+	function addPlayerPipe(recette,quantite,prixvente) {
+		var elemTr = $('<tr></tr>');
+		elemTr.append($('<td></td>').html(recette));
+		elemTr.append($('<td></td>').html(0));
+		elemTr.append($('<td></td>').html(prixvente));
+		elemTr.append($('<td></td>').html(quantite));
+		elemTr.append($('<td></td>').html(quantite*0));
+		elemTr.append($('<td></td>').html(quantite*prixvente));
+		elemTr.append($('<td></td>').html($('<a href="#"><span class="glyphicon glyphicon-trash"></span></a>')));
+		$('#playerpipe').append(elemTr);
+	}
 
 	/**
 	*

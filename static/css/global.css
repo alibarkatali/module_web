@@ -89,6 +89,8 @@ body {
   height: 60px;
   line-height: 60px;
   text-align: center;
+  font-size: 16px;
+  font-weight: bold;;
 }
 
 .title1{
@@ -113,4 +115,24 @@ body {
 .ombrebloc{
   padding: 0px;
   box-shadow: 1px 1px 12px #DFDFDF;
+}
+
+.weatherToday{
+  background-color: #b000b5;
+}
+
+.weatherTomorrow{
+  background-color: #9b54ba;
+}
+
+.timer{
+  background-color: #009a6e;
+}
+
+.budgetplayer{
+  background-color: #fa8072;
+}
+
+.margintobloc{
+  margin-top: 40px;
 }
