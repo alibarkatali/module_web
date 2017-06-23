@@ -254,13 +254,10 @@ def rejoin():
 	playerName = data['playerName']
 	db = Db()
 
-	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '@(playerName)'")
-	#info = json.dumps(info)
-	#print (info[0][0])
-	#print (info['count'])
+	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = 'toto'")
+	
 	print (info)
 	
-	#print (len(info))
 	if len(info) == 0 :
 		db.execute("""INSERT INTO Player(pl_pseudo) VALUES (@(playerName));""", data)
 		db.execute(""" INSERT INTO stand(loc_coordX, loc_coordY, loc_rayon, pl_id)
