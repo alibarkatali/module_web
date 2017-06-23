@@ -258,6 +258,7 @@ def rejoin():
 	#info = json.dumps(info)
 	#print (info[0][0])
 	#print (info['count'])
+	print (info)
 	
 	print (len(info))
 	if len(info) == 0 :
