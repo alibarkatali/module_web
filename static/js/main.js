@@ -112,7 +112,7 @@ $(document).ready(function () {
 
 					$('#playerList').html("");
 					for (var i = 0; i < result.length; i++) {
-						item.append($('<li>'+ result[i] +'</li>'))
+						item.append($('<li>'+ result[i].pl_pseudo +'</li>'))
 					};
 					$('#playerList').append(item);
 				}else{
@@ -130,7 +130,7 @@ $(document).ready(function () {
 			success: function(result){
 
 
-				$.each(result, function( index, value ) {
+				$.each(result.recipes, function( index, value ) {
 					console.log(value)
 					$('#recipes').append($('<option value="'+ value['name'] +'">'+ value['name'] +'</option>'))
 				});
