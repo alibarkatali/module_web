@@ -149,6 +149,82 @@ PLAYERACTIONDRINKS = {
 playersList = []
 recipesList = {}
 
+dataMatt = {
+  "map" : {
+    "region" :{
+      "center" : {
+        "latitude": 40.2,
+        "longitude" : 40.2
+      },
+      "span" : {
+        "latitudeSpan" : 40.2,
+        "longitudeSpan" : 44.2
+      }
+    },
+    "ranking":[
+      "mat","jul"
+    ],
+    "itemsByPlayer" : {
+      "1mat":[{
+        "kind" : "STAND",
+        "owner" : "michel",
+        "location":{
+          "latitude" : 40.2,
+          "longitude" : 40.2
+        },
+        "influence" : 40.3
+      }],
+      "2jul" :[{
+        "kind" : "STAND",
+        "owner" : "michel",
+        "location":{
+          "latitude" : 40.2,
+          "longitude" : 40.2
+        },
+        "influence" : 40.3
+      }]
+    },
+    "playerInfo" : {
+      "mat" : {
+        "cash" : 40.3,
+        "sales" : 40,
+        "profit" : 40,
+        "drinksOffered" : [{
+          "name" : "the",
+          "price" : 40.3,
+          "hasAlcohol" : false,
+          "isCold" : false
+        }]
+      },
+      "2jul":{
+        "cash" : 40.3,
+        "sales" : 40,
+        "profit" : 40,
+        "drinksOffered" : [{
+          "name" : "the",
+          "price" : 40.3,
+          "hasAlcohol" : false,
+          "isCold" : false
+        }]
+      }
+    },
+    "drinksByPlayer" : {
+      "1mat" : [{
+        "name" : "the",
+        "price" : 40.3,
+        "hasAlcohol" : false,
+        "isCold" : false
+      }],
+      "2jul" : [{
+        "name" : "the",
+        "price" : 40.3,
+        "hasAlcohol" : false,
+        "isCold" : false
+      }]
+    }
+  }
+  }
+
 meteos = {
 	"timestamp" : 0,
 	"weatherToday" : random.choice(WEATHER),
@@ -221,19 +297,62 @@ def joinResponse(name):
 
 	return GAMEINFO
 
-def CalculeBudget(player):	
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fonction : Permet de calculer les info monétaires du joueur (son budget courant & son profit depuis le début de la partie)
+# paramsIn : à voir, peut être type Json, liste, variable
+# paramsOut : data de type JSON
+def CalculeMoneyInfo(player):	
+	
 	db = Db()
+	
 	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
 	player_id = db.select("SELECT p.pl_id FROM Player WHERE pl_pseudo = '"+ player +"'")	
-	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '"+ player_id"'")
 	
-	 
+	sales = CalculeSales(player_id)
+	spending = CalculeSpend(player_id)	
 	
+	cash = budget_ini - spending + sales
+	profit = sales - spending
+	
+	db.close()
+	
+	return makeJsonResponse({ "cash" : cash, "profit" : profit })
 
-def CalculePriceRec(recipe):
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fonction : Permet de calculer les ventes globales (en euros) du joueur depuis le début de la partie.
+# paramsIn : id du joueur (en Json ? En variable ? Liste?)
+# paramsOut : data de type JSON
+def CalculeSales(player_id)
+	
 	db = Db()
-	price_rec = ("SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_nom = '"+ recipe +"'")
-	return price_rec 
+	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '"+ player_id +"'")
+	db.close()	
+	
+	return makeJsonReponse(sales)
+	
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fonction : Permet de calculer les dépenses globales (en euros) du joueur depuis le début de la partie.
+# paramsIn : id du joueur (en Json ? En variable ? Liste?)
+# paramsOut : data de type JSON
+def CalculeSpend(player_id)	
+	
+	db = Db()	
+	spending = db.select("SELECT SUM(t.qte_prev * (SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = t.rec_id) ) FROM Transaction t WHERE t.pl_id = '"+ player_id +"'")
+	db.close()	
+	
+	return makeJsonResponse(spending)
+	
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fonction : Permet de calculer le prix d'une recette
+# paramsIn : id de la recette (en Json ? En variable ? Liste?)
+# paramsOut : data de type JSON
+def CalculePriceRec(recipe_id):
+	
+	db = Db()
+	price_rec = ("SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = '"+ recipe_id +"'")
+	db.close()	
+	
+	return makeJsonResponse(price_rec)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de convert une liste en JSON et ajouter le code de retour.
@@ -350,7 +469,8 @@ def simulActions(playerName):
 # GET /map
 @app.route('/map',methods=['GET'])
 def getMap():
-	return "Obtenir les details d une partie (JAVA)"
+	
+	return makeJsonResponse(dataMatt)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
