@@ -155,10 +155,9 @@ $(document).ready(function () {
 			success: function(result){
 				var totalCost = 0;
 				$.each(result.ingredients, function( index, value ) {
-					
-					$('#recettadd').append($('<option value="'+ value['rec_id'] +'">'+ value['rec_nom'] +'</option>'))
+					totalCost += value['ing_prix'];
 				});
-				//$('#prixunitaire').html()
+				$('#prixunitaire').html(totalCost)
 	    	}
 		});
 	}
