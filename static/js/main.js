@@ -50,7 +50,8 @@ $(document).ready(function () {
 
 	/* # supprimer une recette dans le pipe */
 	$('.btnSuppRecette').click(function (event) {
-		$('#'+event.target.id).parent().remove()
+		console.log($('#'+event.target.id).parent())
+		//$('#'+event.target.id).parent().remove()
 	})
 
 
