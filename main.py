@@ -27,7 +27,7 @@ FORECAST = {
 
 # {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : "RAINNY"}}
 
-TEMPS = {}
+TEMPS =  {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : random.choice(WEATHER)}}
 
 COORDINATESSPAN = {
 	"latitudeSpan" : 0.0,
@@ -227,8 +227,10 @@ dataMatt = {
 
 meteos = {
 	"timestamp" : 0,
-	"weatherToday" : random.choice(WEATHER),
-	"weatherTomorow" : random.choice(WEATHER)
+	"weather" : {
+		"dfn" : 0, # aujourdhui = 0, demain = 1
+		"weather" : random.choice(WEATHER)
+	}
 }
 
 recipesList['Limonade'] = {
