@@ -79,13 +79,20 @@ $(document).ready(function () {
 
 		var token = lastNumberAssigned++;
 		var elemTr = $('<tr id="'+token+'"></tr>');
+
+		console.log(token);
+		console.log(token);
+		console.log(token);
+		console.log(token);
+		console.log(token);
+
 		elemTr.append($('<td></td>').html(recette));
 		elemTr.append($('<td></td>').html(prixu));
 		elemTr.append($('<td></td>').html(prixvente));
 		elemTr.append($('<td></td>').html(quantite));
 		elemTr.append($('<td></td>').html(quantite*prixu));
 		elemTr.append($('<td></td>').html(quantite*prixvente));
-		elemTr.append($('<td></td>').html($('<a id="'+token+'$btn" class="btnSuppRecette" href="#"><span class="glyphicon glyphicon-trash"></span></a>')));
+		elemTr.append($('<td></td>').html($('<a href="#"><span id="'+token+'-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
 		$('#playerpipe').append(elemTr);
 
 		/* # Event : supprimer une recette dans le pipe */
