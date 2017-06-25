@@ -132,7 +132,7 @@ $(document).ready(function () {
 
 				$.each(result.recipes, function( index, value ) {
 					console.log(value)
-					$('#recipes').append($('<option value="'+ value['name'] +'">'+ value['name'] +'</option>'))
+					$('#recipes').append($('<option value="'+ value['rec_nom'] +'">'+ value['rec_nom'] +'</option>'))
 				});
 
 				//$('#recipes').html("");
