@@ -1,5 +1,11 @@
 $(document).ready(function () {
 
+	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	/* # Variables globales */
+	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	lastNumberAssigned = 0;
+
+
 	/* # Initialisation de la partie */
 	gameInit();
 
@@ -70,7 +76,7 @@ $(document).ready(function () {
 	function addPlayerPipe(recette,prixu,quantite,prixvente) {
 		//console.log(recette)
 
-		var token = token()
+		var token = lastNumberAssigned++;
 		var elemTr = $('<tr id="'+token+'"></tr>');
 		elemTr.append($('<td></td>').html(recette));
 		elemTr.append($('<td></td>').html(prixu));
