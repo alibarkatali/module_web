@@ -298,7 +298,7 @@ def joinResponse(name):
 	return GAMEINFO
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Fonction : Permet de calculer les info monétaires du joueur (son budget courant & son profit depuis le début de la partie)
+# Fonction : Permet de calculer les info monetaires du joueur (son budget courant & son profit depuis le debut de la partie)
 # paramsIn : à voir, peut être type Json, liste, variable
 # paramsOut : data de type JSON
 def CalculeMoneyInfo(player):	
@@ -319,7 +319,7 @@ def CalculeMoneyInfo(player):
 	return makeJsonResponse({ "cash" : cash, "profit" : profit })
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Fonction : Permet de calculer les ventes globales (en euros) du joueur depuis le début de la partie.
+# Fonction : Permet de calculer les ventes globales (en euros) du joueur depuis le debut de la partie.
 # paramsIn : id du joueur (en Json ? En variable ? Liste?)
 # paramsOut : data de type JSON
 def CalculeSales(player_id)
@@ -331,7 +331,7 @@ def CalculeSales(player_id)
 	return makeJsonReponse(sales)
 	
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Fonction : Permet de calculer les dépenses globales (en euros) du joueur depuis le début de la partie.
+# Fonction : Permet de calculer les depenses globales (en euros) du joueur depuis le debut de la partie.
 # paramsIn : id du joueur (en Json ? En variable ? Liste?)
 # paramsOut : data de type JSON
 def CalculeSpend(player_id)	
