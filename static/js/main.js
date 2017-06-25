@@ -25,11 +25,12 @@ $(document).ready(function () {
 	  event.preventDefault();
 
 	  var recette = $('#recettadd').val();
+	  var prixu = $('#prixunitaire').text()
 	  var quantite = parseInt($('#quantity').val());
 	  var prixvente = parseFloat($('#prixvente').val());
 
 	  if(Number.isInteger(quantite)){
-	  	addPlayerPipe(recette,quantite,prixvente);
+	  	addPlayerPipe(recette,prixu,quantite,prixvente);
 	  }
 	  
 
@@ -69,15 +70,16 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function addPlayerPipe(recette,quantite,prixvente) {
-		console.log(recette)
+	function addPlayerPipe(recette,prixu,quantite,prixvente) {
+		//console.log(recette)
+
 
 		var elemTr = $('<tr id="'+token()+'"></tr>');
 		elemTr.append($('<td></td>').html(recette));
-		elemTr.append($('<td></td>').html(0));
+		elemTr.append($('<td></td>').html(prixu));
 		elemTr.append($('<td></td>').html(prixvente));
 		elemTr.append($('<td></td>').html(quantite));
-		elemTr.append($('<td></td>').html(quantite*0));
+		elemTr.append($('<td></td>').html(quantite*prixu));
 		elemTr.append($('<td></td>').html(quantite*prixvente));
 		elemTr.append($('<td></td>').html($('<a href="#"><span class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
 		$('#playerpipe').append(elemTr);
@@ -133,7 +135,7 @@ $(document).ready(function () {
 
 
 				$.each(result.recipes, function( index, value ) {
-					console.log(value)
+					//console.log(value)
 					$('#recettadd').append($('<option value="'+ value['rec_nom'] +'">'+ value['rec_nom'] +'</option>'))
 				});
 
@@ -151,8 +153,8 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				//console.log(result)
-
+				console.log(result)
+				//$('#prixunitaire').val()
 	    	}
 		});
 	}
