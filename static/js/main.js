@@ -207,7 +207,7 @@ $(document).ready(function () {
 	function callbackDelPlayerPipe () {
 		/* # supprimer une recette dans le pipe */
 		$('.btnSuppRecette').click(function (event) {
-			var tmp  = '#'+event.target.id.split()[0];
+			var tmp  = '#'+event.target.id.split("$")[0];
 			console.log(tmp)
 
 			$(tmp).remove()
