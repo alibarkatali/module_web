@@ -83,7 +83,7 @@ $(document).ready(function () {
 				var token = lastNumberAssigned++;
 				var elemTr = $('<tr id="'+token+'"></tr>');
 
-				elemTr.append($('<td></td>').html(result.recipe.rec_nom));
+				elemTr.append($('<td></td>').html(result.recipe[0].rec_nom));
 				elemTr.append($('<td></td>').html(prixu));
 				elemTr.append($('<td></td>').html(prixvente));
 				elemTr.append($('<td></td>').html(quantite));
