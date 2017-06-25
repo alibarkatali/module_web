@@ -301,34 +301,34 @@ def joinResponse(name):
 # Fonction : Permet de calculer les info monetaires du joueur (son budget courant & son profit depuis le debut de la partie)
 # paramsIn : a voir, peut etre type Json, liste, variable
 # paramsOut : data de type JSON
-def CalculeMoneyInfo(player):	
-	
-	db = Db()
-	
-	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
-	player_id = db.select("SELECT p.pl_id FROM Player WHERE pl_pseudo = '"+ player +"'")	
-	
-	sales = CalculeSales(player_id)
-	spending = CalculeSpend(player_id)	
-	
-	cash = budget_ini - spending + sales
-	profit = sales - spending
-	
-	db.close()
-	
-	return makeJsonResponse({ "cash" : cash, "profit" : profit })
+# def CalculeMoneyInfo(player):	
+#	
+#	db = Db()
+#	
+#	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
+#	player_id = db.select("SELECT p.pl_id FROM Player WHERE pl_pseudo = '"+ player +"'")	
+#	
+#	sales = CalculeSales(player_id)
+#	spending = CalculeSpend(player_id)	
+#	
+#	cash = budget_ini - spending + sales
+#	profit = sales - spending
+#	
+#	db.close()
+#	
+#	return makeJsonResponse({ "cash" : cash, "profit" : profit })
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les ventes globales (en euros) du joueur depuis le debut de la partie.
 # paramsIn : id du joueur (en Json ? En variable ? Liste?)
 # paramsOut : data de type JSON
-def CalculeSales(player_id)
-	
-	db = Db()
-	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '"+ player_id +"'")
-	db.close()	
-	
-	return makeJsonReponse(sales)
+#def CalculeSales(player_id)
+#	
+#	db = Db()
+#	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '"+ player_id +"'")
+#	db.close()	
+#	
+#	return makeJsonReponse(sales)
 	
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les depenses globales (en euros) du joueur depuis le debut de la partie.
