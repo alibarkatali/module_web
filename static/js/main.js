@@ -42,8 +42,8 @@ $(document).ready(function () {
 	})
 
 	/* # récupérer une recette */
-	if($('#recipes') != undefined){
-		$('#recipes').change(function() {
+	if($('#recettadd') != undefined){
+		$('#recettadd').change(function() {
 			getRepiceByName($(this).val())
 		})
 	}
