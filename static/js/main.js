@@ -70,6 +70,8 @@ $(document).ready(function () {
 	*
 	*/
 	function addPlayerPipe(recette,quantite,prixvente) {
+		console.log(recette)
+
 		var elemTr = $('<tr id="'+token()+'"></tr>');
 		elemTr.append($('<td></td>').html(recette));
 		elemTr.append($('<td></td>').html(0));
@@ -149,7 +151,7 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				console.log(result)
+				//console.log(result)
 
 	    	}
 		});
