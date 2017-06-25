@@ -257,7 +257,10 @@ def resetSimulation():
 # GET /players
 @app.route('/players',methods=['GET'])
 def getPlayers():
-	return makeJsonResponse(playersList)
+	db = Db()
+	playersInfo = db.select("SELECT * FROM Player")
+	db.close()
+	return makeJsonResponse(playersInfo,200)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -378,19 +381,19 @@ def getIngredients():
 @app.route('/recipes',methods=['GET'])
 def getRecipes():
 	db = Db()
-	recipes_List = db.select("SELECT rec_nom FROM Recipe")
+	recipes_List = db.select("SELECT * FROM Recipe")
 	db.close()
 	return makeJsonResponse({ "recipes": recipes_List })
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R10 - Obtenir une recette a partir de son nom ---------------- OK, MANQUE A AFFICHER LE PRIX --------------------
-# GET /recipes/<name>
-@app.route('/recipes/<name>',methods=['GET'])
-def getRecipeByName(name):
+# GET /recipes/<int:rc_id>
+@app.route('/recipe/<int:rc_id>',methods=['GET'])
+def getRecipeById(rc_id):
 	db = Db()
-	recipe = db.select("SELECT rec_nom,rec_alcohol,rec_cold FROM Recipe WHERE rec_nom = '"+ name +"'")
-	ingredient_list = db.select("SELECT ing.ing_nom FROM Ingredient ing INNER JOIN Contains con ON ing.ing_id = con.ing_id INNER JOIN Recipe rec ON rec.rec_id = con.rec_id WHERE rec.rec_nom = '"+ name +"'")
+	recipe = db.select("SELECT * FROM Recipe WHERE rec_id = '"+ str(rc_id) +"'")
+	ingredient_list = db.select("SELECT ing.* FROM Ingredient ing INNER JOIN Contains con ON ing.ing_id = con.ing_id INNER JOIN Recipe rec ON rec.rec_id = con.rec_id WHERE rec.rec_id = '"+ str(rc_id) +"'")
 
 	if len(recipe) > 0:
 		return makeJsonResponse({ "recipe": recipe, "ingredients": ingredient_list } )

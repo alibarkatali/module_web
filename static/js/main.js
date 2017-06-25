@@ -25,11 +25,12 @@ $(document).ready(function () {
 	  event.preventDefault();
 
 	  var recette = $('#recettadd').val();
+	  var prixu = $('#prixunitaire').text()
 	  var quantite = parseInt($('#quantity').val());
 	  var prixvente = parseFloat($('#prixvente').val());
 
 	  if(Number.isInteger(quantite)){
-	  	addPlayerPipe(recette,quantite,prixvente);
+	  	addPlayerPipe(recette,prixu,quantite,prixvente);
 	  }
 	  
 
@@ -40,30 +41,47 @@ $(document).ready(function () {
 		getMetrology();
 	})
 
-	/* # récupérer une recette */
-	if($('#recipes') != undefined){
-		$('#recipes').change(function() {
+	/* # Choix d'une recette */
+	if($('#recettadd') != undefined){
+		$('#recettadd').change(function() {
 			getRepiceByName($(this).val())
 		})
 	}
+
+	/* # supprimer une recette dans le pipe */
+	$('.btnSuppRecette').click(function (event) {
+		$('#'+event.target.id).parent().remove()
+	})
 
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
+	var rand = function() {
+	    return Math.random().toString(36).substr(2); // remove `0.`
+	};
+
+	var token = function() {
+	    return rand() + rand(); // to make it longer
+	};
+
+
 	/**
 	*
 	*/
-	function addPlayerPipe(recette,quantite,prixvente) {
-		var elemTr = $('<tr></tr>');
+	function addPlayerPipe(recette,prixu,quantite,prixvente) {
+		//console.log(recette)
+
+
+		var elemTr = $('<tr id="'+token()+'"></tr>');
 		elemTr.append($('<td></td>').html(recette));
-		elemTr.append($('<td></td>').html(0));
+		elemTr.append($('<td></td>').html(prixu));
 		elemTr.append($('<td></td>').html(prixvente));
 		elemTr.append($('<td></td>').html(quantite));
-		elemTr.append($('<td></td>').html(quantite*0));
+		elemTr.append($('<td></td>').html(quantite*prixu));
 		elemTr.append($('<td></td>').html(quantite*prixvente));
-		elemTr.append($('<td></td>').html($('<a href="#"><span class="glyphicon glyphicon-trash"></span></a>')));
+		elemTr.append($('<td></td>').html($('<a href="#"><span class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
 		$('#playerpipe').append(elemTr);
 	}
 
@@ -98,7 +116,7 @@ $(document).ready(function () {
 
 					$('#playerList').html("");
 					for (var i = 0; i < result.length; i++) {
-						item.append($('<li>'+ result[i] +'</li>'))
+						item.append($('<li>'+ result[i].pl_pseudo +'</li>'))
 					};
 					$('#playerList').append(item);
 				}else{
@@ -116,9 +134,9 @@ $(document).ready(function () {
 			success: function(result){
 
 
-				$.each(result, function( index, value ) {
-					console.log(value)
-					$('#recipes').append($('<option value="'+ value['name'] +'">'+ value['name'] +'</option>'))
+				$.each(result.recipes, function( index, value ) {
+					//console.log(value)
+					$('#recettadd').append($('<option value="'+ value['rec_id'] +'">'+ value['rec_nom'] +'</option>'))
 				});
 
 				//$('#recipes').html("");
@@ -129,14 +147,17 @@ $(document).ready(function () {
 		});
 	}
 
-	function getRepiceByName(name) {
+	function getRepiceByName(rc_id) {
 		$.ajax({
-			url: "/recipes/"+name,
+			url: "/recipe/"+rc_id,
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				console.log(result)
-
+				var totalCost = 0;
+				$.each(result.ingredients, function( index, value ) {
+					totalCost += value['ing_prix'];
+				});
+				$('#prixunitaire').html(totalCost)
 	    	}
 		});
 	}
