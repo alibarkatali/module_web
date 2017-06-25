@@ -54,7 +54,8 @@ $(document).ready(function () {
 		})
 	}
 
-	
+	/* # supprimer une recette dans le pipe */
+	callbackDelPlayerPipe()
 
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -87,6 +88,7 @@ $(document).ready(function () {
 		elemTr.append($('<td></td>').html($('<a id="'+token+'$btn" class="btnSuppRecette" href="#"><span class="glyphicon glyphicon-trash"></span></a>')));
 		$('#playerpipe').append(elemTr);
 
+		/* # Event : supprimer une recette dans le pipe */
 		callbackDelPlayerPipe()
 	}
 
@@ -207,8 +209,9 @@ $(document).ready(function () {
 	function callbackDelPlayerPipe () {
 		/* # supprimer une recette dans le pipe */
 		$('.btnSuppRecette').click(function (event) {
-			var tmp  = '#'+event.target.id.split("$")[0];
-			console.log(tmp)
+			var tmp  = '#'+event.target.id.split("-")[0];
+			
+			//console.log(tmp)
 
 			$(tmp).remove()
 		})
