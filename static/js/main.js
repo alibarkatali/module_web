@@ -70,7 +70,7 @@ $(document).ready(function () {
 	function addPlayerPipe(recette,prixu,quantite,prixvente) {
 		//console.log(recette)
 
-		var token = token();
+		var token = token()
 		var elemTr = $('<tr id="'+token+'"></tr>');
 		elemTr.append($('<td></td>').html(recette));
 		elemTr.append($('<td></td>').html(prixu));
