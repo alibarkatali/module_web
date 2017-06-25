@@ -221,19 +221,18 @@ def joinResponse(name):
 
 	return GAMEINFO
 
-def CalculeBudget(player):	
-	db = Db()
-	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
-	player_id = db.select("SELECT p.pl_id FROM Player WHERE pl_pseudo = '"+ player +"'")	
-	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '"+ player_id"'")
-	
+#def CalculeBudget(player):	
+#	db = Db()
+#	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
+#	player_id = db.select("SELECT p.pl_id FROM Player WHERE pl_pseudo = '"+ player +"'")	
+#	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '"+ player_id"'")
 	 
 	
 
-def CalculePriceRec(recipe):
-	db = Db()
-	price_rec = ("SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_nom = '"+ recipe +"'")
-	return price_rec 
+#def CalculePriceRec(recipe):
+#	db = Db()
+#	price_rec = ("SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_nom = '"+ recipe +"'")
+#	return price_rec 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de convert une liste en JSON et ajouter le code de retour.
