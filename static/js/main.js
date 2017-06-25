@@ -41,7 +41,7 @@ $(document).ready(function () {
 		getMetrology();
 	})
 
-	/* # récupérer une recette */
+	/* # Choix d'une recette */
 	if($('#recettadd') != undefined){
 		$('#recettadd').change(function() {
 			getRepiceByName($(this).val())
@@ -136,7 +136,7 @@ $(document).ready(function () {
 
 				$.each(result.recipes, function( index, value ) {
 					//console.log(value)
-					$('#recettadd').append($('<option value="'+ value['rec_nom'] +'">'+ value['rec_nom'] +'</option>'))
+					$('#recettadd').append($('<option value="'+ value['rec_id'] +'">'+ value['rec_nom'] +'</option>'))
 				});
 
 				//$('#recipes').html("");
