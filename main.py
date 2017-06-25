@@ -248,6 +248,7 @@ def resetSimulation():
 def getPlayers():
 	db = Db()
 	playersInfo = db.select("SELECT * FROM Player")
+	db.close()
 	return makeJsonResponse(playersInfo,200)
 
 

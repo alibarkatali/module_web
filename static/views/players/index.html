@@ -139,13 +139,6 @@
 			        <div class="alignLeft">
 			          <p>Somme totale du stand : <span id="sumStand">"total"</span>€</p>
 			        </div>
-			        <p class="header">Liste des ingrédients</p>
-			        <div class="btn-group btn-group-justified">
-			          <a href="#" class="btn btn-default">Mojito</a>
-			          <a href="#" class="btn btn-default">Bière</a>
-			          <a href="#" class="btn btn-default">Café</a>
-			        </div></br>
-			        <div class="well well-sm">...</div>
 			        <button id="valAction" type="button" class="btn btn-lg btn-success center-block">Valider l'action</button>
 			      </div>
 			</div>
@@ -155,10 +148,8 @@
 				<div class="header">
 					<p class="title1">Joueurs en ligne<span id="day">#jour</span></p>
 				</div>
-				<div class="well well-sm">Joueur 1 (argent disponible : XX€)
-					Stand                               12 dispo
-					Mojito 2€                         *6
-					Bière 1€                           *6
+				<div class="well well-sm">
+					<ul id="playerList"></ul>
 				</div>
 					<button id="reinitial" type="button" class="btn btn-xs btn-danger pull-right">
 						Réinitialisation du jeu
