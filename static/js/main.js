@@ -207,8 +207,10 @@ $(document).ready(function () {
 	function callbackDelPlayerPipe () {
 		/* # supprimer une recette dans le pipe */
 		$('.btnSuppRecette').click(function (event) {
-			console.log($('#'+event.target.id.split()[0]).parent())
-			$('#'+event.target.id.split()[0]).remove()
+			var tmp  = '#'+event.target.id.split()[0];
+			console.log(tmp)
+			
+			$(tmp).remove()
 		})
 	}
 
