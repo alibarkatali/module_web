@@ -192,8 +192,8 @@ dataMatt = {
         "drinksOffered" : [{
           "name" : "the",
           "price" : 40.3,
-          "hasAlcohol" : false,
-          "isCold" : false
+          "hasAlcohol" : "false",
+          "isCold" : "false"
         }]
       },
       "2jul":{
@@ -203,8 +203,8 @@ dataMatt = {
         "drinksOffered" : [{
           "name" : "the",
           "price" : 40.3,
-          "hasAlcohol" : false,
-          "isCold" : false
+          "hasAlcohol" : "false",
+          "isCold" : "false"
         }]
       }
     },
@@ -212,14 +212,14 @@ dataMatt = {
       "1mat" : [{
         "name" : "the",
         "price" : 40.3,
-        "hasAlcohol" : false,
-        "isCold" : false
+        "hasAlcohol" : "false",
+        "isCold" : "false"
       }],
       "2jul" : [{
         "name" : "the",
         "price" : 40.3,
-        "hasAlcohol" : false,
-        "isCold" : false
+        "hasAlcohol" : "false",
+        "isCold" : "false"
       }]
     }
   }
