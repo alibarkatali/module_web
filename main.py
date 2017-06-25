@@ -246,7 +246,9 @@ def resetSimulation():
 # GET /players
 @app.route('/players',methods=['GET'])
 def getPlayers():
-	return makeJsonResponse(playersList)
+	db = Db()
+	playersInfo = db.select("SELECT * FROM Player")
+	return makeJsonResponse(playersInfo,200)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

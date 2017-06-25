@@ -47,23 +47,37 @@ $(document).ready(function () {
 		})
 	}
 
+	/* # supprimer une recette dans le pipe */
+	$('.btnSuppRecette').click(function (event) {
+		$('#'+event.target.id).parent().remove()
+	})
+
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
+	var rand = function() {
+	    return Math.random().toString(36).substr(2); // remove `0.`
+	};
+
+	var token = function() {
+	    return rand() + rand(); // to make it longer
+	};
+
+
 	/**
 	*
 	*/
 	function addPlayerPipe(recette,quantite,prixvente) {
-		var elemTr = $('<tr></tr>');
+		var elemTr = $('<tr id="'+token()+'"></tr>');
 		elemTr.append($('<td></td>').html(recette));
 		elemTr.append($('<td></td>').html(0));
 		elemTr.append($('<td></td>').html(prixvente));
 		elemTr.append($('<td></td>').html(quantite));
 		elemTr.append($('<td></td>').html(quantite*0));
 		elemTr.append($('<td></td>').html(quantite*prixvente));
-		elemTr.append($('<td></td>').html($('<a href="#"><span class="glyphicon glyphicon-trash"></span></a>')));
+		elemTr.append($('<td></td>').html($('<a href="#"><span class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
 		$('#playerpipe').append(elemTr);
 	}
 
