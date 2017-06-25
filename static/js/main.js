@@ -48,11 +48,7 @@ $(document).ready(function () {
 		})
 	}
 
-	/* # supprimer une recette dans le pipe */
-	$('.btnSuppRecette').click(function (event) {
-		console.log($('#'+event.target.id).parent())
-		//$('#'+event.target.id).parent().remove()
-	})
+	
 
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -74,16 +70,18 @@ $(document).ready(function () {
 	function addPlayerPipe(recette,prixu,quantite,prixvente) {
 		//console.log(recette)
 
-
-		var elemTr = $('<tr id="'+token()+'"></tr>');
+		var token = token();
+		var elemTr = $('<tr id="'+token+'"></tr>');
 		elemTr.append($('<td></td>').html(recette));
 		elemTr.append($('<td></td>').html(prixu));
 		elemTr.append($('<td></td>').html(prixvente));
 		elemTr.append($('<td></td>').html(quantite));
 		elemTr.append($('<td></td>').html(quantite*prixu));
 		elemTr.append($('<td></td>').html(quantite*prixvente));
-		elemTr.append($('<td></td>').html($('<a href="#"><span class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
+		elemTr.append($('<td></td>').html($('<a id="'+token+'$btn" href="#"><span class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
 		$('#playerpipe').append(elemTr);
+
+		callbackDelPlayerPipe()
 	}
 
 	/**
@@ -198,6 +196,14 @@ $(document).ready(function () {
 
 	  	if($('#blocSimul') != undefined)
 	 		getRepices();
+	}
+
+	function callbackDelPlayerPipe () {
+		/* # supprimer une recette dans le pipe */
+		$('.btnSuppRecette').click(function (event) {
+			console.log($('#'+event.target.id.split()[0]).parent())
+			$('#'+event.target.id.split()[0]).remove()
+		})
 	}
 
 })
