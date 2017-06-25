@@ -382,7 +382,7 @@ def getRecipes():
 def getRecipeById(rc_id):
 	db = Db()
 	recipe = db.select("SELECT * FROM Recipe WHERE rec_id = '"+ str(rc_id) +"'")
-	ingredient_list = db.select("SELECT ing.ing_nom FROM Ingredient ing INNER JOIN Contains con ON ing.ing_id = con.ing_id INNER JOIN Recipe rec ON rec.rec_id = con.rec_id WHERE rec.rec_id = '"+ str(rc_id) +"'")
+	ingredient_list = db.select("SELECT ing.* FROM Ingredient ing INNER JOIN Contains con ON ing.ing_id = con.ing_id INNER JOIN Recipe rec ON rec.rec_id = con.rec_id WHERE rec.rec_id = '"+ str(rc_id) +"'")
 
 	if len(recipe) > 0:
 		return makeJsonResponse({ "recipe": recipe, "ingredients": ingredient_list } )

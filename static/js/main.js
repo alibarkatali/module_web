@@ -153,8 +153,12 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				console.log(result)
-				//$('#prixunitaire').val()
+				var totalCost = 0;
+				$.each(result.ingredients, function( index, value ) {
+					
+					$('#recettadd').append($('<option value="'+ value['rec_id'] +'">'+ value['rec_nom'] +'</option>'))
+				});
+				//$('#prixunitaire').html()
 	    	}
 		});
 	}
