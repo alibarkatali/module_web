@@ -334,13 +334,13 @@ def joinResponse(name):
 # Fonction : Permet de calculer les depenses globales (en euros) du joueur depuis le debut de la partie.
 # paramsIn : id du joueur (en Json ? En variable ? Liste?)
 # paramsOut : data de type JSON
-def CalculeSpend(player_id)	
-	
-	db = Db()	
-	spending = db.select("SELECT SUM(t.qte_prev * (SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = t.rec_id) ) FROM Transaction t WHERE t.pl_id = '"+ player_id +"'")
-	db.close()	
-	
-	return makeJsonResponse(spending)
+#def CalculeSpend(player_id)	
+#	
+#	db = Db()	
+#	spending = db.select("SELECT SUM(t.qte_prev * (SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = t.rec_id) ) FROM Transaction t WHERE t.pl_id = '"+ player_id +"'")
+#	db.close()	
+#	
+#	return makeJsonResponse(spending)
 	
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer le prix d'une recette
