@@ -147,9 +147,9 @@ $(document).ready(function () {
 		});
 	}
 
-	function getRepiceByName(name) {
+	function getRepiceByName(rc_id) {
 		$.ajax({
-			url: "/recipes/"+name,
+			url: "/recipe/"+rc_id,
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){

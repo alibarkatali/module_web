@@ -378,7 +378,7 @@ def getRecipes():
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R10 - Obtenir une recette a partir de son nom ---------------- OK, MANQUE A AFFICHER LE PRIX --------------------
 # GET /recipes/<int:rc_id>
-@app.route('/recipes/<int:rc_id>',methods=['GET'])
+@app.route('/recipe/<int:rc_id>',methods=['GET'])
 def getRecipeById(rc_id):
 	db = Db()
 	recipe = db.select("SELECT * FROM Recipe WHERE rec_id = '"+ rc_id +"'")
