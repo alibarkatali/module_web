@@ -9,7 +9,7 @@
 
 CREATE TABLE Player(
         pl_pseudo     Varchar (255) NOT NULL ,
-        pl_password   Varchar (255) NOT NULL ,
+        pl_password   Varchar (255) ,
         pl_id         SERIAL NOT NULL ,
         pl_mail       Varchar (255) ,
         pl_date       Date ,
@@ -113,6 +113,17 @@ CREATE TABLE Participate(
 
 
 ------------------------------------------------------------
+-- Table: Date
+------------------------------------------------------------
+
+CREATE TABLE Date(
+        da_id      SERIAL NOT NULL ,
+        da_day     Int NOT NULL ,
+        da_weather Varchar (255) ,
+        PRIMARY KEY (da_id)
+);
+
+------------------------------------------------------------
 -- Table: Transaction
 ------------------------------------------------------------
 
@@ -120,10 +131,10 @@ CREATE TABLE Transaction(
         qte_prev Int ,
         qte_sale Int ,
         price    Float ,
-        day      Int NOT NULL ,
         pl_id    Int NOT NULL ,
         rec_id   Int NOT NULL ,
-        PRIMARY KEY (pl_id ,rec_id )
+ 	da_id    Int NOT NULL ,
+        PRIMARY KEY (pl_id ,rec_id ,da_id )
 );
 
 ALTER TABLE Stand ADD CONSTRAINT FK_Stand_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
@@ -134,4 +145,4 @@ ALTER TABLE Participate ADD CONSTRAINT FK_Participe_ga_id FOREIGN KEY (ga_id) RE
 ALTER TABLE Participate ADD CONSTRAINT FK_Participe_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
 ALTER TABLE Transaction ADD CONSTRAINT FK_Transaction_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
 ALTER TABLE Transaction ADD CONSTRAINT FK_Transaction_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
-
+ALTER TABLE Transaction ADD CONSTRAINT FK_Transaction_da_id FOREIGN KEY (da_id) REFERENCES Date(da_id);
