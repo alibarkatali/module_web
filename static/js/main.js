@@ -84,7 +84,7 @@ $(document).ready(function () {
 		elemTr.append($('<td></td>').html(quantite));
 		elemTr.append($('<td></td>').html(quantite*prixu));
 		elemTr.append($('<td></td>').html(quantite*prixvente));
-		elemTr.append($('<td></td>').html($('<a id="'+token+'$btn" href="#"><span class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
+		elemTr.append($('<td></td>').html($('<a id="'+token+'$btn" class="btnSuppRecette" href="#"><span class="glyphicon glyphicon-trash"></span></a>')));
 		$('#playerpipe').append(elemTr);
 
 		callbackDelPlayerPipe()
@@ -209,7 +209,7 @@ $(document).ready(function () {
 		$('.btnSuppRecette').click(function (event) {
 			var tmp  = '#'+event.target.id.split()[0];
 			console.log(tmp)
-			
+
 			$(tmp).remove()
 		})
 	}
