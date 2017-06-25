@@ -1,5 +1,11 @@
 $(document).ready(function () {
 
+	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	/* # Variables globales */
+	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	lastNumberAssigned = 0;
+
+
 	/* # Initialisation de la partie */
 	gameInit();
 
@@ -49,9 +55,7 @@ $(document).ready(function () {
 	}
 
 	/* # supprimer une recette dans le pipe */
-	$('.btnSuppRecette').click(function (event) {
-		$('#'+event.target.id).parent().remove()
-	})
+	callbackDelPlayerPipe()
 
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -73,16 +77,26 @@ $(document).ready(function () {
 	function addPlayerPipe(recette,prixu,quantite,prixvente) {
 		//console.log(recette)
 
+		var token = lastNumberAssigned++;
+		var elemTr = $('<tr id="'+token+'"></tr>');
 
-		var elemTr = $('<tr id="'+token()+'"></tr>');
+		console.log(token);
+		console.log(token);
+		console.log(token);
+		console.log(token);
+		console.log(token);
+
 		elemTr.append($('<td></td>').html(recette));
 		elemTr.append($('<td></td>').html(prixu));
 		elemTr.append($('<td></td>').html(prixvente));
 		elemTr.append($('<td></td>').html(quantite));
 		elemTr.append($('<td></td>').html(quantite*prixu));
 		elemTr.append($('<td></td>').html(quantite*prixvente));
-		elemTr.append($('<td></td>').html($('<a href="#"><span class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
+		elemTr.append($('<td></td>').html($('<a href="#"><span id="'+token+'-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
 		$('#playerpipe').append(elemTr);
+
+		/* # Event : supprimer une recette dans le pipe */
+		callbackDelPlayerPipe()
 	}
 
 	/**
@@ -197,6 +211,17 @@ $(document).ready(function () {
 
 	  	if($('#blocSimul') != undefined)
 	 		getRepices();
+	}
+
+	function callbackDelPlayerPipe () {
+		/* # supprimer une recette dans le pipe */
+		$('.btnSuppRecette').click(function (event) {
+			var tmp  = '#'+event.target.id.split("-")[0];
+			
+			//console.log(tmp)
+
+			$(tmp).remove()
+		})
 	}
 
 })
