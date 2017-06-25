@@ -165,7 +165,7 @@ dataMatt = {
       "mat","jul"
     ],
     "itemsByPlayer" : {
-      "1mat":[{
+      "mat":[{
         "kind" : "STAND",
         "owner" : "michel",
         "location":{
@@ -174,7 +174,7 @@ dataMatt = {
         },
         "influence" : 40.3
       }],
-      "2jul" :[{
+      "jul" :[{
         "kind" : "STAND",
         "owner" : "michel",
         "location":{
@@ -196,7 +196,7 @@ dataMatt = {
           "isCold" : "false"
         }]
       },
-      "2jul":{
+      "jul":{
         "cash" : 40.3,
         "sales" : 40,
         "profit" : 40,
@@ -209,13 +209,13 @@ dataMatt = {
       }
     },
     "drinksByPlayer" : {
-      "1mat" : [{
+      "mat" : [{
         "name" : "the",
         "price" : 40.3,
         "hasAlcohol" : "false",
         "isCold" : "false"
       }],
-      "2jul" : [{
+      "jul" : [{
         "name" : "the",
         "price" : 40.3,
         "hasAlcohol" : "false",
