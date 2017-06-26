@@ -425,7 +425,7 @@ def rejoin():
 @app.route('/metrology',methods=['GET'])
 def getMetrology():
     db = Db()
-    weather = db.select("SELECT * FROM Date")
+    weather = db.select("SELECT * FROM Date ORDER BY da_day DESC LIMIT 1")
 
     print weather
 
