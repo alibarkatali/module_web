@@ -411,7 +411,7 @@ def rejoin():
 	db.close()
 
 	coordinates = db.select("SELECT loc_coordX, loc_coordY FROM Stand WHERE pl_pseudo = '"+ playerName +"'")
-	playerInfo =  	
+	#playerInfo =  	
 	return makeJsonResponse({ "name" : playerName, "location" : coordinates})
 
 
