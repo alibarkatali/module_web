@@ -127,11 +127,11 @@ $(document).ready(function () {
 			success: function(result){
 				//console.log(result)
 				if(result.players.length > 0){
-					var item = $('<ul></ul>');
+					var item = $('<ul class="list-group"></ul>');
 
 					$('#playerList').html("");
 					for (var i = 0; i < result.players.length; i++) {
-						item.append($('<li>'+ result.players[i].pl_pseudo +'</li>'))
+						item.append($('<li class="list-group-item">'+ result.players[i].pl_pseudo +'</li>'))
 					};
 					$('#playerList').append(item);
 				}else{
@@ -204,6 +204,9 @@ $(document).ready(function () {
 	*
 	*/
 	function gameInit () {
+
+		$('#playgamebloc').addClass("hidden");
+
 		/* # récupération de la météo */
 	  	getMetrology ();
 
