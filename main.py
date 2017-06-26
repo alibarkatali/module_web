@@ -429,9 +429,9 @@ def getMetrology():
 
     #print weather
 
-	wToday = weather["da_weather"]
-    wTomorrow = weather["da_weather_tomorrow"]
-	tStam = weather["da_timestamp"]
+	wToday = weather[0]["da_weather"]
+    wTomorrow = weather[0]["da_weather_tomorrow"]
+	tStam = weather[0]["da_timestamp"]
 
     print (wTomorrow)
 
