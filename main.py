@@ -299,36 +299,42 @@ def joinResponse(name):
 
 	return GAMEINFO
 
+def makePlayerInfo(pl_name):
+	info = CalculeMoneyInfo(pl_name)
+	return makeJsonResponse(info)
+
 def makeDrinkInfo(name):
 
-	db = Db()	
+	db = Db()
 	price = CalculePriceRec(name)
-	drinkInfo = db.select("SELECT rec_nom, rec_alcohol, rec_cold FROM Recipe WHERE rec_nom = '"+ name +"'")
-	db.close()	
-	return jsonify(drinkInfo)
-	
-	
+	info = db.select("SELECT rec_nom, rec_alcohol, rec_cold FROM Recipe WHERE rec_nom = '"+ name +"'")
+	db.close()
+
+	drinkInfo  = [{ "name" : info['rec_nom'] }, { "price" : price['sum'] }, { "hasAlcohol" : info['rec_alcohol'] }, { "isCold" : info['rec_cold'] }]
+	return makeJsonResponse(drinkInfo)
+
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les info monetaires du joueur (son budget courant & son profit depuis le debut de la partie)
 # paramsIn : a voir, peut etre type Json, liste, variable
 # paramsOut : data de type JSON
-def CalculeMoneyInfo(player):	
+def CalculeMoneyInfo(player):
 
 	db = Db()
-	
+
 	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
-	player_id = db.select("SELECT p.pl_id FROM Player WHERE pl_pseudo = '"+ player +"'")	
-	
-	sales = CalculeSales(player_id)
-	spending = CalculeSpend(player_id)	
-	
-	cash = budget_ini - spending + sales
-	profit = sales - spending
-	
+	player_id = db.select("SELECT p.pl_id FROM Player WHERE pl_pseudo = '"+ player +"'")
+
+	sales = CalculeSales(player_id['pl_id'])
+	spending = CalculeSpend(player_id['pl_id'])
+
+	cash = budget_ini['pl_budget_ini'] - spending['sum'] + sales['sum']
+	profit = sales['sum'] - spending['sum']
+
 	db.close()
-	
-	return makeJsonResponse({ "cash" : cash, "profit" : profit })
+
+	return makeJsonResponse({ "cash" : cash, "profit" : profit, "sales" : sales })
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les ventes globales (en euros) du joueur depuis le debut de la partie.
@@ -410,12 +416,12 @@ def rejoin():
 	else:
 		return makeJsonResponse(data,400)
 
-	
+
 	db.close()
 
 	coordinates = db.select("SELECT loc_coordX, loc_coordY FROM Stand WHERE pl_pseudo = '"+ playerName +"'")
-	#playerInfo =  	
-	return makeJsonResponse({ "name" : playerName, "location" : coordinates})
+	playerInfo =  makePlayerInfo(playerName)
+	return makeJsonResponse({ "name" : playerName, "location" : coordinates, "playerInfo" : playerInfo })
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
