@@ -310,7 +310,7 @@ def makeDrinkInfo(name):
 	info = db.select("SELECT rec_nom, rec_alcohol, rec_cold FROM Recipe WHERE rec_nom = '"+ name +"'")
 	db.close()
 
-	drinkInfo  = [{ "name" : info['rec_nom'] }, { "price" : price['sum'] }, { "hasAlcohol" : info['rec_alcohol'] }, { "isCold" : info['rec_cold'] }]
+	drinkInfo  = [{ "name" : info[0]["rec_nom"] }, { "price" : price['sum'] }, { "hasAlcohol" : info[1]['rec_alcohol'] }, { "isCold" : info[2]['rec_cold'] }]
 	return makeJsonResponse(drinkInfo)
 
 
@@ -326,11 +326,13 @@ def CalculeMoneyInfo(player):
 	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
 	player_id = db.select("SELECT p.pl_id FROM Player p WHERE pl_pseudo = '"+ player +"'")
 
-	sales = CalculeSales(int(player_id['pl_id']))
-	spending = CalculeSpend(int(player_id['pl_id']))
+	print (player_id)
 
-	cash = float(budget_ini['pl_budget_ini']) - float(spending['sum']) + float(sales['sum'])
-	profit = float(sales['sum']) - float(spending['sum'])
+	sales = CalculeSales(int(player_id[0]["pl_id"]))
+	spending = CalculeSpend(int(player_id[0]["pl_id"]))
+
+	cash = float(budget_ini[0]['pl_budget_ini']) - float(spending[0]["sum"]) + float(sales[0]["sum"])
+	profit = float(sales[0]["sum"]) - float(spending[0]["sum"])
 
 	db.close()
 
