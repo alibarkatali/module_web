@@ -126,12 +126,12 @@ $(document).ready(function () {
 			contentType: 'application/json',
 			success: function(result){
 				//console.log(result)
-				if(result.length > 0){
+				if(result.players.length > 0){
 					var item = $('<ul></ul>');
 
 					$('#playerList').html("");
-					for (var i = 0; i < result.length; i++) {
-						item.append($('<li>'+ result[i].pl_pseudo +'</li>'))
+					for (var i = 0; i < result.players.length; i++) {
+						item.append($('<li>'+ result.players[i].pl_pseudo +'</li>'))
 					};
 					$('#playerList').append(item);
 				}else{
