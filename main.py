@@ -328,8 +328,8 @@ def CalculeMoneyInfo(player):
 
 	print (player_id)
 
-	sales = CalculeSales(int(player_id[0]["pl_id"]))
-	spending = CalculeSpend(int(player_id[0]["pl_id"]))
+	sales = CalculeSales(player_id[0]["pl_id"])
+	spending = CalculeSpend(player_id[0]["pl_id"])
 
 	cash = float(budget_ini[0]['pl_budget_ini']) - float(spending[0]["sum"]) + float(sales[0]["sum"])
 	profit = float(sales[0]["sum"]) - float(spending[0]["sum"])
@@ -345,7 +345,7 @@ def CalculeMoneyInfo(player):
 def CalculeSales(player_id):
 
 	db = Db()
-	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '"+ player_id +"'")
+	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '" + str(player_id) + "'")
 	db.close()
 
 	return makeJsonReponse(sales)
@@ -355,7 +355,7 @@ def CalculeSales(player_id):
 # paramsOut : data de type JSON
 def CalculeSpend(player_id):
 	db = Db()
-	spending = db.select("SELECT SUM(t.qte_prev * (SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = t.rec_id) ) FROM Transaction t WHERE t.pl_id = '"+ player_id +"'")
+	spending = db.select("SELECT SUM(t.qte_prev * (SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = t.rec_id) ) FROM Transaction t WHERE t.pl_id = '"+ str(player_id) +"'")
 	db.close()
 	return makeJsonResponse(spending)
 
