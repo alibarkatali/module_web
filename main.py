@@ -299,6 +299,13 @@ def joinResponse(name):
 
 	return GAMEINFO
 
+def makeDrinkInfo(name):
+	price = CalculePriceRec(name)
+	drinkInfo = db.select("SELECT rec_nom, rec_alcohol, rec_cold FROM Recipe WHERE rec_nom = '"+ name +"'")
+	return jsonify(drinkInfo)
+	
+	
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les info monetaires du joueur (son budget courant & son profit depuis le debut de la partie)
 # paramsIn : a voir, peut etre type Json, liste, variable
@@ -345,10 +352,10 @@ def CalculeSpend(player_id):
 # Fonction : Permet de calculer le prix d'une recette
 # paramsIn : id de la recette (en Json ? En variable ? Liste?)
 # paramsOut : data de type JSON
-def CalculePriceRec(recipe_id):
+def CalculePriceRec(name):
 
 	db = Db()
-	price_rec = ("SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = '"+ recipe_id +"'")
+	price_rec = ("SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = '"+ name +"'")
 	db.close()
 
 	return makeJsonResponse(price_rec)
@@ -404,7 +411,7 @@ def rejoin():
 	db.close()
 
 	coordinates = db.select("SELECT loc_coordX, loc_coordY FROM Stand WHERE pl_pseudo = '"+ playerName +"'")
-	#playerInfo = getInfoPlayer( 	
+	#playerInfo =  	
 	return makeJsonResponse({ "name" : playerName, "location" : coordinates})
 
 
@@ -413,7 +420,8 @@ def rejoin():
 # GET /metrology
 @app.route('/metrology',methods=['GET'])
 def getMetrology():
-	return makeJsonResponse(meteos)
+	return makeDrinkInfo('Mojito')
+	#return makeJsonResponse(meteos)
 
 # R1/R7 - Commande "Temps"
 # POST /metrology
@@ -442,7 +450,7 @@ def leave(playerName):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R3 - Commande "simulateur"
 # POST /sales
-@app.route('/sales',methods=['POST'])
+@app.route('/sales', methods=['POST'])
 def simulCmd():
 	data = request.get_json()
 
