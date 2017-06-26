@@ -412,13 +412,14 @@ def rejoin():
 	if len(info) == 0 :
 		db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(playerName), 100);""", data)
 		db.execute(""" INSERT INTO stand(loc_coordX, loc_coordY, loc_rayon, pl_id)
-			       SELECT 0,0,0, player.pl_id FROM player player where pl_pseudo = @(playerName); """, data)
+			       SELECT 0,0,0, player.pl_id FROM Player player where pl_pseudo = @(playerName); """, data)
 	else:
 		return makeJsonResponse(data,400)
 
 
 
-	coordinates = db.select("SELECT loc_coordX, loc_coordY FROM Stand WHERE pl_pseudo = '"+ playerName +"'")
+
+	coordinates = db.select("SELECT loc_coordX, loc_coordY FROM Stand WHERE pl_pseudo = (SELECT pl_id FROM Player WHERE pl_pseudo = '"+ playerName +"'" )
 	playerInfo =  makePlayerInfo(playerName)
 	db.close()
 	return makeJsonResponse({ "name" : playerName, "location" : coordinates, "playerInfo" : playerInfo })
