@@ -310,7 +310,7 @@ def makeDrinkInfo(name):
 	info = db.select("SELECT rec_nom, rec_alcohol, rec_cold FROM Recipe WHERE rec_nom = '"+ name +"'")
 	db.close()
 
-	drinkInfo  = [{ "name" : info[0]["rec_nom"] }, { "price" : price['sum'] }, { "hasAlcohol" : info[1]['rec_alcohol'] }, { "isCold" : info[2]['rec_cold'] }]
+	drinkInfo  = [{ "name" : info[0]["rec_nom"] }, { "price" : price['sum'] }, { "hasAlcohol" : info[1]["rec_alcohol"] }, { "isCold" : info[2]["rec_cold"] }]
 	return makeJsonResponse(drinkInfo)
 
 
@@ -331,8 +331,8 @@ def CalculeMoneyInfo(player):
 	sales = CalculeSales(player_id[0]["pl_id"])
 	spending = CalculeSpend(player_id[0]["pl_id"])
 
-	cash = float(budget_ini[0]['pl_budget_ini']) - float(spending[0]["sum"]) + float(sales[0]["sum"])
-	profit = float(sales[0]["sum"]) - float(spending[0]["sum"])
+	cash = budget_ini[0]["pl_budget_ini"] - spending[0]["sum"] + sales[0]["sum"]
+	profit = sales[0]["sum"] - spending[0]["sum"]
 
 	db.close()
 
@@ -420,7 +420,7 @@ def rejoin():
 
 
 	coordinates = db.select("SELECT loc_coordX, loc_coordY FROM Stand WHERE pl_id = (SELECT player.pl_id FROM Player player WHERE pl_pseudo = '"+ playerName +"' )")
-	playerInfo =  makePlayerInfo(playerName)
+	playerInfo =  makePlayerInfo(str(playerName))
 	db.close()
 	return makeJsonResponse({ "name" : playerName, "location" : coordinates, "playerInfo" : playerInfo })
 
