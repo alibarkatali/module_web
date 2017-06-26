@@ -96,7 +96,7 @@ body {
 .title1{
   display: block;
   width: 100%;
-  background-color: #EBE0B8;
+  background-color: #d8d8d8;
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 0px;
@@ -135,4 +135,8 @@ body {
 
 .margintobloc{
   margin-top: 40px;
+}
+
+#playgamebloc{
+  margin-top: 45px;
 }

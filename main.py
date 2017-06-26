@@ -409,8 +409,6 @@ def rejoin():
 
 	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ playerName +"'")
 
-	print (info)
-
 	if len(info) == 0 :
 		db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(playerName), 100);""", data)
 		db.execute(""" INSERT INTO stand(loc_coordX, loc_coordY, loc_rayon, pl_id)

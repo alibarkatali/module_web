@@ -206,6 +206,8 @@ $(document).ready(function () {
 	function gameInit () {
 
 		$('#playgamebloc').addClass("hidden");
+		$('#mapbloc').removeClass("col-md-7");
+		$('#mapbloc').addClass("col-md-12");
 
 		/* # récupération de la météo */
 	  	getMetrology ();
