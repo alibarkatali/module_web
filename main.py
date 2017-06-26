@@ -225,13 +225,7 @@ dataMatt = {
   }
   }
 
-meteos = {
-	"timestamp" : 0,
-	"weather" : {
-		"dfn" : 0, # aujourdhui = 0, demain = 1
-		"weather" : random.choice(WEATHER)
-	}
-}
+meteos = {"timestamp" : 0,"weather" : [{"dfn" : 0,"weather" : "RAINNY"},{"dfn" : 1, "weather" : "CLOUDY"}]}
 
 recipesList['Limonade'] = {
 		"name" : "Limonade",
@@ -437,9 +431,29 @@ def getMetrology():
 @app.route('/metrology',methods=['POST'])
 def setMetrology():
 	data = request.get_json()
-	TEMPS['timestamp'] = data['timestamp']
-	TEMPS['weather'] = data['weather']
-	return makeJsonResponse(TEMPS)
+
+	timestamp = data['timestamp']
+
+	
+	for weather in data['weather']:
+		if weather['dfn'] == 0:
+			weatherToday = weather['weather']
+		else:
+			weatherTomorrow = weather['weather']
+
+	dataSql = {}
+	dataSql['day'] = 1
+	dataSql['weatherToday'] = weatherToday
+	dataSql['weatherTomorrow'] = weatherTomorrow
+
+	print dataSql
+
+	db = Db()
+	db.execute("""INSERT INTO Date(da_day,da_weather, da_day_weather_tomorrow) VALUES (@(day),@(weatherToday),@(weatherTomorrow));""", dataSql)
+	
+	db.close()
+
+	return makeJsonResponse(data,200)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
