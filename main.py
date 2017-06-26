@@ -466,9 +466,10 @@ def setMetrology():
 	dataSql['day'] = 1
 	dataSql['weatherToday'] = weatherToday
 	dataSql['weatherTomorrow'] = weatherTomorrow
+	dataSql['timestamp'] = timestamp
 
 	db = Db()
-	db.execute("""INSERT INTO Date(da_day,da_weather, da_day_weather_tomorrow) VALUES (@(day),@(weatherToday),@(weatherTomorrow));""", dataSql)
+	db.execute("""INSERT INTO Date(da_day,da_weather, da_weather_tomorrow,da_timestamp) VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
 	db.close()
 
 	return makeJsonResponse(data,200)
