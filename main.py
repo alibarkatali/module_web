@@ -430,23 +430,6 @@ def getMetrology():
     data = json.dumps(weather)
     print data
 
-	"""wToday = weather[0]["da_weather"]
-    wTomorrow = weather[0]["da_weather_tomorrow"]
-	tStam = weather[0][""]
-
-    print (wTomorrow)
-
-    outData = {
-    "timestamp" : tStam,
-    "weather" : [ {
-            "weather" : wToday,
-            "dfn" : 0,
-        },
-        {
-            "weather" : wTomorrow,
-            "dfn" : 1,
-        }]
-    }"""
     db.close()
     #return makeJsonResponse({ "metrology": outData })
     return makeJsonResponse(data)
