@@ -300,8 +300,11 @@ def joinResponse(name):
 	return GAMEINFO
 
 def makeDrinkInfo(name):
+
+	db = Db()	
 	price = CalculePriceRec(name)
 	drinkInfo = db.select("SELECT rec_nom, rec_alcohol, rec_cold FROM Recipe WHERE rec_nom = '"+ name +"'")
+	db.close()	
 	return jsonify(drinkInfo)
 	
 	
