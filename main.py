@@ -454,7 +454,8 @@ def setMetrology():
 
 	timestamp = data['timestamp']
 
-	
+	weatherToday = ""
+	weatherTomorrow = ""
 	for weather in data['weather']:
 		if weather['dfn'] == 0:
 			weatherToday = weather['weather']
