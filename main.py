@@ -429,8 +429,7 @@ def rejoin():
 # GET /metrology
 @app.route('/metrology',methods=['GET'])
 def getMetrology():
-	return makeDrinkInfo('Mojito')
-	#return makeJsonResponse(meteos)
+	return makeJsonResponse(meteos)
 
 # R1/R7 - Commande "Temps"
 # POST /metrology
