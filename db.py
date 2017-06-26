@@ -2,21 +2,7 @@
 import psycopg2, urlparse, re, os
 import urlparse
 
-"""result = urlparse.urlparse("postgresql://imerir:imerir@localhost/imerir")
-print result
-username = result.username
-password = result.password
-database = result.path[1:]
-hostname = result.hostname
-connection = psycopg2.connect(
-    database = database,
-    user = username,
-    password = password,
-    host = hostname
-)"""
-
 DATABASE_URL="postgres://eoxdsmbgnnjprd:819342ac1961db6dceb37078f90e581b45743e34502382e75184184eae7b1948@ec2-23-21-220-152.compute-1.amazonaws.com:5432/decknecom629ch"
-#DATABASE_URL=result
 
 class Db:
   """Connexion à la base de données postgres de l'environnement Heroku."""
