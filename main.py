@@ -433,7 +433,7 @@ def getMetrology():
     wTomorrow = weather[0]['da_weather_tomorrow']
     tStam = weather[0]['da_timestamp']
 
-    print (weather[0]['da_weather'])
+    print (weather['da_weather'])
 
     outData = {
     "timestamp" : tStam,
