@@ -326,11 +326,11 @@ def CalculeMoneyInfo(player):
 	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
 	player_id = db.select("SELECT p.pl_id FROM Player p WHERE pl_pseudo = '"+ player +"'")
 
-	sales = CalculeSales(player_id['pl_id'])
-	spending = CalculeSpend(player_id['pl_id'])
+	sales = CalculeSales(int(player_id['pl_id']))
+	spending = CalculeSpend(int(player_id['pl_id']))
 
-	cash = budget_ini['pl_budget_ini'] - spending['sum'] + sales['sum']
-	profit = sales['sum'] - spending['sum']
+	cash = float(budget_ini['pl_budget_ini']) - float(spending['sum']) + float(sales['sum'])
+	profit = float(sales['sum']) - float(spending['sum'])
 
 	db.close()
 
