@@ -348,7 +348,7 @@ def CalculeSales(player_id):
 	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '" + str(player_id) + "'")
 	db.close()
 
-	return makeJsonReponse(sales)
+	return makeJsonResponse(sales)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les depenses globales (en euros) du joueur depuis le debut de la partie.
 # paramsIn : id du joueur (en Json ? En variable ? Liste?)
