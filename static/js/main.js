@@ -30,7 +30,7 @@ $(document).ready(function () {
 	$( "#formproduction" ).submit(function( event ) {
 	  event.preventDefault();
 
-	  var recette = $('#recettadd').val();
+	  var recette = $('#recettadd').text();
 	  var prixu = $('#prixunitaire').text()
 	  var quantite = parseInt($('#quantity').val());
 	  var prixvente = parseFloat($('#prixvente').val());
