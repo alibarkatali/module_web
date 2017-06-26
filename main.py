@@ -427,13 +427,14 @@ def getMetrology():
     db = Db()
     weather = db.select("SELECT * FROM Date ORDER BY da_day DESC LIMIT 1")
 
-    print weather
+    #print weather
 
-    wToday = weather[0]['da_weather']
-    wTomorrow = weather[0]['da_weather_tomorrow']
-    tStam = weather[0]['da_timestamp']
+    for w in weather:
+    	wToday = w['da_weather']
+	    wTomorrow = w['da_weather_tomorrow']
+    	tStam = w['da_timestamp']
 
-    print (weather['da_weather'])
+    print (wTomorrow)
 
     outData = {
     "timestamp" : tStam,
