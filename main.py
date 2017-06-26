@@ -303,7 +303,7 @@ def joinResponse(name):
 # Fonction : Permet de calculer les info monetaires du joueur (son budget courant & son profit depuis le debut de la partie)
 # paramsIn : a voir, peut etre type Json, liste, variable
 # paramsOut : data de type JSON
- def CalculeMoneyInfo(player):	
+def CalculeMoneyInfo(player):	
 
 	db = Db()
 	
