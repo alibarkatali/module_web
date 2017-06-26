@@ -331,8 +331,8 @@ def CalculeMoneyInfo(player):
 	sales = CalculeSales(player_id[0]["pl_id"])
 	spending = CalculeSpend(player_id[0]["pl_id"])
 
-	cash = float(budget_ini[0]["pl_budget_ini"]) - float(spending[0]["sum"]) + float(sales[0]["sum"])
-	profit = float(sales[0]["sum"]) - float(spending[0]["sum"])
+	cash = budget_ini[0]["pl_budget_ini"] - spending[0]["sum"] + sales[0]["sum"]
+	profit = sales[0]["sum"] - spending[0]["sum"]
 
 	db.close()
 
