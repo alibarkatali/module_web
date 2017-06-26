@@ -427,10 +427,11 @@ def getMetrology():
     db = Db()
     weather = db.select("SELECT * FROM Date")
 
-    for w in weather:
-        wToday = w['da_weather']
-        wTomorrow = w['da_day_weather_tomorrow ']
-        tStam = w['da_day_timestamp']
+    print weather
+
+    wToday = weather[0]['da_weather']
+    wTomorrow = weather[0]['da_day_weather_tomorrow']
+    tStam = weather[0]['da_day_timestamp']
 
     outData = {
     "timestamp" : tStam,
@@ -445,6 +446,7 @@ def getMetrology():
     }
     db.close()
     return makeJsonResponse({ "metrology": outData })
+    #return makeJsonResponse(weather)
 
 # R1/R7 - Commande "Temps"
 # POST /metrology
@@ -454,8 +456,6 @@ def setMetrology():
 
 	timestamp = data['timestamp']
 
-	weatherToday = ""
-	weatherTomorrow = ""
 	for weather in data['weather']:
 		if weather['dfn'] == 0:
 			weatherToday = weather['weather']
@@ -467,11 +467,8 @@ def setMetrology():
 	dataSql['weatherToday'] = weatherToday
 	dataSql['weatherTomorrow'] = weatherTomorrow
 
-	print dataSql
-
 	db = Db()
 	db.execute("""INSERT INTO Date(da_day,da_weather, da_day_weather_tomorrow) VALUES (@(day),@(weatherToday),@(weatherTomorrow));""", dataSql)
-	
 	db.close()
 
 	return makeJsonResponse(data,200)
