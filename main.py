@@ -427,11 +427,12 @@ def getMetrology():
     db = Db()
     weather = db.select("SELECT * FROM Date ORDER BY da_day DESC LIMIT 1")
 
-    #print weather
+    data = json.dumps(weather)
+    print data
 
-	wToday = weather[0]["da_weather"]
+	"""wToday = weather[0]["da_weather"]
     wTomorrow = weather[0]["da_weather_tomorrow"]
-	tStam = weather[0]["da_timestamp"]
+	tStam = weather[0][""]
 
     print (wTomorrow)
 
@@ -445,10 +446,10 @@ def getMetrology():
             "weather" : wTomorrow,
             "dfn" : 1,
         }]
-    }
+    }"""
     db.close()
-    return makeJsonResponse({ "metrology": outData })
-    #return makeJsonResponse(weather)
+    #return makeJsonResponse({ "metrology": outData })
+    return makeJsonResponse(data)
 
 # R1/R7 - Commande "Temps"
 # POST /metrology
