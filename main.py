@@ -424,7 +424,27 @@ def rejoin():
 # GET /metrology
 @app.route('/metrology',methods=['GET'])
 def getMetrology():
-	return makeJsonResponse(meteos)
+    db = Db()
+    weather = db.select("SELECT * FROM Date")
+
+    for w in weather:
+        wToday = w['da_weather']
+        wTomorrow = w['da_day_weather_tomorrow ']
+        tStam = w['da_day_timestamp']
+
+    outData = {
+    "timestamp" : tStam,
+    "weather" : {
+            "weather" : wToday,
+            "dfn" : 0,
+        },
+        {
+            "weather" : wTomorrow,
+            "dfn" : 1,
+        }
+    }
+    db.close()
+    return makeJsonResponse({ "metrology": outData })
 
 # R1/R7 - Commande "Temps"
 # POST /metrology
