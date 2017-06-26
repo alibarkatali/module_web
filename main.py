@@ -400,8 +400,12 @@ def rejoin():
 	else:
 		return makeJsonResponse(data,400)
 
+	
 	db.close()
- 	return makeJsonResponse(data)
+
+	coordinates = db.select("SELECT loc_coordX, loc_coordY FROM Stand WHERE pl_pseudo = '"+ playerName +"'")
+	playerInfo = getInfoPlayer( 	
+	return makeJsonResponse({ "name" : playerName, "location" : coordinates)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -442,7 +446,7 @@ def leave(playerName):
 def simulCmd():
 	data = request.get_json()
 
-	return makeJsonResponse(SALE)
+	return makeJsonResponse(data)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
