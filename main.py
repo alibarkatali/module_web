@@ -303,7 +303,7 @@ def joinResponse(name):
 # Fonction : Permet de calculer les info monetaires du joueur (son budget courant & son profit depuis le debut de la partie)
 # paramsIn : a voir, peut etre type Json, liste, variable
 # paramsOut : data de type JSON
- def CalculeMoneyInfo(player):	
+def CalculeMoneyInfo(player):	
 
 	db = Db()
 	
@@ -400,8 +400,12 @@ def rejoin():
 	else:
 		return makeJsonResponse(data,400)
 
+	
 	db.close()
- 	return makeJsonResponse(data)
+
+	coordinates = db.select("SELECT loc_coordX, loc_coordY FROM Stand WHERE pl_pseudo = '"+ playerName +"'")
+	#playerInfo = getInfoPlayer( 	
+	return makeJsonResponse({ "name" : playerName, "location" : coordinates})
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -442,7 +446,7 @@ def leave(playerName):
 def simulCmd():
 	data = request.get_json()
 
-	return makeJsonResponse(SALE)
+	return makeJsonResponse(data)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
