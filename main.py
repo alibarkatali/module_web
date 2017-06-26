@@ -27,7 +27,7 @@ FORECAST = {
 
 # {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : "RAINNY"}}
 
-TEMPS = {}
+TEMPS =  {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : random.choice(WEATHER)}}
 
 COORDINATESSPAN = {
 	"latitudeSpan" : 0.0,
@@ -150,86 +150,87 @@ playersList = []
 recipesList = {}
 
 dataMatt = {
-  	"map" : {
-    	"region" : {
-      		"center" : {
-        		"latitude": 40.2,
-        		"longitude" : 40.2
-      			},
-      		"span" : {
-        		"latitudeSpan" : 40.2,
-        		"longitudeSpan" : 44.2
-      			}
-    	},
-    	"ranking": [
-      		"mat","jul"
-    		],
-    
-		"itemsByPlayer" : {
-      		"1mat" : [{
-        		"kind" : "STAND",
-        		"owner" : "michel",
-        		"location":{
-         			 "latitude" : 40.2,
-          			 "longitude" : 40.2
-        		},
-        		"influence" : 40.3
-      		}],
-      		"2jul" : [{
-        		"kind" : "STAND",
-        		"owner" : "michel",
-        		"location":{
-         	 		"latitude" : 40.2,
-          			"longitude" : 40.2
-        		},
-        		"influence" : 40.3
-      		}]
-    	},
-    	"playerInfo" : {
-      		"mat" : {
-        		"cash" : 40.3,
-        		"sales" : 40,
-        		"profit" : 40,
-        		"drinksOffered" : [{
-          			"name" : "the",
-          			"price" : 40.3,
-          			"hasAlcohol" : 'false',
-          			"isCold" : 'false'
-        		}]
-      		},
-      		"2jul":{
-        		"cash" : 40.3,
-        		"sales" : 40,
-        		"profit" : 40,
-        		"drinksOffered" : [{
-         	 		"name" : "the",
-         	 		"price" : 40.3,
-          			"hasAlcohol" : 'false',
-          			"isCold" : 'false'
-        		}]
-      		}
-    	},
-    	"drinksByPlayer" : {
-      		"1mat" : [{
-        		"name" : "the",
-        		"price" : 40.3,
-        		"hasAlcohol" : 'false',
-        		"isCold" : 'false'
-      		}],
-      		"2jul" : [{
-        		"name" : "the",
-        		"price" : 40.3,
-        		"hasAlcohol" : 'false',
-        		"isCold" : 'false'
-      		}]
-    	}
-  		}
-  	}
+  "map" : {
+    "region" :{
+      "center" : {
+        "latitude": 40.2,
+        "longitude" : 40.2
+      },
+      "span" : {
+        "latitudeSpan" : 40.2,
+        "longitudeSpan" : 44.2
+      }
+    },
+    "ranking":[
+      "mat","jul"
+    ],
+    "itemsByPlayer" : {
+      "mat":[{
+        "kind" : "STAND",
+        "owner" : "michel",
+        "location":{
+          "latitude" : 40.2,
+          "longitude" : 40.2
+        },
+        "influence" : 40.3
+      }],
+      "jul" :[{
+        "kind" : "STAND",
+        "owner" : "michel",
+        "location":{
+          "latitude" : 40.2,
+          "longitude" : 40.2
+        },
+        "influence" : 40.3
+      }]
+    },
+    "playerInfo" : {
+      "mat" : {
+        "cash" : 40.3,
+        "sales" : 40,
+        "profit" : 40,
+        "drinksOffered" : [{
+          "name" : "the",
+          "price" : 40.3,
+          "hasAlcohol" : "false",
+          "isCold" : "false"
+        }]
+      },
+      "jul":{
+        "cash" : 40.3,
+        "sales" : 40,
+        "profit" : 40,
+        "drinksOffered" : [{
+          "name" : "the",
+          "price" : 40.3,
+          "hasAlcohol" : "false",
+          "isCold" : "false"
+        }]
+      }
+    },
+    "drinksByPlayer" : {
+      "mat" : [{
+        "name" : "the",
+        "price" : 40.3,
+        "hasAlcohol" : "false",
+        "isCold" : "false"
+      }],
+      "jul" : [{
+        "name" : "the",
+        "price" : 40.3,
+        "hasAlcohol" : "false",
+        "isCold" : "false"
+      }]
+    }
+  }
+  }
 
 meteos = {
 	"timestamp" : 0,
-	"weatherToday" : random.choice(WEATHER),
-	"weatherTomorow" : random.choice(WEATHER)
+	"weather" : {
+		"dfn" : 0, # aujourdhui = 0, demain = 1
+		"weather" : random.choice(WEATHER)
+	}
 }
 
 recipesList['Limonade'] = {
@@ -302,22 +303,22 @@ def joinResponse(name):
 # Fonction : Permet de calculer les info monetaires du joueur (son budget courant & son profit depuis le debut de la partie)
 # paramsIn : a voir, peut etre type Json, liste, variable
 # paramsOut : data de type JSON
-# def CalculeMoneyInfo(player):	
-#
-#	db = Db()
-#	
-#	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
-#	player_id = db.select("SELECT p.pl_id FROM Player WHERE pl_pseudo = '"+ player +"'")	
-#	
-#	sales = CalculeSales(player_id)
-#	spending = CalculeSpend(player_id)	
-#	
-#	cash = budget_ini - spending + sales
-#	profit = sales - spending
-#	
-#	db.close()
-#	
-#	return makeJsonResponse({ "cash" : cash, "profit" : profit })
+ def CalculeMoneyInfo(player):	
+
+	db = Db()
+	
+	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
+	player_id = db.select("SELECT p.pl_id FROM Player WHERE pl_pseudo = '"+ player +"'")	
+	
+	sales = CalculeSales(player_id)
+	spending = CalculeSpend(player_id)	
+	
+	cash = budget_ini - spending + sales
+	profit = sales - spending
+	
+	db.close()
+	
+	return makeJsonResponse({ "cash" : cash, "profit" : profit })
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les ventes globales (en euros) du joueur depuis le debut de la partie.
@@ -360,7 +361,6 @@ def makeJsonResponse(data,status=200):
 	return json.dumps(data), status, {'Content-Type': 'application/json'}
 
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R8 - Reinitialisation d une partie
 # GET /reset
 @app.route('/reset',methods=['GET'])
@@ -377,7 +377,7 @@ def getPlayers():
 	db = Db()
 	playersInfo = db.select("SELECT * FROM Player")
 	db.close()
-	return makeJsonResponse(playersInfo,200)
+	return makeJsonResponse({ "players" : playersInfo },200)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -467,7 +467,7 @@ def simulActions(playerName):
 # GET /map
 @app.route('/map',methods=['GET'])
 def getMap():
-	
+
 	return makeJsonResponse(dataMatt)
 
 

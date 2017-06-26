@@ -30,7 +30,7 @@ $(document).ready(function () {
 	$( "#formproduction" ).submit(function( event ) {
 	  event.preventDefault();
 
-	  var recette = $('#recettadd').text();
+	  var recette = $('#recettadd').val();
 	  var prixu = $('#prixunitaire').text()
 	  var quantite = parseInt($('#quantity').val());
 	  var prixvente = parseFloat($('#prixvente').val());
@@ -75,28 +75,29 @@ $(document).ready(function () {
 	*
 	*/
 	function addPlayerPipe(recette,prixu,quantite,prixvente) {
-		//console.log(recette)
+		$.ajax({
+			url: "/recipe/"+recette,
+			type: "GET",
+			contentType: 'application/json',
+			success: function(result){
+				var token = lastNumberAssigned++;
+				var elemTr = $('<tr id="'+token+'"></tr>');
 
-		var token = lastNumberAssigned++;
-		var elemTr = $('<tr id="'+token+'"></tr>');
+				elemTr.append($('<td></td>').html(result.recipe[0].rec_nom));
+				elemTr.append($('<td></td>').html(prixu));
+				elemTr.append($('<td></td>').html(prixvente));
+				elemTr.append($('<td></td>').html(quantite));
+				elemTr.append($('<td></td>').html(quantite*prixu));
+				elemTr.append($('<td></td>').html(quantite*prixvente));
+				elemTr.append($('<td></td>').html($('<a href="#"><span id="'+token+'-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
+				$('#playerpipe').append(elemTr);
 
-		console.log(token);
-		console.log(token);
-		console.log(token);
-		console.log(token);
-		console.log(token);
+				/* # Event : supprimer une recette dans le pipe */
+				callbackDelPlayerPipe()
+	    	}
+		});
 
-		elemTr.append($('<td></td>').html(recette));
-		elemTr.append($('<td></td>').html(prixu));
-		elemTr.append($('<td></td>').html(prixvente));
-		elemTr.append($('<td></td>').html(quantite));
-		elemTr.append($('<td></td>').html(quantite*prixu));
-		elemTr.append($('<td></td>').html(quantite*prixvente));
-		elemTr.append($('<td></td>').html($('<a href="#"><span id="'+token+'-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
-		$('#playerpipe').append(elemTr);
-
-		/* # Event : supprimer une recette dans le pipe */
-		callbackDelPlayerPipe()
+		
 	}
 
 	/**
