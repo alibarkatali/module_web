@@ -434,14 +434,14 @@ def getMetrology():
 
     outData = {
     "timestamp" : tStam,
-    "weather" : {
+    "weather" : [ {
             "weather" : wToday,
             "dfn" : 0,
         },
         {
             "weather" : wTomorrow,
             "dfn" : 1,
-        }
+        }]
     }
     db.close()
     return makeJsonResponse({ "metrology": outData })
