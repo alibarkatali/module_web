@@ -464,7 +464,7 @@ def setMetrology():
 		else:
 			weatherTomorrow = weather['weather']
 
-	dataSql = []
+	dataSql = {}
 	dataSql['day'] = 1
 	dataSql['weatherToday'] = weatherToday
 	dataSql['weatherTomorrow'] = weatherTomorrow
