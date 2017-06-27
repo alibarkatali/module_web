@@ -275,8 +275,8 @@ def setMetrology():
 
 	dataSql['weatherToday'] = weatherToday
 	dataSql['weatherTomorrow'] = weatherTomorrow
-	dataSql['timestamp'] = timestamp
-	dataSql['lastDay'] = timestamp%24
+	dataSql['timestamp'] = timestamp%24
+	dataSql['lastDay'] = lastDay
 
 	if timestamp % 24 == 0 :
 		dataSql['day'] = lastDay+1
