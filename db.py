@@ -7,7 +7,7 @@ DATABASE_URL="postgres://eoxdsmbgnnjprd:819342ac1961db6dceb37078f90e581b45743e34
 #DATABASE_URL="postgresql://postgres:imerir@localhost/imerir"
 
 class Db:
-  """Connexion à la base de données postgres de l'environnement Heroku."""
+  """Connexion a la base de donnees postgres de l'environnement Heroku."""
 
   def __init__(self):
     """Initiate a connection to the default postgres database."""
