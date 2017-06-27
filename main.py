@@ -37,6 +37,8 @@ def rejoin():
 		...
 	"""
 
+	print (data)
+
 	data = request.get_json()
 	name = data['name']
 
