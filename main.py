@@ -38,9 +38,9 @@ def rejoin():
 	"""
 
 	data = request.get_json()
-	playerName = data['name']
+	name = data['name']
 
-	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ playerName +"'")
+	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ name +"'")
 
 	if len(info) > 0 :
 		return func.makeJsonResponse(data,400)
@@ -50,11 +50,11 @@ def rejoin():
 		       SELECT 0,0,0, player.pl_id FROM Player player where pl_pseudo = @(name); """, data)
 	db.execute("""INSERT INTO Participate(present, ga_id, pl_id) SELECT 'true',1, player.pl_id FROM Player player where pl_pseudo = @(name); """, data)		
 
-	coordinates = db.select("SELECT loc_longitude, loc_latitude FROM Stand WHERE pl_id = (SELECT player.pl_id FROM Player player WHERE pl_pseudo = '"+ playerName +"' )")
-	playerInfo =  func.makePlayerInfo(playerName)
+	coordinates = db.select("SELECT loc_longitude, loc_latitude FROM Stand WHERE pl_id = (SELECT player.pl_id FROM Player player WHERE pl_pseudo = '"+ name +"' )")
+	playerInfo =  func.makePlayerInfo(name)
 	
 
-	return func.makeJsonResponse({ "name" : playerName, "location" : { "latitude" : coordinates[0]['loc_longitude'], "longitude" : coordinates[0]['loc_latitude']}, "info" : playerInfo })
+	return func.makeJsonResponse({ "name" : name, "location" : { "latitude" : coordinates[0]['loc_longitude'], "longitude" : coordinates[0]['loc_latitude']}, "info" : playerInfo })
 
 
 @app.route('/metrology',methods=['GET'])
