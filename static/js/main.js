@@ -4,6 +4,7 @@ $(document).ready(function () {
 	/* # Variables globales */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	lastNumberAssigned = 0;
+<<<<<<< HEAD
 	pipePlayers ={ "actions" : [
 			{
 				"kind" : "drinks",
@@ -12,6 +13,10 @@ $(document).ready(function () {
 			}
 		]
 	}
+=======
+	pipePlayers = {};
+
+>>>>>>> 04241753bd0265c2b5bde989514561df75f5f36e
 
 	/* # Initialisation de la partie */
 	gameInit();
@@ -60,6 +65,16 @@ $(document).ready(function () {
 			getRepiceByName($(this).val())
 		})
 	}
+
+	/* # maj données de la liste du joueur */
+	$('#btnaddrecette').click(function() {
+		valAction();
+	})
+
+	/* # maj actions du joueur */
+	$('#valAction').click(function() {
+		valAction();
+	})
 
 	/* # supprimer une recette dans le pipe */
 	callbackDelPlayerPipe()
@@ -255,5 +270,49 @@ $(document).ready(function () {
 
 		})
 	}
+
+	/**
+	*
+	*/
+	function valAction () {
+		on.cli
+		var data = {'kind': 'drinks',
+		'prepare': { $('#recettadd').val() : $('#quantity').val()},
+		'price' : { $('#prixvente').val()}}
+		$.ajax({
+			url: '/actions/<playerName>'
+
+		})
+	}
+
+	/**
+	*
+	*/
+	$("#valAction").on("click",function(){
+      $.ajax("/order",{
+      	url: "/actions/<playerName>",
+        method: 'POST',
+        contentType: 'application/json',
+        pipePlayers : JSON.stringify(pipePlayers),
+        success : function(pipePlayers){
+        	console.log('OK')
+        }
+      })
+      })
+
+	/**
+	*
+	*/
+	function sendAction() {
+		$.ajax({
+			url: "/actions/<playerName>",
+			pipePlayers : JSON.stringify(pipePlayers),
+			type: "POST",
+			contentType: 'application/json',
+			success: function(pipePlayers){
+				console.log('OK')
+	    	}
+		});
+	}l
 
 })
