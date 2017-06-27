@@ -134,8 +134,13 @@ def makeMapItem(pl_id):
 	mapItem = []
 
 	mapItem.append(makeMapItemStand(pl_id))
+	
+	db = Db()
 
-	pub_id = db.select("SELECT p.p_id FROM Pub p WHERE p.pl_id = '"+ str(pl_id) +"'")
+	pub_id = db.select("SELECT p.p_id FROM Pub p WHERE p.pl_id = "+ str(pl_id))
+	
+	db.close()
+
 	if len(pub_id) != 0:
 		for row in pub_id:
 			mapItem.append(makeMapItemPub(row['pub_id']))
