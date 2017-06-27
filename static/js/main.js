@@ -28,8 +28,8 @@ $(document).ready(function () {
 	  event.preventDefault();
 
 	  /* # le joueur rejoin la partie */
-	  var playerName = $('#name').val();
-	  gameRejoin(playerName);
+	  var name = $('#name').val();
+	  gameRejoin(name);
 
 	  /* # liste de joueur */
 	  getPlayers();
@@ -210,8 +210,8 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function gameRejoin(playerName) {
-		var data = {"name": playerName}
+	function gameRejoin(name) {
+		var data = {"name": name}
 		$.ajax({
 			url: "/players",
 			data : JSON.stringify(data),
@@ -227,7 +227,7 @@ $(document).ready(function () {
 	* 
 	*/
 	function resetFormGameJoin () {
-		$('#playerName').val("");
+		$('#name').val("");
 	}
 
 	/**
@@ -274,7 +274,7 @@ $(document).ready(function () {
 	*/
 	$("#valAction").on("click",function(){
       $.ajax("/order",{
-      	url: "/actions/<playerName>",
+      	url: "/actions/<name>",
         method: 'POST',
         contentType: 'application/json',
         pipePlayers : JSON.stringify(pipePlayers),
@@ -289,7 +289,7 @@ $(document).ready(function () {
 	*/
 	function sendAction() {
 		$.ajax({
-			url: "/actions/<playerName>",
+			url: "/actions/<name>",
 			pipePlayers : JSON.stringify(pipePlayers),
 			type: "POST",
 			contentType: 'application/json',
