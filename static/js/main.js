@@ -261,4 +261,34 @@ $(document).ready(function () {
 		})
 	}
 
+	/**
+	*
+	*/
+	$("#valAction").on("click",function(){
+      $.ajax("/order",{
+      	url: "/actions/<playerName>",
+        method: 'POST',
+        contentType: 'application/json',
+        pipePlayers : JSON.stringify(pipePlayers),
+        success : function(pipePlayers){
+        	console.log('OK')
+        }
+      })
+      })
+
+	/**
+	*
+	*/
+	function sendAction() {
+		$.ajax({
+			url: "/actions/<playerName>",
+			pipePlayers : JSON.stringify(pipePlayers),
+			type: "POST",
+			contentType: 'application/json',
+			success: function(pipePlayers){
+				console.log('OK')
+	    	}
+		});
+	}l
+
 })
