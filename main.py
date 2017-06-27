@@ -216,7 +216,7 @@ def rejoin():
 	return makeJsonResponse({ "name" : playerName, "location" : coordinates, "playerInfo" : playerInfo })
 
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ok ~~~~~~~~~~
 # R1/R7 - Commande "Temps"
 # GET /metrology
 @app.route('/metrology',methods=['GET'])
