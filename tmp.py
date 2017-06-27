@@ -267,3 +267,16 @@ recipesList['Cafe'] = {
 		"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
 		"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
 	}
+
+
+	listRecipe = []
+	for action in data['actions']:
+		if action['kind'] == "drinks":
+			for prepare in action['prepare']:
+				#listRecipe[prepare] = 
+				db.execute("""INSERT INTO Transaction(rec_id,pl_id, qte_prev,price) 
+			VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
+
+	# REGARDER DE QUELLES FORMES SONT LES DONNEES POUR LES METTRES DANS LA TABLE Transaction - Easy !!!
+
+	#if data['simulated'] == True:

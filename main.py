@@ -440,9 +440,7 @@ def simulActions(playerName):
 	if not data['simulated']:
 		return '"Not find simulated"', 412
 
-	# REGARDER DE QUELLES FORMES SONT LES DONNEES POUR LES METTRES DANS LA TABLE Transaction - Easy !!!
-
-	#if data['simulated'] == True:
+	
 
 	return "Instructions du joueur pour le jour suivant"
 
