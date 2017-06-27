@@ -37,8 +37,6 @@ def rejoin():
 		...
 	"""
 
-	print (data)
-
 	data = request.get_json()
 
 	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ data['name'] +"'")
