@@ -4,6 +4,7 @@ $(document).ready(function () {
 	/* # Variables globales */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	lastNumberAssigned = 0;
+	pipePlayers = {};
 
 
 	/* # Initialisation de la partie */
@@ -53,6 +54,16 @@ $(document).ready(function () {
 			getRepiceByName($(this).val())
 		})
 	}
+
+	/* # maj données de la liste du joueur */
+	$('#btnaddrecette').click(function() {
+		valAction();
+	})
+
+	/* # maj actions du joueur */
+	$('#valAction').click(function() {
+		valAction();
+	})
 
 	/* # supprimer une recette dans le pipe */
 	callbackDelPlayerPipe()
@@ -233,6 +244,20 @@ $(document).ready(function () {
 			//console.log(tmp)
 
 			$(tmp).remove()
+		})
+	}
+
+	/**
+	*
+	*/
+	function valAction () {
+		on.cli
+		var data = {'kind': 'drinks',
+		'prepare': { $('#recettadd').val() : $('#quantity').val()},
+		'price' : { $('#prixvente').val()}}
+		$.ajax({
+			url: '/actions/<playerName>'
+
 		})
 	}
 
