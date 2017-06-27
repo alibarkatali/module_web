@@ -9,6 +9,81 @@ app = Flask(__name__)
 app.debug = True
 CORS(app)
 
+dataMatt = {
+  "map" : {
+    "region" :{
+      "center" : {
+        "latitude": 40.2,
+        "longitude" : 40.2
+      },
+      "span" : {
+        "latitudeSpan" : 40.2,
+        "longitudeSpan" : 44.2
+      }
+    },
+    "ranking":[
+      "mat","jul"
+    ],
+    "itemsByPlayer" : {
+      "mat":[{
+        "kind" : "STAND",
+        "owner" : "michel",
+        "location":{
+          "latitude" : 40.2,
+          "longitude" : 40.2
+        },
+        "influence" : 40.3
+      }],
+      "jul" :[{
+        "kind" : "STAND",
+        "owner" : "michel",
+        "location":{
+          "latitude" : 40.2,
+          "longitude" : 40.2
+        },
+        "influence" : 40.3
+      }]
+    },
+    "playerInfo" : {
+      "mat" : {
+        "cash" : 40.3,
+        "sales" : 40,
+        "profit" : 40,
+        "drinksOffered" : [{
+          "name" : "the",
+          "price" : 40.3,
+          "hasAlcohol" : "false",
+          "isCold" : "false"
+        }]
+      },
+      "jul":{
+        "cash" : 40.3,
+        "sales" : 40,
+        "profit" : 40,
+        "drinksOffered" : [{
+          "name" : "the",
+          "price" : 40.3,
+          "hasAlcohol" : "false",
+          "isCold" : "false"
+        }]
+      }
+    },
+    "drinksByPlayer" : {
+      "mat" : [{
+        "name" : "the",
+        "price" : 40.3,
+        "hasAlcohol" : "false",
+        "isCold" : "false"
+      }],
+      "jul" : [{
+        "name" : "the",
+        "price" : 40.3,
+        "hasAlcohol" : "false",
+        "isCold" : "false"
+      }]
+    }
+  }
+  }
 
 def joinResponse(name):
 	global GAMEINFO
@@ -260,7 +335,7 @@ def simulActions(playerName):
 @app.route('/map',methods=['GET'])
 def getMap():
 
-	return "makeJsonResponse(dataMatt)"
+	return makeJsonResponse(dataMatt)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
