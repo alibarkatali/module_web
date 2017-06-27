@@ -432,9 +432,10 @@ def setMetrology():
 # DELETE /players/<playerName>
 @app.route('/players/<playerName>', methods=['DELETE'])
 def leave(playerName):
+	pl_id = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = "+playerName+"")[0]['pl_id']
+	data['pl_id'] = pl_id
+	db.execute("""UPDATE Participate par SET par.present = 'false' WHERE par.pl_id = @(pl_id);""",data)
 	
-	
-
 	return '', 200
 
 
@@ -460,9 +461,7 @@ def simulActions(playerName):
 	if not data['simulated']:
 		return '"Not find simulated"', 412
 
-	# REGARDER DE QUELLES FORMES SONT LES DONNEES POUR LES METTRES DANS LA TABLE Transaction - Easy !!!
-
-	#if data['simulated'] == True:
+	
 
 	return "Instructions du joueur pour le jour suivant"
 

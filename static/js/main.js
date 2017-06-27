@@ -4,7 +4,19 @@ $(document).ready(function () {
 	/* # Variables globales */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	lastNumberAssigned = 0;
+<<<<<<< HEAD
+	pipePlayers ={ "actions" : [
+			{
+				"kind" : "drinks",
+				"prepare" : [],
+				"price" : []
+			}
+		]
+	}
+=======
+	pipePlayers = {};
 
+>>>>>>> 04241753bd0265c2b5bde989514561df75f5f36e
 
 	/* # Initialisation de la partie */
 	gameInit();
@@ -54,6 +66,16 @@ $(document).ready(function () {
 		})
 	}
 
+	/* # maj données de la liste du joueur */
+	$('#btnaddrecette').click(function() {
+		valAction();
+	})
+
+	/* # maj actions du joueur */
+	$('#valAction').click(function() {
+		valAction();
+	})
+
 	/* # supprimer une recette dans le pipe */
 	callbackDelPlayerPipe()
 
@@ -94,6 +116,17 @@ $(document).ready(function () {
 
 				/* # Event : supprimer une recette dans le pipe */
 				callbackDelPlayerPipe()
+
+				/* # Ajout dans la liste pipePlayers */
+				var tmp1 = {};
+				var tmp2 = {};
+				tmp1[recette] = quantite;
+				tmp2[recette] = prixvente;
+
+				pipePlayers.prepare.push(tmp1);
+				pipePlayers.price.push(tmp2);
+				
+				console.log(pipePlayers)
 	    	}
 		});
 
@@ -108,7 +141,6 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				console.log(result)
 
 				$('#timer').html(result.timestamp);
 				$.each(result.weather, function( index, value ) {
@@ -117,7 +149,6 @@ $(document).ready(function () {
 	        		else 
 	        			$('#weatherTomorrow').html(value['weather']);
 				});
-				
 	    	}
 		});
 	}
@@ -131,7 +162,7 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				//console.log(result)
+
 				if(result.players.length > 0){
 					var item = $('<ul class="list-group"></ul>');
 
@@ -154,16 +185,10 @@ $(document).ready(function () {
 			contentType: 'application/json',
 			success: function(result){
 
-
 				$.each(result.recipes, function( index, value ) {
 					//console.log(value)
 					$('#recettadd').append($('<option value="'+ value['rec_id'] +'">'+ value['rec_nom'] +'</option>'))
 				});
-
-				//$('#recipes').html("");
-				/*for (var i = 0; i < result.length; i++) {
-
-				};*/
 	    	}
 		});
 	}
@@ -174,6 +199,7 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
+				
 				var totalCost = 0;
 				$.each(result.ingredients, function( index, value ) {
 					totalCost += value['ing_prix'];
@@ -200,14 +226,14 @@ $(document).ready(function () {
 	}
 
 	/**
-	*
+	* 
 	*/
 	function resetFormGameJoin () {
 		$('#playerName').val("");
 	}
 
 	/**
-	*
+	* 
 	*/
 	function gameInit () {
 
@@ -229,11 +255,64 @@ $(document).ready(function () {
 		/* # supprimer une recette dans le pipe */
 		$('.btnSuppRecette').click(function (event) {
 			var tmp  = '#'+event.target.id.split("-")[0];
-			
-			//console.log(tmp)
-
 			$(tmp).remove()
+
+			$.each(pipePlayers.prepare, function( index, value ) {
+				//if(index == event.target.id.split("-")[0])
+				console.log(value[0])
+			});
+
+			/*jQuery.grep(pipePlayers.prepare, function(n,i) {
+				console.log(n)
+			  return n == event.target.id.split("-")[0];
+			});
+			console.log(pipePlayers)*/
+
 		})
 	}
+
+	/**
+	*
+	*/
+	function valAction () {
+		on.cli
+		var data = {'kind': 'drinks',
+		'prepare': { $('#recettadd').val() : $('#quantity').val()},
+		'price' : { $('#prixvente').val()}}
+		$.ajax({
+			url: '/actions/<playerName>'
+
+		})
+	}
+
+	/**
+	*
+	*/
+	$("#valAction").on("click",function(){
+      $.ajax("/order",{
+      	url: "/actions/<playerName>",
+        method: 'POST',
+        contentType: 'application/json',
+        pipePlayers : JSON.stringify(pipePlayers),
+        success : function(pipePlayers){
+        	console.log('OK')
+        }
+      })
+      })
+
+	/**
+	*
+	*/
+	function sendAction() {
+		$.ajax({
+			url: "/actions/<playerName>",
+			pipePlayers : JSON.stringify(pipePlayers),
+			type: "POST",
+			contentType: 'application/json',
+			success: function(pipePlayers){
+				console.log('OK')
+	    	}
+		});
+	}l
 
 })
