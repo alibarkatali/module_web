@@ -332,7 +332,7 @@ def getPlayers():
 @app.route('/players', methods=['POST'])
 def rejoin():
 	data = request.get_json()
-	playerName = data['playerName']
+	playerName = data['name']
 	db = Db()
 
 	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ playerName +"'")
@@ -340,9 +340,8 @@ def rejoin():
 	if len(info) > 0 :
 		return makeJsonResponse(data,400)
 
-	db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(playerName), 100);""", data)
-	db.execute("""INSERT INTO stand(loc_longitude, loc_latitude, loc_rayon, pl_id)
-		       SELECT 0,0,0, player.pl_id FROM Player player where pl_pseudo = @(playerName); """, data)
+	plId = db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(name), 100) Returning pl_id;""", data)[0]
+	db.execute("""INSERT INTO stand(loc_longitude, loc_latitude, loc_rayon, pl_id) VALUES (0, 0, 0, @(pl_id)) """, plId)
 	db.execute("""INSERT INTO Participate(present, ga_id, pl_id) SELECT 'true',1, player.pl_id FROM Player player where pl_pseudo = @(playerName); """, data)		
 
 	coordinates = db.select("SELECT loc_longitude, loc_latitude FROM Stand WHERE pl_id = (SELECT player.pl_id FROM Player player WHERE pl_pseudo = '"+ playerName +"' )")
