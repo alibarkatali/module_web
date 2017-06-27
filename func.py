@@ -1,4 +1,5 @@
 import json
+from db import Db
 
 # VARIABLES GLOBALES
 db = Db()
