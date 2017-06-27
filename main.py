@@ -350,7 +350,8 @@ def getMetrology():
 		    }]
 		}
 	else:
-		return '',404
+		return makeJsonResponse({},2000)
+
 	db.close()
 	return makeJsonResponse(outData)
 
@@ -453,24 +454,28 @@ def getMap():
 	
 	db = Db()
 
-	game_id = db.select("SELECT ga_id FROM Game WHERE ga_run = 'true'")[0]["ga_id"]
+	tmp = db.select("SELECT ga_id FROM Game WHERE ga_run = 'true'")
+	if len(tmp) > 0 :
+		game_id = tmp[0]["ga_id"]
 
-	itemByPlayer = []
-	playerInfo = []
-	drinkByPlayer = []
+		itemByPlayer = []
+		playerInfo = []
+		drinkByPlayer = []
 
-	players_actifs = db.select("SELECT player.pl_pseudo FROM Player INNER JOIN Participate par ON par.pl_id = player.pl_id INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
+		players_actifs = db.select("SELECT player.pl_pseudo FROM Player INNER JOIN Participate par ON par.pl_id = player.pl_id INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
+			
+		players_actifs_id = db.select("SELECT par.pl_id FROM Participate par INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
+
+		for players in players_actifs_id:	
+			pseudo = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(players["pl_id"]) +"'")[0]["pl_pseudo"]
+			itemByPlayer.append({  pseudo : makeMapItem(players["pl_id"]) })
+			playerInfo.append({ pseudo : makePlayerInfo(pseudo) })
+			drinkByPlayer.append({ pseudo : makeDrinkOffered(pseudo) })
 		
-	players_actifs_id = db.select("SELECT par.pl_id FROM Participate par INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
-
-	for players in players_actifs_id:	
-		pseudo = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(players["pl_id"]) +"'")[0]["pl_pseudo"]
-		itemByPlayer.append({  pseudo : makeMapItem(players["pl_id"]) })
-		playerInfo.append({ pseudo : makePlayerInfo(pseudo) })
-		drinkByPlayer.append({ pseudo : makeDrinkOffered(pseudo) })
-	
-	ranking = RankingPlayer(game_id)
-	region = MakeRegion(game_id)
+		ranking = RankingPlayer(game_id)
+		region = MakeRegion(game_id)
+	else:
+		return '"Game ID Not Found"', 412
 
 	db.close()
 
