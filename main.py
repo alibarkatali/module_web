@@ -238,7 +238,7 @@ def CalculeSales(player_id):
 
 	if sales == None:
 		return 0
-	else: 
+	else:
 		return sales
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
