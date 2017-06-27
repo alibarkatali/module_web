@@ -261,7 +261,7 @@ def setMetrology():
 
 	# La meteo d'aujourd'hui et de demain
 	for weather in data['weather']:
-		if weather['dfn'] == 0:
+		if weather['dfn'] == '0':
 			weatherToday = weather['weather']
 		else:
 			weatherTomorrow = weather['weather']
