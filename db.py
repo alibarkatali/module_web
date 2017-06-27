@@ -1,7 +1,7 @@
 import psycopg2, urlparse, re, os
 import urlparse
 
-# url base de données heroku
+# url de la base de donnees heroku
 DATABASE_URL="postgres://eoxdsmbgnnjprd:819342ac1961db6dceb37078f90e581b45743e34502382e75184184eae7b1948@ec2-23-21-220-152.compute-1.amazonaws.com:5432/decknecom629ch"
 
 class Db:
@@ -10,11 +10,11 @@ class Db:
   def __init__(self):
     """Initiate a connection to the default postgres database."""
 
-    # connexion base de données locale
+    # connexion a la base de donnees locale
     #url = urlparse.urlparse("postgresql://imerir:imerir@localhost/imerir")
 
 
-    # connexion base de données heroku
+    # connexion base de donnees heroku
     urlparse.uses_netloc.append("postgres")
     url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
