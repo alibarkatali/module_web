@@ -324,7 +324,7 @@ def rejoin():
 	return makeJsonResponse({ "name" : playerName, "location" : { "latitude" : coordinates[0]['loc_longitude'], "longitude" : coordinates[0]['loc_latitude']}, "info" : playerInfo })
 
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ok ~~~~~~~~~~
 # R1/R7 - Commande "Temps"
 # GET /metrology
 @app.route('/metrology',methods=['GET'])
@@ -349,7 +349,8 @@ def getMetrology():
 		    }]
 		}
 	else:
-		return '',404
+		return makeJsonResponse({},2000)
+
 	db.close()
 	return makeJsonResponse(outData)
 
@@ -449,24 +450,29 @@ def getMap():
 	
 	db = Db()
 
-	game_id = db.select("SELECT ga_id FROM Game WHERE ga_run = 'true'")[0]["ga_id"]
+	tmp = db.select("SELECT ga_id FROM Game WHERE ga_run = 'true'")
+	if len(tmp) > 0 :
+		game_id = tmp[0]["ga_id"]
 
-	itemByPlayer = {}
-	playerInfo = {}
-	drinkByPlayer = {}
+		itemByPlayer = {}
+		playerInfo = {}
+		drinkByPlayer = {}
 
-	players_actifs_id = db.select("SELECT par.pl_id FROM Participate par INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
+		players_actifs_id = db.select("SELECT par.pl_id FROM Participate par INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
 
-	for players in players_actifs_id:	
-		pseudo = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(players["pl_id"]) +"'")[0]["pl_pseudo"]
-		itemByPlayer[pseudo] = makeMapItem(players["pl_id"])
-		playerInfo[pseudo] = makePlayerInfo(pseudo)
-		drinkByPlayer[pseudo] = makeDrinkOffered(pseudo)
+		for players in players_actifs_id:	
+			pseudo = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(players["pl_id"]) +"'")[0]["pl_pseudo"]
+			itemByPlayer[pseudo] = makeMapItem(players["pl_id"])
+			playerInfo[pseudo] = makePlayerInfo(pseudo)
+			drinkByPlayer[pseudo] = makeDrinkOffered(pseudo)
 	
-	ranking = RankingPlayer(game_id)
-	region = MakeRegion(game_id)
+		ranking = RankingPlayer(game_id)
+		region = MakeRegion(game_id)
+		db.close()
 
-	db.close()
+	else:
+		db.close()
+		return '"Game ID Not Found"', 412
 
 	return makeJsonResponse({ "map" : { "region" : region, "ranking" : ranking, "itemsByPlayer" : itemByPlayer , "playerInfo" : playerInfo, "drinksByPlayer" : drinkByPlayer })
 
