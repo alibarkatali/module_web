@@ -224,21 +224,24 @@ def getMetrology():
 	db = Db()
 	weather = db.select("SELECT * FROM Date ORDER BY da_day DESC LIMIT 1")
 
-	wToday = weather[0]["da_weather"]
-	wTomorrow = weather[0]["da_weather_tomorrow"]
-	tStam = weather[0]["da_timestamp"]
+	if len(weather):
+		wToday = weather[0]["da_weather"]
+		wTomorrow = weather[0]["da_weather_tomorrow"]
+		tStam = weather[0]["da_timestamp"]
 
-	outData = {
-	"timestamp" : tStam,
-	"weather" : [ {
-	        "weather" : wToday,
-	        "dfn" : 0,
-	    },
-	    {
-	        "weather" : wTomorrow,
-	        "dfn" : 1,
-	    }]
-	}
+		outData = {
+		"timestamp" : tStam,
+		"weather" : [ {
+		        "weather" : wToday,
+		        "dfn" : 0,
+		    },
+		    {
+		        "weather" : wTomorrow,
+		        "dfn" : 1,
+		    }]
+		}
+	else:
+		return '',404
 	db.close()
 	return makeJsonResponse(outData)
 
