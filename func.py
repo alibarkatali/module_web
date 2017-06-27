@@ -1,5 +1,8 @@
 import json
 
+# VARIABLES GLOBALES
+db = Db()
+
 def makeRegion(game_id):
 	""" 
 		:param arg1: description
