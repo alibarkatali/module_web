@@ -149,7 +149,7 @@ def makePlayerInfo(pl_name):
 	info = CalculeMoneyInfo(pl_name, 0)
 	drinkInfo = makeDrinkOffered(pl_name)																																																																																																																																																																										
 
-	return ([{ "cash" : info['cash'], "profit" : info['profit'], "sales" : info['sales'], "drinksOffered" : drinkInfo }])
+	return ({ "cash" : info['cash'], "profit" : info['profit'], "sales" : info['sales'], "drinksOffered" : drinkInfo })
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les info monetaires du joueur (son budget courant, ses ventes & son profit depuis le debut de la partie)
