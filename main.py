@@ -259,7 +259,7 @@ def setMetrology():
 	# Dernier jour du jeu
 	lastDay = db.select("SELECT da_day FROM Date ORDER BY da_day DESC LIMIT 1")
 	if len(lastDay) == 0:
-		lastDay = 0
+		lastDay = 1
 	else:
 		lastDay = lastDay[0]['da_day']
 
@@ -277,7 +277,7 @@ def setMetrology():
 	dataSql['weatherTomorrow'] = weatherTomorrow
 	dataSql['timestamp'] = timestamp
 
-	if timestamp % 24 >= 0 :
+	if timestamp % 24 == 0 :
 		dataSql['day'] = lastDay+1
 
 		# lancer le simulateur JAVA
