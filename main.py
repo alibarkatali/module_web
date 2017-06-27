@@ -443,7 +443,7 @@ def getMetrology():
 	    }]
 	}
 	db.close()
-	return makeJsonResponse({ "metrology": outData })
+	return makeJsonResponse(outData)
     #return makeJsonResponse(data)
 
 # R1/R7 - Commande "Temps"
