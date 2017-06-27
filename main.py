@@ -257,7 +257,7 @@ def setMetrology():
 	lastDay = db.select("SELECT da_day FROM Date ORDER BY da_day DESC LIMIT 1")[0]['da_day']
 
 	# Le Timestamp
-	timestamp = data['timestamp']
+	timestamp = int(data['timestamp'])
 
 	# La meteo d'aujourd'hui et de demain
 	for weather in data['weather']:
