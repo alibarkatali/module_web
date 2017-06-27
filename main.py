@@ -29,35 +29,6 @@ FORECAST = {
 
 TEMPS =  {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : random.choice(WEATHER)}}
 
-COORDINATESSPAN = {
-	"latitudeSpan" : 0.0,
-	"longitudeSpan" : 0.0
-}
-
-REGION = {
-	"center" : COORDINATES,
-	"span" : COORDINATESSPAN
-}
-
-MAPITEM = {
-	"kind" : "", # accepte la valeur : "stand" ou "ad"
-	"owner" : "", # le player
-	"location" : "", # localisation dans la map
-	"influence" : 0.0 # distance
-}
-
-PLAYERINFO = {
-	"cash" : 1000.0, # le budget initial du player
-	"sales" : 0, # nombre de boissons consommes = solde - total, pour toutes les recettes
-	"profit" : 0 # le chiffre d affaire de la vente, si < 0 il a perdu la partie
-}
-
-GAMEINFO = {}
-
-DRINKINFO = {
-	"name" : "None",
-	"price": 0.0
-}
 
 #MAP = {
 #	"region" : REGION,
@@ -67,81 +38,6 @@ DRINKINFO = {
 #	"drinkByPlayer" : [] 
 #}
 
-SALE = {
-	"player" : "None", # nom du player
-	"item" : "None", # nom de la recette achater
-	"quantity" : 0 # combien d article vendus
-}
-
-INGREDIENT = []
-
-INGREDIENT.append({
-			"name" : "sucre",
-			"cost" : 2,
-			"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-			"isCold" : 2 # 0 : pas chaud, 1 : chaud,  2 : autres
-		}
-	)
-
-INGREDIENT.append({
-			"name" : "eau gazeuse",
-			"cost" : 1.5,
-			"hasAlcohol" : 2, # 0 : non alcole, 1 : alcolise,  2 : autres
-			"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
-		}
-	)
-
-INGREDIENT.append({
-			"name" : "citrone",
-			"cost" : 3,
-			"hasAlcohol" : 2, # 0 : non alcole, 1 : alcolise,  2 : autres
-			"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
-		}
-	)
-
-INGREDIENT.append({
-			"name" : "cafe moulu",
-			"cost" : 5,
-			"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-			"isCold" : 1# 0 : pas chaud, 1 : chaud,  2 : autres
-		}
-	)
-
-INGREDIENT.append({
-			"name" : "eau",
-			"cost" : 0,
-			"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-			"isCold" : 2 # 0 : pas chaud, 1 : chaud,  2 : autres
-		}
-	)
-
-RECIPE = {
-	"name" : "Limonade",
-	"ingredients" : INGREDIENT,
-	"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-	"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
-}
-
-PLAYERACTION = {
-	"name" : "None", # prends une valeur : recipe ou ppurchase ou pub
-}
-
-PLAYERACTIONNEWRECIPE = {
-	"kind" : "recipe",
-	"recipe" : RECIPE
-}
-
-PLAYERACTIONAD = {
-	"kind" : "ad",
-	"location" : COORDINATES
-}
-
-PLAYERACTIONDRINKS = {
-	"kind" : "drink",
-	"prepare" : {
-		"limonade" : 0 
-	}
-}
 
 ################################################################
 ####	VARIABLES DES TESTS
@@ -299,77 +195,181 @@ def joinResponse(name):
 
 	return GAMEINFO
 
-def makePlayerInfo(pl_name):
-	info = CalculeMoneyInfo(pl_name)
-	return makeJsonResponse(info)
+def MakeRegion(game_id): 
+	
+	db = Db();
 
-def makeDrinkInfo(name):
+	coord = db.select("SELECT ga_centrex, ga_centrey FROM Game WHERE ga_id = '"+ str(game_id) +"' AND ga_run = 'true'")
+	
+	span = db.select("SELECT ga_largeur, ga_longueur FROM Game WHERE ga_id = '"+ str(game_id) +"' AND ga_run = 'true'")
+
+	db.close()
+	
+	return ({ "center" : { "longitude" : coord[0]["ga_centrex"], "latitude" : coord[0]["ga_centrey"] }, "span" : { "latitudeSpan" : span[0]["ga_longueur"], "longitude" : span[0]["ga_largeur"] } })
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fonction : Permet de classer les joueurs, en fonction de leur budget (le plus riche est premier)
+# paramsIn : variable
+# paramsOut : data de type JSON
+def RankingPlayer(game_id):
+	
+	ranking = []
 
 	db = Db()
-	price = CalculePriceRec(name)
-	info = db.select("SELECT rec_nom, rec_alcohol, rec_cold FROM Recipe WHERE rec_nom = '"+ name +"'")
+
+	players_actifs = db.select("SELECT player.pl_pseudo FROM Player INNER JOIN Participate par ON par.pl_id = player.pl_id INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
+
+	for player in players_actifs:
+		ranking.append(player["pl_pseudo"])
+		#money_info.append({ player["pl_pseudo"] : CalculeMoneyInfo(player["pl_pseudo"], 1) })
+
 	db.close()
 
-	drinkInfo  = [{ "name" : info[0]["rec_nom"] }, { "price" : price['sum'] }, { "hasAlcohol" : info[1]["rec_alcohol"] }, { "isCold" : info[2]["rec_cold"] }]
-	return makeJsonResponse(drinkInfo)
+	return ranking
+	
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fonction : Permet de creer une donnee Json de type mapItem
+# paramsIn : variable
+# paramsOut : data de type JSON
+def makeMapItem(pl_id):
+	
+	db = Db()
+	coordinates = db.select("SELECT loc_longitude, loc_latitude FROM Stand  WHERE pl_id = '"+ str(pl_id) +"'")
+	influence = db.select("SELECT loc_rayon FROM Stand WHERE pl_id = '"+ str(pl_id) +"'")[0]["loc_rayon"]
+	pl_name = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(pl_id) +"'")[0]["pl_pseudo"]
 
+	db.close()	
+
+	return ({ "kind" : "stand", "owner" : pl_name, "location" : { "latitude" : coordinates[0]['loc_longitude'], "longitude" : coordinates[0]['loc_latitude']}, "influence" : influence })	
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fonction : Permet de creer une donnee Json de type playerInfo
+# paramsIn : variable
+# paramsOut : data de type JSON
+def makePlayerInfo(pl_name):
+
+	info = CalculeMoneyInfo(pl_name, 0)
+	drinkInfo = makeDrinkOffered(pl_name)
+
+	return ({ "cash" : info['cash'], "profit" : info['profit'], "sales" : info['sales'], "drinksOffered" : drinkInfo })
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fonction : Permet de calculer les info monetaires du joueur (son budget courant, ses ventes & son profit depuis le debut de la partie)
+# paramsIn : variable nom du player, et 0 ou 1 : renvoit toutes les infos si 0, que le budget si 1
+# paramsOut : data de type JSON
+def CalculeMoneyInfo(player, status=0):
+
+	db = Db()
+
+	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")[0]["pl_budget_ini"]
+	player_id = db.select("SELECT p.pl_id FROM Player p WHERE pl_pseudo = '"+ player +"'")[0]["pl_id"]
+
+	earnings = CalculeEarnings(player_id)
+	spending = CalculeSpend(player_id)
+	sales = CalculeSales(player_id)
+
+	cash = budget_ini - spending + earnings
+	profit = earnings - spending
+	
+	db.close()
+
+	if status == 0:
+		return ({ "cash" : cash, "profit" : profit, "sales" : sales })
+	else: 
+		return ({ "cash" : cash })
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les info monetaires du joueur (son budget courant & son profit depuis le debut de la partie)
 # paramsIn : a voir, peut etre type Json, liste, variable
-# paramsOut : data de type JSON
-def CalculeMoneyInfo(player):
+# paramsOut : data de type dictionnaire
+def makeDrinkOffered(pl_name):
+
+	drinkOffered = []
 
 	db = Db()
-
-	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")
-	player_id = db.select("SELECT p.pl_id FROM Player p WHERE pl_pseudo = '"+ player +"'")
-
-	print (player_id)
-
-	sales = CalculeSales(player_id[0]["pl_id"])
-	spending = CalculeSpend(player_id[0]["pl_id"])
-
-	cash = budget_ini[0]["pl_budget_ini"] - spending[0]["sum"] + sales[0]["sum"]
-	profit = sales[0]["sum"] - spending[0]["sum"]
-
+	
+	player_id = db.select("SELECT p.pl_id FROM Player p WHERE p.pl_pseudo = '"+ pl_name +"'")[0]["pl_id"]
+	da_max = db.select("SELECT MAX(da_id) FROM Date")[0]["max"]
+	drink_id = db.select("SELECT t.rec_id FROM Transaction t WHERE t.pl_id = '"+ str(player_id) +"' AND t.da_id = '"+ str(da_max) +"'")
+	
 	db.close()
+		
+	for drink in drink_id:	
+		drinkInfo = makeDrinkInfo(drink["rec_id"])	
+		drinkOffered.append(drinkInfo)
 
-	return makeJsonResponse({ "cash" : cash, "profit" : profit, "sales" : sales })
+	return (drinkOffered)
+	
+
+def makeDrinkInfo(rec_id):
+
+	db = Db()
+	price = CalculePriceRec(rec_id)
+	info = db.select("SELECT rec_nom, rec_alcohol, rec_cold FROM Recipe WHERE rec_id = '"+ str(rec_id) +"'")
+	db.close()
+	
+	drinkInfo  = { "name" : info[0]["rec_nom"], "price" : price,  "hasAlcohol" : info[0]["rec_alcohol"], "isCold" : info[0]["rec_cold"] }
+	
+	return (drinkInfo)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les ventes globales (en euros) du joueur depuis le debut de la partie.
-# paramsIn : id du joueur (en Json ? En variable ? Liste?)
-# paramsOut : data de type JSON
+# paramsIn : id du joueur 
+# paramsOut :  Nbre (float ou 0)
+def CalculeEarnings(player_id):
+
+	db = Db()
+	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '" + str(player_id) +"'")[0]["sum"]
+	db.close()
+
+	if sales == None:
+		return 0
+	else: 
+		return sales
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fonction : Permet de calculer le nombre de recette vendu du joueur depuis le debut de la partie.
+# paramsIn : id du joueur 
+# paramsOut : Nbre (float ou 0)
 def CalculeSales(player_id):
 
 	db = Db()
-	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '" + str(player_id) + "'")
+	sales = db.select("SELECT SUM(t.qte_sale) FROM Transaction t WHERE t.pl_id = '" + str(player_id) +"'")[0]["sum"]
 	db.close()
 
-	return makeJsonResponse(sales)
+	if sales == None:
+		return 0
+	else: 
+		return sales
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer les depenses globales (en euros) du joueur depuis le debut de la partie.
 # paramsIn : id du joueur (en Json ? En variable ? Liste?)
 # paramsOut : data de type JSON
 def CalculeSpend(player_id):
+
 	db = Db()
-	spending = db.select("SELECT SUM(t.qte_prev * (SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = t.rec_id) ) FROM Transaction t WHERE t.pl_id = '"+ str(player_id) +"'")
+	spending = db.select("SELECT SUM(t.qte_prev * (SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = t.rec_id) ) FROM Transaction t WHERE t.pl_id = '"+ str(player_id) +"'")[0]["sum"]
 	db.close()
-	return makeJsonResponse(spending)
+
+	if spending == None:
+		return 0
+	else: 
+		return spending
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de calculer le prix d'une recette
 # paramsIn : id de la recette (en Json ? En variable ? Liste?)
 # paramsOut : data de type JSON
-def CalculePriceRec(name):
+def CalculePriceRec(rec_id):
 
 	db = Db()
-	price_rec = ("SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = '"+ name +"'")
+	price_rec = db.select("SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id	 = '"+ str(rec_id) +"'")[0]['sum']
 	db.close()
 
-	return makeJsonResponse(price_rec)
+	return price_rec
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de convert une liste en JSON et ajouter le code de retour.
@@ -392,9 +392,11 @@ def resetSimulation():
 # GET /players
 @app.route('/players',methods=['GET'])
 def getPlayers():
+	
 	db = Db()
 	playersInfo = db.select("SELECT * FROM Player")
 	db.close()
+	
 	return makeJsonResponse({ "players" : playersInfo },200)
 
 
@@ -409,22 +411,20 @@ def rejoin():
 
 	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ playerName +"'")
 
-	print (info)
-
-	if len(info) == 0 :
-		db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(playerName), 100);""", data)
-		db.execute(""" INSERT INTO stand(loc_coordX, loc_coordY, loc_rayon, pl_id)
-			       SELECT 0,0,0, player.pl_id FROM Player player where pl_pseudo = @(playerName); """, data)
-	else:
+	if len(info) > 0 :
 		return makeJsonResponse(data,400)
 
+	db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(playerName), 100);""", data)
+	db.execute("""INSERT INTO stand(loc_longitude, loc_latitude, loc_rayon, pl_id)
+		       SELECT 0,0,0, player.pl_id FROM Player player where pl_pseudo = @(playerName); """, data)
+	db.execute("""INSERT INTO Participate(present, ga_id, pl_id) SELECT 'true',1, player.pl_id FROM Player player where pl_pseudo = @(playerName); """, data)		
 
-
-
-	coordinates = db.select("SELECT loc_coordX, loc_coordY FROM Stand WHERE pl_id = (SELECT player.pl_id FROM Player player WHERE pl_pseudo = '"+ playerName +"' )")
-	playerInfo =  makePlayerInfo(str(playerName))
+	coordinates = db.select("SELECT loc_longitude, loc_latitude FROM Stand WHERE pl_id = (SELECT player.pl_id FROM Player player WHERE pl_pseudo = '"+ playerName +"' )")
+	playerInfo =  makePlayerInfo(playerName)
+	
 	db.close()
-	return makeJsonResponse({ "name" : playerName, "location" : coordinates, "playerInfo" : playerInfo })
+
+	return makeJsonResponse({ "name" : playerName, "location" : { "latitude" : coordinates[0]['loc_longitude'], "longitude" : coordinates[0]['loc_latitude']}, "info" : playerInfo })
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -464,7 +464,7 @@ def leave(playerName):
 @app.route('/sales', methods=['POST'])
 def simulCmd():
 	data = request.get_json()
-
+	# INSERER LES VENTES DANS BDD
 	return makeJsonResponse(data)
 
 
@@ -480,18 +480,42 @@ def simulActions(playerName):
 	if not data['simulated']:
 		return '"Not find simulated"', 412
 
+	# REGARDER DE QUELLES FORMES SONT LES DONNEES POUR LES METTRES DANS LA TABLE Transaction - Easy !!!
+
 	#if data['simulated'] == True:
 
 	return "Instructions du joueur pour le jour suivant"
-
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # R2 - Obtenir les details d une partie (JAVA)
 # GET /map
 @app.route('/map',methods=['GET'])
 def getMap():
+	
+	db = Db()
 
-	return makeJsonResponse(dataMatt)
+	game_id = db.select("SELECT ga_id FROM Game WHERE ga_run = 'true'")[0]["ga_id"]
+
+	itemByPlayer = []
+	playerInfo = []
+	drinkByPlayer = []
+
+	players_actifs = db.select("SELECT player.pl_pseudo FROM Player INNER JOIN Participate par ON par.pl_id = player.pl_id INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
+		
+	players_actifs_id = db.select("SELECT par.pl_id FROM Participate par INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
+
+	for players in players_actifs_id:	
+		pseudo = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(players["pl_id"]) +"'")[0]["pl_pseudo"]
+		itemByPlayer.append({  pseudo : makeMapItem(players["pl_id"]) })
+		playerInfo.append({ pseudo : makePlayerInfo(pseudo) })
+		drinkByPlayer.append({ pseudo : makeDrinkOffered(pseudo) })
+	
+	ranking = RankingPlayer(game_id)
+	region = MakeRegion(game_id)
+
+	db.close()
+
+	return makeJsonResponse({ "map" : { "region" : region, "ranking" : ranking, "itemsByPlayer" : itemByPlayer }, "playerInfo" : playerInfo, "drinksByPlayer" : drinkByPlayer })
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
