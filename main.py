@@ -276,6 +276,7 @@ def setMetrology():
 	dataSql['weatherToday'] = weatherToday
 	dataSql['weatherTomorrow'] = weatherTomorrow
 	dataSql['timestamp'] = timestamp
+	dataSql['lastDay'] = lastDay
 
 	if timestamp % 24 == 0 :
 		dataSql['day'] = lastDay+1
@@ -286,7 +287,7 @@ def setMetrology():
 		db.execute("""INSERT INTO Date(da_day,da_weather, da_weather_tomorrow,da_timestamp) 
 			VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
 	else:
-		db.execute("""UPDATE Date SET da_timestamp = @(timestamp);""", dataSql)
+		db.execute("""UPDATE Date SET da_timestamp = @(timestamp) WHERE da_day = @(lastDay);""", dataSql)
 
 	db.close()
 
