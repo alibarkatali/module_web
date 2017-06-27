@@ -260,7 +260,7 @@ def simulActions(playerName):
 @app.route('/map',methods=['GET'])
 def getMap():
 
-	return makeJsonResponse(dataMatt)
+	return "makeJsonResponse(dataMatt)"
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
