@@ -456,13 +456,15 @@ def setMetrology():
 
 	timestamp = data['timestamp']
 
+	weatherToday = None
+	weatherTomorrow =  None
 	for weather in data['weather']:
 		if weather['dfn'] == 0:
 			weatherToday = weather['weather']
 		else:
 			weatherTomorrow = weather['weather']
 
-	dataSql = {}
+	dataSql = []
 	dataSql['day'] = 1
 	dataSql['weatherToday'] = weatherToday
 	dataSql['weatherTomorrow'] = weatherTomorrow
