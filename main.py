@@ -255,6 +255,8 @@ def setMetrology():
 
 	# Dernier jour du jeu
 	lastDay = db.select("SELECT da_day FROM Date ORDER BY da_day DESC LIMIT 1")[0]['da_day']
+	if lastDay == None:
+		lastDay = 0
 
 	# Le Timestamp
 	timestamp = int(data['timestamp'])
