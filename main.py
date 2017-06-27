@@ -38,8 +38,8 @@ dataMatt = {
         "kind" : "STAND",
         "owner" : "michel",
         "location":{
-          "latitude" : 40.2,
-          "longitude" : 40.2
+          "latitude" : 78.2,
+          "longitude" : 56.2
         },
         "influence" : 40.3
       }]
@@ -276,7 +276,7 @@ def setMetrology():
 	dataSql['weatherToday'] = weatherToday
 	dataSql['weatherTomorrow'] = weatherTomorrow
 	dataSql['timestamp'] = timestamp
-	dataSql['lastDay'] = lastDay
+	dataSql['lastDay'] = timestamp%24
 
 	if timestamp % 24 == 0 :
 		dataSql['day'] = lastDay+1
