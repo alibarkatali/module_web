@@ -97,7 +97,6 @@ $(document).ready(function () {
 	    	}
 		});
 
-		
 	}
 
 	/**
@@ -109,9 +108,16 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
+				console.log(result)
+
 				$('#timer').html(result.timestamp);
-	        	$('#weatherToday').html(result.weatherToday);
-	        	$('#weatherTomorrow').html(result.weatherTomorow);
+				$.each(result.weather, function( index, value ) {
+					if(value['dfn'] == 0) 
+						$('#weatherToday').html(value['weather']);
+	        		else 
+	        			$('#weatherTomorrow').html(value['weather']);
+				});
+				
 	    	}
 		});
 	}
@@ -205,7 +211,9 @@ $(document).ready(function () {
 	*/
 	function gameInit () {
 
-		$('#playgamebloc').addClass("hidden");
+		//$('#playgamebloc').addClass("hidden");
+		//$('#mapbloc').removeClass("col-md-7");
+		//$('#mapbloc').addClass("col-md-12");
 
 		/* # récupération de la météo */
 	  	getMetrology ();

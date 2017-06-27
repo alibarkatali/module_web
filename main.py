@@ -9,42 +9,6 @@ app = Flask(__name__)
 app.debug = True
 CORS(app)
 
-WEATHER = ["RAINNY","CLOUDY","SUNNY","HEATWAVE","THUNDERSTORM"]
-
-COORDINATES = {}
-
-cash_init = 100;
-
-FORECAST = {
-	"dfn" : 0, # aujourdhui = 0, demain = 1
-	"weather" : random.choice(WEATHER)
-}
-
-#TEMPS = {
-#	"timestamp" : 0, # nombre d heure ecoulees depuis le debut du jeu
-#	"weather" : random.choice(WEATHER)
-#}
-
-# {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : "RAINNY"}}
-
-TEMPS =  {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : random.choice(WEATHER)}}
-
-
-#MAP = {
-#	"region" : REGION,
-#	"ranking" : [] # les noms des players
-#	"itemByPlayer" : [], 
-#	"playerInfo" : [], 
-#	"drinkByPlayer" : [] 
-#}
-
-
-################################################################
-####	VARIABLES DES TESTS
-
-playersList = []
-recipesList = {}
-
 dataMatt = {
   "map" : {
     "region" :{
@@ -74,8 +38,8 @@ dataMatt = {
         "kind" : "STAND",
         "owner" : "michel",
         "location":{
-          "latitude" : 40.2,
-          "longitude" : 40.2
+          "latitude" : 78.2,
+          "longitude" : 56.2
         },
         "influence" : 40.3
       }]
@@ -121,72 +85,6 @@ dataMatt = {
   }
   }
 
-meteos = {
-	"timestamp" : 0,
-	"weather" : {
-		"dfn" : 0, # aujourdhui = 0, demain = 1
-		"weather" : random.choice(WEATHER)
-	}
-}
-
-recipesList['Limonade'] = {
-		"name" : "Limonade",
-		"ingredients" : [
-			{
-				"name" : "sucre",
-				"cost" : 2,
-				"hasAlcohol" : 0, 
-				"isCold" : 2 
-			},
-			{
-				"name" : "eau gazeuse",
-				"cost" : 1.5,
-				"hasAlcohol" : 2, 
-				"isCold" : 0 
-			},
-			{
-				"name" : "citrone",
-				"cost" : 3,
-				"hasAlcohol" : 2, 
-				"isCold" : 0 
-			}
-		],
-		"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-		"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
-	}
-
-recipesList['Cafe'] = {
-		"name" : "Cafe",
-		"ingredients" : [
-			{
-				"name" : "cafe moulu",
-				"cost" : 5,
-				"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-				"isCold" : 1# 0 : pas chaud, 1 : chaud,  2 : autres
-			},
-			{
-				"name" : "eau",
-				"cost" : 0,
-				"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-				"isCold" : 2 # 0 : pas chaud, 1 : chaud,  2 : autres
-			},
-			{
-				"name" : "sucre",
-				"cost" : 2,
-				"hasAlcohol" : 0, 
-				"isCold" : 2 
-			}
-		],
-		"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-		"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
-	}
-
-
-
-####	FIN VARIABLES DES TESTS
-################################################################
-
-
 def joinResponse(name):
 	global GAMEINFO
 	GAMEINFO['name'] = name
@@ -195,16 +93,16 @@ def joinResponse(name):
 
 	return GAMEINFO
 
-def MakeRegion(game_id): 
-	
+def MakeRegion(game_id):
+
 	db = Db();
 
 	coord = db.select("SELECT ga_centrex, ga_centrey FROM Game WHERE ga_id = '"+ str(game_id) +"' AND ga_run = 'true'")
-	
+
 	span = db.select("SELECT ga_largeur, ga_longueur FROM Game WHERE ga_id = '"+ str(game_id) +"' AND ga_run = 'true'")
 
 	db.close()
-	
+
 	return ({ "center" : { "longitude" : coord[0]["ga_centrex"], "latitude" : coord[0]["ga_centrey"] }, "span" : { "latitudeSpan" : span[0]["ga_longueur"], "longitude" : span[0]["ga_largeur"] } })
 
 
@@ -213,7 +111,7 @@ def MakeRegion(game_id):
 # paramsIn : variable
 # paramsOut : data de type JSON
 def RankingPlayer(game_id):
-	
+
 	ranking = []
 
 	db = Db()
@@ -227,13 +125,13 @@ def RankingPlayer(game_id):
 	db.close()
 
 	return ranking
-	
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de creer une donnee Json de type mapItem
 # paramsIn : variable
 # paramsOut : data de type JSON
 def makeMapItem(pl_id):
-	
+
 	db = Db()
 	coordinates = db.select("SELECT loc_longitude, loc_latitude FROM Stand  WHERE pl_id = '"+ str(pl_id) +"'")
 	influence = db.select("SELECT loc_rayon FROM Stand WHERE pl_id = '"+ str(pl_id) +"'")[0]["loc_rayon"]
@@ -432,16 +330,77 @@ def rejoin():
 # GET /metrology
 @app.route('/metrology',methods=['GET'])
 def getMetrology():
-	return makeJsonResponse(meteos)
+	db = Db()
+	weather = db.select("SELECT * FROM Date ORDER BY da_day DESC LIMIT 1")
+
+	if len(weather):
+		wToday = weather[0]["da_weather"]
+		wTomorrow = weather[0]["da_weather_tomorrow"]
+		tStam = weather[0]["da_timestamp"]
+
+		outData = {
+		"timestamp" : tStam,
+		"weather" : [ {
+		        "weather" : wToday,
+		        "dfn" : 0,
+		    },
+		    {
+		        "weather" : wTomorrow,
+		        "dfn" : 1,
+		    }]
+		}
+	else:
+		return '',404
+	db.close()
+	return makeJsonResponse(outData)
+
 
 # R1/R7 - Commande "Temps"
 # POST /metrology
 @app.route('/metrology',methods=['POST'])
 def setMetrology():
 	data = request.get_json()
-	TEMPS['timestamp'] = data['timestamp']
-	TEMPS['weather'] = data['weather']
-	return makeJsonResponse(TEMPS)
+	dataSql = {}
+	weatherToday = None
+	weatherTomorrow =  None
+	db = Db()
+
+	# Dernier jour du jeu
+	lastDay = db.select("SELECT da_day FROM Date ORDER BY da_day DESC LIMIT 1")
+	if len(lastDay) == 0:
+		lastDay = 1
+	else:
+		lastDay = lastDay[0]['da_day']
+
+	# Le Timestamp
+	timestamp = int(data['timestamp'])
+
+	# La meteo d'aujourd'hui et de demain
+	for weather in data['weather']:
+		if weather['dfn'] == '0':
+			weatherToday = weather['weather']
+		else:
+			weatherTomorrow = weather['weather']
+
+	dataSql['weatherToday'] = weatherToday
+	dataSql['weatherTomorrow'] = weatherTomorrow
+	dataSql['timestamp'] = timestamp%24
+	dataSql['lastDay'] = lastDay
+
+	if timestamp % 24 == 0 :
+		dataSql['day'] = lastDay+1
+
+		# lancer le simulateur JAVA
+
+		# Insertion dans la base
+		db.execute("""INSERT INTO Date(da_day,da_weather, da_weather_tomorrow,da_timestamp) 
+			VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
+	else:
+		db.execute("""UPDATE Date SET da_timestamp = @(timestamp) WHERE da_day = @(lastDay);""", dataSql)
+
+	db.close()
+
+	return makeJsonResponse(data,200)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

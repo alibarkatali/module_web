@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import psycopg2, urlparse, re, os
+import urlparse
 
 #DATABASE_URL="postgres://eoxdsmbgnnjprd:819342ac1961db6dceb37078f90e581b45743e34502382e75184184eae7b1948@ec2-23-21-220-152.compute-1.amazonaws.com:5432/decknecom629ch"
 #DATABASE_URL="postgresql://postgres:imerir@localhost/imerir"
@@ -8,6 +9,7 @@ class Db:
 
   def __init__(self):
     """Initiate a connection to the default postgres database."""
+
     #urlparse.uses_netloc.append("postgres")
     url = urlparse.urlparse("postgresql://imerir:imerir@localhost/imerir")
 
