@@ -458,8 +458,11 @@ def setMetrology():
 
 	weatherToday = None
 	weatherTomorrow =  None
+	
+
+
 	for weather in data['weather']:
-		if weather['dfn'] == 0:
+		if weather['dfn'] == '0':
 			weatherToday = weather['weather']
 		else:
 			weatherTomorrow = weather['weather']
