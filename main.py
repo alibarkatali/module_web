@@ -131,15 +131,44 @@ def RankingPlayer(game_id):
 # paramsOut : data de type JSON
 def makeMapItem(pl_id):
 
+	mapItem = []
+
+	mapItem.append(makeMapItemStand(pl_id))
+	
 	db = Db()
+
+	pub_id = db.select("SELECT p.p_id FROM Pub p WHERE p.pl_id = "+ str(pl_id))
+	
+	db.close()
+
+	if len(pub_id) != 0:
+		for row in pub_id:
+			mapItem.append(makeMapItemPub(row['pub_id']))
+
+	return (mapItem)
+
+
+def makeMapItemStand(pl_id):
+
+	db = Db()
+
 	coordinates = db.select("SELECT loc_longitude, loc_latitude FROM Stand  WHERE pl_id = '"+ str(pl_id) +"'")
 	influence = db.select("SELECT loc_rayon FROM Stand WHERE pl_id = '"+ str(pl_id) +"'")[0]["loc_rayon"]
 	pl_name = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(pl_id) +"'")[0]["pl_pseudo"]
 
 	db.close()	
-
 	return ({ "kind" : "stand", "owner" : pl_name, "location" : { "latitude" : coordinates[0]['loc_longitude'], "longitude" : coordinates[0]['loc_latitude']}, "influence" : influence })	
 
+def makeMapItemPub(pub_id):
+	db = Db()
+
+	coordinates = db.select("SELECT p_coordx, p_coordy FROM Pub WHERE pub_id = '"+ str(pub_id) +"'")
+	influence = db.select("SELECT p_rayon FROM Pub WHERE pub_id = '"+ str(pub_id) +"'")[0]["p_rayon"]
+	pl_name = db.select("SELECT pl.pl_pseudo FROM Player pl INNER JOIN Pub p ON pl.pl_id = p.pl_id WHERE p.pub_id = '"+ str(pub_id) +"'")[0]["pl_pseudo"]
+
+	db.close()	
+	return ({ "kind" : "ad", "owner" : pl_name, "location" : { "latitude" : coordinates[0]['p_coordx'], "longitude" : coordinates[0]['p_coordy']}, "influence" : influence })	
+	
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fonction : Permet de creer une donnee Json de type playerInfo
 # paramsIn : variable
