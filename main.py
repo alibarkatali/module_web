@@ -1,4 +1,3 @@
-
 from flask import Flask, request
 from flask_cors import CORS
 import json
@@ -148,7 +147,7 @@ def makeMapItem(pl_id):
 def makePlayerInfo(pl_name):
 
 	info = CalculeMoneyInfo(pl_name, 0)
-	drinkInfo = makeDrinkOffered(pl_name)
+	drinkInfo = makeDrinkOffered(pl_name)																																																																																																																																																																										
 
 	return ({ "cash" : info['cash'], "profit" : info['profit'], "sales" : info['sales'], "drinksOffered" : drinkInfo })
 
@@ -292,7 +291,7 @@ def resetSimulation():
 def getPlayers():
 	
 	db = Db()
-	playersInfo = db.select("SELECT * FROM Player")
+	playersInfo = db.select("SELECT pl.pl_pseudo FROM Player pl")
 	db.close()
 	
 	return makeJsonResponse({ "players" : playersInfo },200)
@@ -409,11 +408,8 @@ def setMetrology():
 # DELETE /players/<playerName>
 @app.route('/players/<playerName>', methods=['DELETE'])
 def leave(playerName):
-	global GAMEINFO
-	if not GAMEINFO['name'] not in GAMEINFO:
-		return '"Not find player"', 412
-
-	GAMEINFO['name'].remove()
+	
+	
 
 	return '', 200
 
@@ -458,28 +454,27 @@ def getMap():
 	if len(tmp) > 0 :
 		game_id = tmp[0]["ga_id"]
 
-		itemByPlayer = []
-		playerInfo = []
-		drinkByPlayer = []
+		itemByPlayer = {}
+		playerInfo = {}
+		drinkByPlayer = {}
 
-		players_actifs = db.select("SELECT player.pl_pseudo FROM Player INNER JOIN Participate par ON par.pl_id = player.pl_id INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
-			
 		players_actifs_id = db.select("SELECT par.pl_id FROM Participate par INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
 
 		for players in players_actifs_id:	
 			pseudo = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(players["pl_id"]) +"'")[0]["pl_pseudo"]
-			itemByPlayer.append({  pseudo : makeMapItem(players["pl_id"]) })
-			playerInfo.append({ pseudo : makePlayerInfo(pseudo) })
-			drinkByPlayer.append({ pseudo : makeDrinkOffered(pseudo) })
-		
+			itemByPlayer[pseudo] = makeMapItem(players["pl_id"])
+			playerInfo[pseudo] = makePlayerInfo(pseudo)
+			drinkByPlayer[pseudo] = makeDrinkOffered(pseudo)
+	
 		ranking = RankingPlayer(game_id)
 		region = MakeRegion(game_id)
+		db.close()
+
 	else:
+		db.close()
 		return '"Game ID Not Found"', 412
 
-	db.close()
-
-	return makeJsonResponse({ "map" : { "region" : region, "ranking" : ranking, "itemsByPlayer" : itemByPlayer }, "playerInfo" : playerInfo, "drinksByPlayer" : drinkByPlayer })
+	return makeJsonResponse({ "map" : { "region" : region, "ranking" : ranking, "itemsByPlayer" : itemByPlayer , "playerInfo" : playerInfo, "drinksByPlayer" : drinkByPlayer } })
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

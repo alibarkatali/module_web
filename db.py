@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import psycopg2, urlparse, re, os
 import urlparse
 
