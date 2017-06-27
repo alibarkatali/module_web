@@ -9,281 +9,6 @@ app = Flask(__name__)
 app.debug = True
 CORS(app)
 
-WEATHER = ["RAINNY","CLOUDY","SUNNY","HEATWAVE","THUNDERSTORM"]
-
-COORDINATES = {}
-
-cash_init = 100;
-
-FORECAST = {
-	"dfn" : 0, # aujourdhui = 0, demain = 1
-	"weather" : random.choice(WEATHER)
-}
-
-#TEMPS = {
-#	"timestamp" : 0, # nombre d heure ecoulees depuis le debut du jeu
-#	"weather" : random.choice(WEATHER)
-#}
-
-# {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : "RAINNY"}}
-
-TEMPS =  {"timestamp" : "24","weather" : {"dfn" : "0", "weather" : random.choice(WEATHER)}}
-
-COORDINATESSPAN = {
-	"latitudeSpan" : 0.0,
-	"longitudeSpan" : 0.0
-}
-
-REGION = {
-	"center" : COORDINATES,
-	"span" : COORDINATESSPAN
-}
-
-MAPITEM = {
-	"kind" : "", # accepte la valeur : "stand" ou "ad"
-	"owner" : "", # le player
-	"location" : "", # localisation dans la map
-	"influence" : 0.0 # distance
-}
-
-PLAYERINFO = {
-	"cash" : 1000.0, # le budget initial du player
-	"sales" : 0, # nombre de boissons consommes = solde - total, pour toutes les recettes
-	"profit" : 0 # le chiffre d affaire de la vente, si < 0 il a perdu la partie
-}
-
-GAMEINFO = {}
-
-DRINKINFO = {
-	"name" : "None",
-	"price": 0.0
-}
-
-#MAP = {
-#	"region" : REGION,
-#	"ranking" : [] # les noms des players
-#	"itemByPlayer" : [], 
-#	"playerInfo" : [], 
-#	"drinkByPlayer" : [] 
-#}
-
-SALE = {
-	"player" : "None", # nom du player
-	"item" : "None", # nom de la recette achater
-	"quantity" : 0 # combien d article vendus
-}
-
-INGREDIENT = []
-
-INGREDIENT.append({
-			"name" : "sucre",
-			"cost" : 2,
-			"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-			"isCold" : 2 # 0 : pas chaud, 1 : chaud,  2 : autres
-		}
-	)
-
-INGREDIENT.append({
-			"name" : "eau gazeuse",
-			"cost" : 1.5,
-			"hasAlcohol" : 2, # 0 : non alcole, 1 : alcolise,  2 : autres
-			"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
-		}
-	)
-
-INGREDIENT.append({
-			"name" : "citrone",
-			"cost" : 3,
-			"hasAlcohol" : 2, # 0 : non alcole, 1 : alcolise,  2 : autres
-			"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
-		}
-	)
-
-INGREDIENT.append({
-			"name" : "cafe moulu",
-			"cost" : 5,
-			"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-			"isCold" : 1# 0 : pas chaud, 1 : chaud,  2 : autres
-		}
-	)
-
-INGREDIENT.append({
-			"name" : "eau",
-			"cost" : 0,
-			"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-			"isCold" : 2 # 0 : pas chaud, 1 : chaud,  2 : autres
-		}
-	)
-
-RECIPE = {
-	"name" : "Limonade",
-	"ingredients" : INGREDIENT,
-	"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-	"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
-}
-
-PLAYERACTION = {
-	"name" : "None", # prends une valeur : recipe ou ppurchase ou pub
-}
-
-PLAYERACTIONNEWRECIPE = {
-	"kind" : "recipe",
-	"recipe" : RECIPE
-}
-
-PLAYERACTIONAD = {
-	"kind" : "ad",
-	"location" : COORDINATES
-}
-
-PLAYERACTIONDRINKS = {
-	"kind" : "drink",
-	"prepare" : {
-		"limonade" : 0 
-	}
-}
-
-################################################################
-####	VARIABLES DES TESTS
-
-playersList = []
-recipesList = {}
-
-dataMatt = {
-  "map" : {
-    "region" :{
-      "center" : {
-        "latitude": 40.2,
-        "longitude" : 40.2
-      },
-      "span" : {
-        "latitudeSpan" : 40.2,
-        "longitudeSpan" : 44.2
-      }
-    },
-    "ranking":[
-      "mat","jul"
-    ],
-    "itemsByPlayer" : {
-      "mat":[{
-        "kind" : "STAND",
-        "owner" : "michel",
-        "location":{
-          "latitude" : 40.2,
-          "longitude" : 40.2
-        },
-        "influence" : 40.3
-      }],
-      "jul" :[{
-        "kind" : "STAND",
-        "owner" : "michel",
-        "location":{
-          "latitude" : 40.2,
-          "longitude" : 40.2
-        },
-        "influence" : 40.3
-      }]
-    },
-    "playerInfo" : {
-      "mat" : {
-        "cash" : 40.3,
-        "sales" : 40,
-        "profit" : 40,
-        "drinksOffered" : [{
-          "name" : "the",
-          "price" : 40.3,
-          "hasAlcohol" : "false",
-          "isCold" : "false"
-        }]
-      },
-      "jul":{
-        "cash" : 40.3,
-        "sales" : 40,
-        "profit" : 40,
-        "drinksOffered" : [{
-          "name" : "the",
-          "price" : 40.3,
-          "hasAlcohol" : "false",
-          "isCold" : "false"
-        }]
-      }
-    },
-    "drinksByPlayer" : {
-      "mat" : [{
-        "name" : "the",
-        "price" : 40.3,
-        "hasAlcohol" : "false",
-        "isCold" : "false"
-      }],
-      "jul" : [{
-        "name" : "the",
-        "price" : 40.3,
-        "hasAlcohol" : "false",
-        "isCold" : "false"
-      }]
-    }
-  }
-  }
-
-meteos = {"timestamp" : 0,"weather" : [{"dfn" : 0,"weather" : "RAINNY"},{"dfn" : 1, "weather" : "CLOUDY"}]}
-
-recipesList['Limonade'] = {
-		"name" : "Limonade",
-		"ingredients" : [
-			{
-				"name" : "sucre",
-				"cost" : 2,
-				"hasAlcohol" : 0, 
-				"isCold" : 2 
-			},
-			{
-				"name" : "eau gazeuse",
-				"cost" : 1.5,
-				"hasAlcohol" : 2, 
-				"isCold" : 0 
-			},
-			{
-				"name" : "citrone",
-				"cost" : 3,
-				"hasAlcohol" : 2, 
-				"isCold" : 0 
-			}
-		],
-		"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-		"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
-	}
-
-recipesList['Cafe'] = {
-		"name" : "Cafe",
-		"ingredients" : [
-			{
-				"name" : "cafe moulu",
-				"cost" : 5,
-				"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-				"isCold" : 1# 0 : pas chaud, 1 : chaud,  2 : autres
-			},
-			{
-				"name" : "eau",
-				"cost" : 0,
-				"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-				"isCold" : 2 # 0 : pas chaud, 1 : chaud,  2 : autres
-			},
-			{
-				"name" : "sucre",
-				"cost" : 2,
-				"hasAlcohol" : 0, 
-				"isCold" : 2 
-			}
-		],
-		"hasAlcohol" : 0, # 0 : non alcole, 1 : alcolise,  2 : autres
-		"isCold" : 0 # 0 : pas chaud, 1 : chaud,  2 : autres
-	}
-
-
-
-####	FIN VARIABLES DES TESTS
-################################################################
-
 
 def joinResponse(name):
 	global GAMEINFO
@@ -410,9 +135,6 @@ def rejoin():
 	else:
 		return makeJsonResponse(data,400)
 
-
-
-
 	coordinates = db.select("SELECT loc_coordX, loc_coordY FROM Stand WHERE pl_id = (SELECT player.pl_id FROM Player player WHERE pl_pseudo = '"+ playerName +"' )")
 	playerInfo =  makePlayerInfo(str(playerName))
 	db.close()
@@ -444,37 +166,48 @@ def getMetrology():
 	}
 	db.close()
 	return makeJsonResponse(outData)
-    #return makeJsonResponse(data)
+
 
 # R1/R7 - Commande "Temps"
 # POST /metrology
 @app.route('/metrology',methods=['POST'])
 def setMetrology():
 	data = request.get_json()
-
-	print data
-
-	timestamp = data['timestamp']
-
+	dataSql = {}
 	weatherToday = None
 	weatherTomorrow =  None
-	
+	db = Db()
 
+	# Dernier jour du jeu
+	lastDay = db.select("SELECT da_day FROM Date ORDER BY da_day DESC LIMIT 1")[0]['da_day']
 
+	# Le Timestamp
+	timestamp = data['timestamp']
+
+	# La meteo d'aujourd'hui et de demain
 	for weather in data['weather']:
-		if weather['dfn'] == '0':
+		if weather['dfn'] == 0:
 			weatherToday = weather['weather']
 		else:
 			weatherTomorrow = weather['weather']
 
-	dataSql = {}
-	dataSql['day'] = 1
 	dataSql['weatherToday'] = weatherToday
 	dataSql['weatherTomorrow'] = weatherTomorrow
 	dataSql['timestamp'] = timestamp
 
-	db = Db()
-	db.execute("""INSERT INTO Date(da_day,da_weather, da_weather_tomorrow,da_timestamp) VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
+	if timestamp % 24 >= 0 :
+		dataSql['day'] = lastDay+1
+
+		# lancer le simulateur JAVA
+
+		# Insertion dans la base
+		db.execute("""INSERT INTO Date(da_day,da_weather, da_weather_tomorrow,da_timestamp) 
+			VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
+	else:
+		dataSql['day'] = lastDay
+		db.execute("""INSERT INTO Date(da_day,da_weather, da_weather_tomorrow,da_timestamp) 
+			VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
+
 	db.close()
 
 	return makeJsonResponse(data,200)
