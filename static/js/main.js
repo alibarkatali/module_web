@@ -19,9 +19,9 @@ $(document).ready(function () {
 	/* # Initialisation de la partie */
 	gameInit();
 	
-
-	
-	
+	/* # Synchronisations */
+	setInterval(getMetrology, 6000);
+	setInterval(getPlayers, 30000);
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Gestionnaires d'événements */
@@ -53,7 +53,6 @@ $(document).ready(function () {
 	  	addPlayerPipe(recette,prixu,quantite,prixvente);
 	  }
 	  
-
 	});
 
 	/* # raffraichir les données */
@@ -156,6 +155,11 @@ $(document).ready(function () {
 		});
 	}
 
+	function loadTime() {
+		
+	}
+	loadTime();
+
 	/**
 	*
 	*/
@@ -223,7 +227,24 @@ $(document).ready(function () {
 			type: "POST",
 			contentType: 'application/json',
 			success: function(result){
-	        	resetFormGameJoin()
+	        	resetFormGameJoin();
+
+	        	/* Supprimer le bloque rejoindre la partie */
+	        	$('#inscriptionbloc').remove();
+
+	        	/* Mise à jour des informations relatives au player */
+	        	$('#username').html(result.name);
+	        	$('#budgetplayer').html(result.info.cash)
+
+	        	console.log(result.info.profit)
+	        	console.log(result.info.sales)
+	        	console.log(result.info.drinksOffered)
+	        	console.log(result.info.longitude)
+	        	console.log(result.info.latitude)
+
+	        	/* Afficher l'interface de simulation */
+	        	$('#infogamebloc').removeClass("hidden");
+
 	    	}
 		});
 	}
@@ -240,12 +261,12 @@ $(document).ready(function () {
 	*/
 	function gameInit () {
 
-		$('#playgamebloc').addClass("hidden");
-		$('#mapbloc').removeClass("col-md-7");
-		$('#mapbloc').addClass("col-md-12");
+		$('#infogamebloc').addClass("hidden");
+		//$('#mapbloc').removeClass("col-md-7");
+		//$('#mapbloc').addClass("col-md-12");
 
 		/* # récupération de la météo */
-	  	getMetrology ();
+	  	//getMetrology ();
 
 	  	/* # Liste de joueurs */
 	  	getPlayers();
