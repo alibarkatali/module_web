@@ -16,9 +16,14 @@ db = Db()
 def resetSimulation():
 	""" Permet de reinitialiser la partie en cours
 		...
-	"""
+	"""	
+	gameId = db.select("SELECT MAX(da_id) From Date")
 	
-	
+	if gameId[0]["max"] == None:
+		func.creerGame()
+	else:
+		func.supprimerGame(gameId[0]["max"])
+		func.creerGame()
 
 	return '', 200
 
@@ -39,7 +44,8 @@ def rejoin():
 		...
 	"""
 
-	data = request.get_json()
+	data = request.get_data()
+	datas = json.loads(data)
 
 	# Je verifie que le pseudo de ce joueur n'existe deja pas
 	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ data['name'] +"'")
@@ -179,7 +185,7 @@ def simulCmd():
 
 	day = func.getDayIdCurr()
 	data = request.get_json()
-	
+
 	sales = data['sales']
 	for rows in sales:
 		
@@ -193,7 +199,7 @@ def simulCmd():
 				   """)
 			
 
-	return func.makeJsonResponse(OK)
+	return func.makeJsonResponse(OK)"""
 
 
 @app.route('/actions/<playerName>',methods=['POST'])

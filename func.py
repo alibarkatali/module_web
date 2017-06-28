@@ -1,9 +1,22 @@
 import json
+import random
 from db import Db
 
 # VARIABLES GLOBALES
 db = Db()
+gaNom = [ "Shaddock", "Bashunga", "VaChier", "GitansLand", "Iphone", "Pizza" ]
 
+def creerGame():
+	
+	gameNom = random.choice(gaNom)
+
+	db.execute("INSERT INTO Game(ga_nom, ga_largeur, ga_longueur, ga_run) VALUES ('"+ gameNom +"', '400', '800', 'true')")
+
+def supprimerGame(game_id):
+
+	db.execute("UPDATE Game SET ga_run = 'false' WHERE ga_id = '"+ game_id +"'")
+	db.execute("UPDATE Participate SET present = 'false' WHERE ga_id = '"+ game_id +"'")
+	
 def isCold(rec_id):
 	
 	booleanVar = 'true'
