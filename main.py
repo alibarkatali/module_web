@@ -121,9 +121,9 @@ def setMetrology():
 	dataSql['lastDay'] = lastDay
 	dataSql['da_id'] = result[0]['da_id']
 
-	if timestamp % 24 == 0 :
-		dataSql['day'] = lastDay+1
 
+	dataSql['day'] = int(timestamp/24)
+	if dataSql['day'] != result[0]['da_day']
 		# Insertion dans la base
 		db.execute("""INSERT INTO Date(da_day,da_weather, da_weather_tomorrow,da_timestamp) 
 			VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
