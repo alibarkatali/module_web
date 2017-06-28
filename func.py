@@ -13,20 +13,20 @@ def creerGame():
 def supprimerGame(game_id):
 	db.execute("UPDATE Game SET ga_run = 'false' WHERE ga_id = '"+ game_id +"'")
 	db.execute("UPDATE Participate SET present = 'false' WHERE ga_id = '"+ game_id +"'")
-	
+
 def isCold(rec_id):
 	booleanVar = 'true'
-	
+
 	ingredientsList = db.select("""SELECT ing.ing_cold FROM Ingredient ing 
 								  INNER JOIN Contains con ON con.ing_id = ing.ing_id 
 								  INNER JOIN Recipe rec ON rec.rec_id = con.rec_id
 								  WHERE rec.rec_id = '"""+ str(rec_id) +"""'
 								""")
-	
+
 	for rows in ingredientsList:
 		if (not rows['ing_cold']):
 			booleanVar = 'false'	
-	
+
 	return booleanVar
 
 def hasAlcohol(rec_id):	
@@ -37,23 +37,23 @@ def hasAlcohol(rec_id):
 								  INNER JOIN Recipe rec ON rec.rec_id = con.rec_id
 								  WHERE rec.rec_id = '"""+ str(rec_id) +"""'
 								""")
-	
+
 	for rows in ingredientsList:
 		if (rows['ing_alcohol']):
-			booleanVar = 'true'					
-	
+			booleanVar = 'true'
+
 	return booleanVar
 
 def recupIdRecFromName(rec_name):
 	""" Recupere l'id d'une recette a partir de son nom """
 	recId = db.select("SELECT rec_id FROM Recipe WHERE rec_nom = '"+ rec_name +"'")[0]["rec_id"]
-	return recId	
+	return recId
 
 def recupNameRecFromId(rec_id):
 	""" Recupere le nom d'une recette a partir de son id """
 	recName = db.select("SELECT rec_nom From Recipe WHERE rec_id = '"+ str(rec_id) +"'")[0]["rec_nom"]	
 	return recName
-	
+
 def getDayCurr():
 	""" Recupere la valeur du jour courant """
 	daMax = db.select("SELECT MAX(da_id) From Date")[0]["max"]
@@ -64,7 +64,6 @@ def getDayIdCurr():
 	""" Recupere l'id du jour courant """
 	daMax = db.select("SELECT MAX(da_id) From Date")[0]["max"]
 	return daMax
-
 
 def recupIdFromName(pl_name):
 	""" Recupere l'id d'un player en fonction du nom """
@@ -193,9 +192,9 @@ def makeMapItemPub(pub_id):
 	pl_name = db.select("""	SELECT pl.pl_pseudo FROM Player pl 
 							INNER JOIN Pub p ON pl.pl_id = p.pl_id 
 							WHERE p.pub_id = '"""+ str(pub_id) +"""'""")[0]["pl_pseudo"]
-	
+
 	return ({ "kind" : "ad", "owner" : pl_name, "location" : { "latitude" : coordinates[0]['p_coordx'], "longitude" : coordinates[0]['p_coordy']}, "influence" : influence })	
-	
+
 
 def makePlayerInfo(pl_name):
 	""" Recupere toutes les infos d'un player
@@ -206,7 +205,7 @@ def makePlayerInfo(pl_name):
 	"""
 
 	info = calculeMoneyInfo(pl_name, 0)
-	drinkInfo = makeDrinkOffered(pl_name)																																																																																																																																																																										
+	drinkInfo = makeDrinkOffered(pl_name)
 
 	return ({ "cash" : info['cash'], "profit" : info['profit'], "sales" : info['sales'], "drinksOffered" : drinkInfo })
 
