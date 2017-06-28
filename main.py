@@ -190,7 +190,7 @@ def simulCmd():
 		if rows['item'] != None:
 		
 			# Alors le joueur n'a rien mit en vente : la table Transaction n'a pas ete remplit
-			playerId = func.recupIdFromName(rows['player'])
+			playerId = func.recupIdFromName(rows['name'])
 			recId = func.recupIdRecFromName(rows['item'])
 			qte = rows['quantity']
 		
