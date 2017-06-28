@@ -87,15 +87,16 @@ def getMetrology():
 		...
 	"""
 
-	weather = db.select("SELECT * FROM Date ORDER BY da_day DESC LIMIT 1")
+	weather = db.select("SELECT da_id, da_day, da_weather, da_weather_tomorrow, da_timestamp FROM Date ORDER BY da_id DESC LIMIT 1")
 
 	if len(weather):
 		wToday = weather[0]["da_weather"]
 		wTomorrow = weather[0]["da_weather_tomorrow"]
 		tStam = weather[0]["da_timestamp"]
+		dDay = weather[0]["da_day"]
 
 		outData = {
-		"timestamp" : tStam,
+		"timestamp" : tStam+24*dDay,
 		"weather" : [ {
 		        "weather" : wToday,
 		        "dfn" : 0,
@@ -123,11 +124,11 @@ def setMetrology():
 	weatherTomorrow =  None
 
 	# Dernier jour du jeu
-	lastDay = db.select("SELECT da_day FROM Date ORDER BY da_day DESC LIMIT 1")
-	if len(lastDay) == 0:
+	result = db.select("SELECT da_id, da_day FROM Date ORDER BY da_id DESC LIMIT 1")
+	if len(result) == 0:
 		lastDay = 1
 	else:
-		lastDay = lastDay[0]['da_day']
+		lastDay = result[0]['da_day']
 
 	# Le Timestamp
 	timestamp = int(data['timestamp'])
@@ -143,15 +144,16 @@ def setMetrology():
 	dataSql['weatherTomorrow'] = weatherTomorrow
 	dataSql['timestamp'] = timestamp%24
 	dataSql['lastDay'] = lastDay
+	dataSql['da_id'] = result[0]['da_id']
 
-	if timestamp % 24 == 0 :
-		dataSql['day'] = lastDay+1
 
+	dataSql['day'] = int(timestamp/24)
+	if dataSql['day'] != result[0]['da_day']:
 		# Insertion dans la base
-		db.execute("""INSERT INTO Date(da_day,da_weather, da_weather_tomorrow,da_timestamp) 
+		db.execute("""INSERT INTO Date(da_day, da_weather, da_weather_tomorrow, da_timestamp) 
 			VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
 	else:
-		db.execute("""UPDATE Date SET da_timestamp = @(timestamp) WHERE da_day = @(lastDay);""", dataSql)
+		db.execute("""UPDATE Date da SET da_timestamp = @(timestamp) WHERE da.da_day = @(lastDay) AND da.da_id = @(da_id);""", dataSql)
 
 	return func.makeJsonResponse(data,200)
 
@@ -200,13 +202,36 @@ def simulActions(playerName):
 	"""
 
 	data = request.get_json()
+
+
+
 	if not data['actions']:
 		return '"Not find actions"', 412
 
-	if not data['simulated']:
-		return '"Not find simulated"', 412
+	print data
 
-	return "Instructions du joueur pour le jour suivant"
+	#if not data['simulated']:
+	#	return '"Not find simulated"', 412
+
+	if playerName :
+
+		listRecipe = []
+		for action in data['actions']:
+			if action['kind'] == "drinks":
+				for prepare in action['prepare']:
+					for k, v in prepare.iteritems():
+						print k, v
+					print prepare
+			#else if :
+
+					#listRecipe[prepare] = 
+					#db.execute("""INSERT INTO Transaction(rec_id,pl_id, qte_prev,price) VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
+
+		# REGARDER DE QUELLES FORMES SONT LES DONNEES POUR LES METTRES DANS LA TABLE Transaction - Easy !!!
+
+		#if data['simulated'] == True:
+
+	return "Instructions du joueur pour le jour suivant",200
 
 
 @app.route('/map',methods=['GET'])
