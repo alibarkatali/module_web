@@ -52,8 +52,8 @@ CREATE TABLE Game(
         ga_nom      Varchar (255) NOT NULL ,
         ga_centreX  Float ,
         ga_centreY  Float ,
-        ga_largeur  Float NOT NULL ,
-        ga_longueur Float NOT NULL ,
+        ga_latitude  Float NOT NULL ,
+        ga_longitude Float NOT NULL ,
         ga_run      Bool ,
         PRIMARY KEY (ga_id )
 );
