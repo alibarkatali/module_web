@@ -184,9 +184,6 @@ def simulCmd():
 	day = func.getDayIdCurr()
 	data = request.get_data()
 	datas = json.loads(data)
-	
-	print datas['sales']
-	print datas[0]['sales']
 
 	sales = data['sales']
 	for rows in sales:
