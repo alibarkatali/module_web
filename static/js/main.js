@@ -4,7 +4,7 @@ $(document).ready(function () {
 	/* # Variables globales */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	lastNumberAssigned = 0;
-<<<<<<< HEAD
+
 	pipePlayers ={ "actions" : [
 			{
 				"kind" : "drinks",
@@ -13,10 +13,8 @@ $(document).ready(function () {
 			}
 		]
 	}
-=======
 	pipePlayers = {};
 
->>>>>>> 04241753bd0265c2b5bde989514561df75f5f36e
 
 	/* # Initialisation de la partie */
 	gameInit();
@@ -30,8 +28,8 @@ $(document).ready(function () {
 	  event.preventDefault();
 
 	  /* # le joueur rejoin la partie */
-	  var playerName = $('#playerName').val();
-	  gameRejoin(playerName);
+	  var name = $('#name').val();
+	  gameRejoin(name);
 
 	  /* # liste de joueur */
 	  getPlayers();
@@ -212,8 +210,8 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function gameRejoin(playerName) {
-		var data = {"playerName": playerName}
+	function gameRejoin(name) {
+		var data = {"name": name}
 		$.ajax({
 			url: "/players",
 			data : JSON.stringify(data),
@@ -229,7 +227,7 @@ $(document).ready(function () {
 	* 
 	*/
 	function resetFormGameJoin () {
-		$('#playerName').val("");
+		$('#name').val("");
 	}
 
 	/**
@@ -274,23 +272,9 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function valAction () {
-		on.cli
-		var data = {'kind': 'drinks',
-		'prepare': { $('#recettadd').val() : $('#quantity').val()},
-		'price' : { $('#prixvente').val()}}
-		$.ajax({
-			url: '/actions/<playerName>'
-
-		})
-	}
-
-	/**
-	*
-	*/
 	$("#valAction").on("click",function(){
       $.ajax("/order",{
-      	url: "/actions/<playerName>",
+      	url: "/actions/<name>",
         method: 'POST',
         contentType: 'application/json',
         pipePlayers : JSON.stringify(pipePlayers),
@@ -305,7 +289,7 @@ $(document).ready(function () {
 	*/
 	function sendAction() {
 		$.ajax({
-			url: "/actions/<playerName>",
+			url: "/actions/<name>",
 			pipePlayers : JSON.stringify(pipePlayers),
 			type: "POST",
 			contentType: 'application/json',
