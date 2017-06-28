@@ -62,7 +62,7 @@ def getMetrology():
 		...
 	"""
 
-	weather = db.select("SELECT * FROM Date ORDER BY da_id DESC LIMIT 1")
+	weather = db.select("SELECT da_id, da_day, da_weather, da_weather_tomorrow, da_timestamp FROM Date ORDER BY da_id DESC LIMIT 1")
 
 	if len(weather):
 		wToday = weather[0]["da_weather"]
