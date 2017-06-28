@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_cors import CORS
 import random
 import func
+import json
 from db import Db
 
 app = Flask(__name__)
@@ -16,7 +17,16 @@ db = Db()
 def resetSimulation():
 	""" Permet de reinitialiser la partie en cours
 		...
-	"""
+	"""	
+	gameId = db.select("SELECT MAX(da_id) From Date")
+	
+	if gameId[0]["max"] == None:
+		func.creerGame()
+	else:
+		func.supprimerGame(gameId[0]["max"])
+		func.creerGame()
+
+
 	return '', 200
 
 @app.route('/players',methods=['GET'])
@@ -173,23 +183,24 @@ def simulCmd():
 	"""
 
 	day = func.getDayIdCurr()
-	data = request.get_json()
+	data = request.get_data()
+	datas = json.loads(data)
 
-	print (data)
-	
-	#sales = data['sales']
-	#for rows in sales:
-	#	
-	#	playerId = func.recupIdFromName(rows['player'])
-	#	recId = func.recupIdRecFromName(rows['item'])
-	#	
-	#	db.execute("""
-	#				UPDATE Transaction SET qte_sale = @(quantity) WHERE da_id = '"""+ str(day) +"""' 
-	#				AND pl_id = """+ str(playerId) +"""' 
-	#				AND rec_id = """+ str(recId) +"""';
-	#			   """)
+	sales = data['sales']
+	for rows in sales:
+		
+		playerId = func.recupIdFromName(rows['player'])
+		recId = func.recupIdRecFromName(rows['item'])
+		
+		db.execute("""
+					UPDATE Transaction SET qte_sale = @(quantity) WHERE da_id = '"""+ str(day) +"""' 
+					AND pl_id = """+ str(playerId) +"""' 
+					AND rec_id = """+ str(recId) +"""';
+				   """)
 			
-	return func.makeJsonResponse(data)
+
+	return func.makeJsonResponse(OK)
+
 
 
 @app.route('/actions/<playerName>',methods=['POST'])

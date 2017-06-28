@@ -50,8 +50,8 @@ CREATE TABLE Recipe(
 CREATE TABLE Game(
         ga_id       SERIAL NOT NULL ,
         ga_nom      Varchar (255) NOT NULL ,
-        ga_centreX  Float NOT NULL ,
-        ga_centreY  Float NOT NULL ,
+        ga_centreX  Float ,
+        ga_centreY  Float ,
         ga_largeur  Float NOT NULL ,
         ga_longueur Float NOT NULL ,
         ga_run      Bool ,
