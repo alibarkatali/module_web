@@ -185,10 +185,7 @@ def simulCmd():
 	data = request.get_data()
 	datas = json.loads(data)
 
-	sales = data['sales']
-
-
-	for rows in sales:
+	for rows in datas.sales:
 	
 		if rows['item'] != None:
 			
