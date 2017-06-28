@@ -15,8 +15,6 @@ $(document).ready(function () {
 	}
 	pipePlayers = {};
 
-	//{"actions" : [ {"kind" : "drinks","prepare" : [{1:50},{3:20}],"price" : [{1:8},{3:2}]} ] }
-
 
 	/* # Initialisation de la partie */
 	gameInit();
