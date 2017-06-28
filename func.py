@@ -17,7 +17,7 @@ def makeRegion(game_id):
 	coord = db.select("SELECT ga_centrex, ga_centrey FROM Game WHERE ga_id = '"+ str(game_id) +"' AND ga_run = 'true'")
 	span = db.select("SELECT ga_largeur, ga_longueur FROM Game WHERE ga_id = '"+ str(game_id) +"' AND ga_run = 'true'")
 
-	return ({ "center" : { "longitude" : coord[0]["ga_centrex"], "latitude" : coord[0]["ga_centrey"] }, "span" : { "latitudeSpan" : span[0]["ga_longueur"], "longitude" : span[0]["ga_largeur"] } })
+	return ({ "center" : { "longitude" : coord[0]["ga_centrex"], "latitude" : coord[0]["ga_centrey"] }, "span" : { "latitudeSpan" : span[0]["ga_longueur"], "longitudeSpan" : span[0]["ga_largeur"] } })
 
 
 def rankingPlayer(game_id):

@@ -165,22 +165,27 @@ def simulActions(playerName):
 	if not data['actions']:
 		return '"Not find actions"', 412
 
-	if not data['simulated']:
-		return '"Not find simulated"', 412
+	#if not data['simulated']:
+	#	return '"Not find simulated"', 412
 
-	listRecipe = []
-	for action in data['actions']:
-		if action['kind'] == "drinks":
-			for prepare in action['prepare']:
-				print (prepare)
-				#listRecipe[prepare] = 
-				#db.execute("""INSERT INTO Transaction(rec_id,pl_id, qte_prev,price) VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
+	if playerName :
 
-	# REGARDER DE QUELLES FORMES SONT LES DONNEES POUR LES METTRES DANS LA TABLE Transaction - Easy !!!
+		listRecipe = []
+		for action in data['actions']:
+			
+			if action['kind'] == "drinks":
+				for prepare in action['prepare']:
+					print (prepare)
+					
 
-	#if data['simulated'] == True:
+					#listRecipe[prepare] = 
+					#db.execute("""INSERT INTO Transaction(rec_id,pl_id, qte_prev,price) VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
 
-	return "Instructions du joueur pour le jour suivant"
+		# REGARDER DE QUELLES FORMES SONT LES DONNEES POUR LES METTRES DANS LA TABLE Transaction - Easy !!!
+
+		#if data['simulated'] == True:
+
+	return "Instructions du joueur pour le jour suivant",200
 
 
 @app.route('/map',methods=['GET'])
