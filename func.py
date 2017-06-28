@@ -4,6 +4,77 @@ from db import Db
 # VARIABLES GLOBALES
 db = Db()
 
+def isCold(rec_id):
+	
+	booleanVar = 'true'
+	
+	ingredientsList = db.select("""SELECT ing.ing_cold FROM Ingredient ing 
+								  INNER JOIN Contains con ON con.ing_id = ing.ing_id 
+								  INNER JOIN Recipe rec ON rec.rec_id = con.rec_id
+								  WHERE rec.rec_id = '"""+ str(rec_id) +"""'
+								""")
+	
+	for rows in ingredientsList:
+		if (not rows['ing_cold']):
+			booleanVar = 'false'	
+	
+	return booleanVar
+
+def hasAlcohol(rec_id):
+	
+	booleanVar = 'false'	
+
+	ingredientsList = db.select("""SELECT ing.ing_alcohol FROM Ingredient ing 
+								  INNER JOIN Contains con ON con.ing_id = ing.ing_id 
+								  INNER JOIN Recipe rec ON rec.rec_id = con.rec_id
+								  WHERE rec.rec_id = '"""+ str(rec_id) +"""'
+								""")
+	
+	for rows in ingredientsList:
+		if (rows['ing_alcohol']):
+			booleanVar = 'true'					
+	
+	return booleanVar
+
+def recupIdRecFromName(rec_name):
+	recId = db.select("SELECT rec_id FROM Recipe WHERE rec_nom = '"+ rec_name +"'")[0]["rec_id"]
+	return recId	
+
+def recupNameRecFromId(rec_id):
+	recName = db.select("SELECT rec_nom From Recipe WHERE rec_id = '"+ str(rec_id) +"'")[0]["rec_nom"]	
+	return recName
+	
+def getDayCurr():
+	daMax = db.select("SELECT MAX(da_id) From Date")[0]["max"]
+	dayCurr = db.select("SELECT da_day From Date WHERE da_id = '"+ daMax +"'")[0]["da_day"]
+	return dayCurr
+
+def getDayIdCurr():	
+	daMax = db.select("SELECT MAX(da_id) From Date")[0]["max"]
+	return daMax
+
+
+def recupIdFromName(pl_name):
+	plId = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = '"+ pl_name +"'")[0]["pl_id"]
+	return plId
+
+def recupGameId():
+	gameId = db.select("SELECT ga_id FROM Game WHERE ga_run = 'true'")[0]["ga_id"]
+	return gameId
+
+def getAvailableIngredients(pl_name):
+	aIng = []
+	plId = recupIdFromName(pl_name)
+
+	db.select(""" SELECT ing_nom FROM Ingredient ing 
+				  INNER JOIN Contains con ON con.ing_id = ing.ing_id 
+				  INNER JOIN Recipe rec ON con.rec_id = rec.rec_id 
+				  INNER JOIN Transaction tr ON tr.rec_id = rec.rec_id 
+				  WHERE tr.pl_id = '"""+ plId +"""'
+			 """)
+
+	return 0
+
 def makeRegion(game_id):
 	""" 
 		:param arg1: description
@@ -32,7 +103,11 @@ def rankingPlayer(game_id):
 
 	ranking = []
 
-	players_actifs = db.select("SELECT player.pl_pseudo FROM Player INNER JOIN Participate par ON par.pl_id = player.pl_id INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
+	players_actifs = db.select("""	SELECT player.pl_pseudo FROM Player 
+									INNER JOIN Participate par ON par.pl_id = player.pl_id 
+								    INNER JOIN Game ga ON par.ga_id = ga.ga_id 
+								    WHERE par.ga_id = '"""+ str(game_id) +"""' AND par.present = 'true'
+							  """)
 
 	for player in players_actifs:
 		ranking.append(player["pl_pseudo"])
@@ -90,7 +165,9 @@ def makeMapItemPub(pub_id):
 
 	coordinates = db.select("SELECT p_coordx, p_coordy FROM Pub WHERE pub_id = '"+ str(pub_id) +"'")
 	influence = db.select("SELECT p_rayon FROM Pub WHERE pub_id = '"+ str(pub_id) +"'")[0]["p_rayon"]
-	pl_name = db.select("SELECT pl.pl_pseudo FROM Player pl INNER JOIN Pub p ON pl.pl_id = p.pl_id WHERE p.pub_id = '"+ str(pub_id) +"'")[0]["pl_pseudo"]
+	pl_name = db.select("""	SELECT pl.pl_pseudo FROM Player pl 
+							INNER JOIN Pub p ON pl.pl_id = p.pl_id 
+							WHERE p.pub_id = '"""+ str(pub_id) +"""'""")[0]["pl_pseudo"]
 	
 	return ({ "kind" : "ad", "owner" : pl_name, "location" : { "latitude" : coordinates[0]['p_coordx'], "longitude" : coordinates[0]['p_coordy']}, "influence" : influence })	
 	
@@ -118,8 +195,8 @@ def calculeMoneyInfo(player, status=0):
 		:param arg2: description
 		:type arg1: type
 		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+		:return: si status = 0 -> { "cash" : cash, "profit" : profit, "sales" : sales } sinon { "cash" : cash }
+		:rtype: Json
 	"""
 
 	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")[0]["pl_budget_ini"]
@@ -136,10 +213,38 @@ def calculeMoneyInfo(player, status=0):
 		return ({ "cash" : cash, "profit" : profit, "sales" : sales })
 	else: 
 		return ({ "cash" : cash })
+	
+def makeDrinkEveryTime(pl_name):
+	""" Permet de calculer et de renvoyer les "drinksOffered" d'un player
+		:param arg1: description
+		:param arg2: description
+		:type arg1: type
+		:type arg1: type
+		:return: description de la valeur de retour
+		:rtype: type de la valeur de retour
+	"""
 
+	drinkEveryTime = []
+
+	# Boisson par defaut : la limonade
+	drinkEveryTime.append(makeDrinkInfo(3))
+
+	player_id = recupIdFromName(pl_name)
+	drink_id = db.select("SELECT t.rec_id FROM Transaction t WHERE t.pl_id = '"+ str(player_id) +"'")
+
+	#rec_nom = recupNameRecFromId(rec_id)	
+		
+
+	for drink in drink_id:	
+		drinkInfo = makeDrinkInfo(drink["rec_id"])	
+		drinkEveryTime.append(drinkInfo)
+
+
+	return (drinkEveryTime)
+	
 
 def makeDrinkOffered(pl_name):
-	""" Permet de calculer les info monetaires du joueur (son budget courant & son profit depuis le debut de la partie)
+	""" Permet de calculer et de renvoyer les "drinksOffered" d'un player
 		:param arg1: description
 		:param arg2: description
 		:type arg1: type
@@ -150,8 +255,8 @@ def makeDrinkOffered(pl_name):
 
 	drinkOffered = []
 	
-	player_id = db.select("SELECT p.pl_id FROM Player p WHERE p.pl_pseudo = '"+ pl_name +"'")[0]["pl_id"]
-	da_max = db.select("SELECT MAX(da_id) FROM Date")[0]["max"]
+	player_id = recupIdFromName(pl_name)
+	da_max = getDayIdCurr()
 	drink_id = db.select("SELECT t.rec_id FROM Transaction t WHERE t.pl_id = '"+ str(player_id) +"' AND t.da_id = '"+ str(da_max) +"'")
 		
 	for drink in drink_id:	
@@ -172,9 +277,12 @@ def makeDrinkInfo(rec_id):
 	"""
 
 	price = calculePriceRec(rec_id)
-	info = db.select("SELECT rec_nom, rec_alcohol, rec_cold FROM Recipe WHERE rec_id = '"+ str(rec_id) +"'")
+	nom = db.select("SELECT rec_nom FROM Recipe WHERE rec_id = '"+ str(rec_id) +"'")[0]["rec_nom"]
+
+	alcohol = hasAlcohol(rec_id)
+	cold = isCold(rec_id)
 	
-	drinkInfo  = { "name" : info[0]["rec_nom"], "price" : price,  "hasAlcohol" : info[0]["rec_alcohol"], "isCold" : info[0]["rec_cold"] }
+	drinkInfo  = { "name" : nom, "price" : price,  "hasAlcohol" :alcohol, "isCold" : cold }
 	
 	return (drinkInfo)
 
@@ -225,7 +333,13 @@ def calculeSpend(player_id):
 		:rtype: type de la valeur de retour
 	"""
 
-	spending = db.select("SELECT SUM(t.qte_prev * (SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id = t.rec_id) ) FROM Transaction t WHERE t.pl_id = '"+ str(player_id) +"'")[0]["sum"]
+	spending = db.select("""	SELECT SUM(t.qte_prev * 
+									(SELECT SUM(i.ing_prix) FROM Ingredient i 
+									INNER JOIN Contains c ON i.ing_id = c.ing_id 
+									INNER JOIN Recipe r ON r.rec_id = c.rec_id 
+									WHERE r.rec_id = t.rec_id) ) 
+								FROM Transaction t 
+								WHERE t.pl_id = '"""+ str(player_id) +"""'""")[0]["sum"]
 
 	if spending == None:
 		return 0
@@ -243,7 +357,10 @@ def calculePriceRec(rec_id):
 		:rtype: type de la valeur de retour
 	"""
 
-	price_rec = db.select("SELECT SUM(i.ing_prix) FROM Ingredient i INNER JOIN Contains c ON i.ing_id = c.ing_id INNER JOIN Recipe r ON r.rec_id = c.rec_id WHERE r.rec_id	 = '"+ str(rec_id) +"'")[0]['sum']
+	price_rec = db.select("""	SELECT SUM(i.ing_prix) FROM Ingredient i 
+								INNER JOIN Contains c ON i.ing_id = c.ing_id 
+								INNER JOIN Recipe r ON r.rec_id = c.rec_id 
+								WHERE r.rec_id	 = '"""+ str(rec_id) +"""'""")[0]['sum']
 
 	return price_rec
 

@@ -17,6 +17,8 @@ def resetSimulation():
 	""" Permet de reinitialiser la partie en cours
 		...
 	"""
+	
+	
 
 	return '', 200
 
@@ -26,7 +28,7 @@ def getPlayers():
 		...
 	"""
 	
-	playersInfo = db.select("SELECT pl.pl_pseudo FROM Player pl")
+	playersInfo = db.select("SELECT pl.pl_pseudo FROM Player pl INNER JOIN Participate par ON par.pl_id = pl.pl_id WHERE par.present = true")
 	
 	return func.makeJsonResponse({ "players" : playersInfo },200)
 
@@ -39,17 +41,40 @@ def rejoin():
 
 	data = request.get_json()
 
+	# Je verifie que le pseudo de ce joueur n'existe deja pas
 	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ data['name'] +"'")
 
 	if len(info) > 0 :
 		return func.makeJsonResponse(data,400)
 
-	db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(name), 100);""", data)
-	db.execute("""INSERT INTO stand(loc_longitude, loc_latitude, loc_rayon, pl_id)
-		       SELECT 0,0,0, player.pl_id FROM Player player where pl_pseudo = @(name); """, data)
-	db.execute("""INSERT INTO Participate(present, ga_id, pl_id) SELECT 'true',1, player.pl_id FROM Player player where pl_pseudo = @(name); """, data)		
+	gameId = func.recupGameId()
 
-	coordinates = db.select("SELECT loc_longitude, loc_latitude FROM Stand WHERE pl_id = (SELECT player.pl_id FROM Player player WHERE pl_pseudo = '"+ data['name'] +"' )")
+	# Je dois recuperer la latitude et longitude de la map normalement
+	
+	data['longitude'] = random.uniform(0, 700)
+	data['latitude'] = random.uniform(0, 400)
+	
+	db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(name), 100);""", data)
+
+	db.execute("""
+					INSERT INTO stand(loc_longitude, loc_latitude, loc_rayon, pl_id)
+		       		SELECT @(longitude), @(latitude),0, player.pl_id FROM Player player 
+					WHERE pl_pseudo = @(name); 
+			  """, data)
+
+	db.execute("""	
+					INSERT INTO Participate(present, ga_id, pl_id) 
+					SELECT 'true', '"""+ str(gameId) +"""', player.pl_id FROM Player player 
+					WHERE pl_pseudo = @(name); 
+			  """, data)		
+
+	coordinates = db.select("""
+								SELECT loc_longitude, loc_latitude FROM Stand 
+								WHERE pl_id = 
+									(SELECT player.pl_id FROM Player player 
+									WHERE pl_pseudo = '"""+ data['name'] +"""' )
+							""")
+
 	playerInfo =  func.makePlayerInfo(data['name'])
 	
 
@@ -151,8 +176,21 @@ def simulCmd():
 		...
 	"""
 
+	day = func.getDayIdCurr()
 	data = request.get_json()
-	# INSERER LES VENTES DANS BDD
+	
+	for rows in data['sales']:
+		
+		playerId = func.recupIdFromName(rows['player'])
+		recId = func.recupIdRecFromName(rows['item'])
+		
+		db.execute("""
+					UPDATE Transaction SET qte_sale = @(quantity) WHERE da_id = '"""+ str(day) +"""' 
+					AND pl_id = """+ str(playerId) +"""' 
+					AND rec_id = """+ str(recId) +"""';
+				   """)
+			
+
 	return func.makeJsonResponse(data)
 
 
@@ -246,13 +284,15 @@ def getMap():
 		playerInfo = {}
 		drinkByPlayer = {}
 
-		players_actifs_id = db.select("SELECT par.pl_id FROM Participate par INNER JOIN Game ga ON par.ga_id = ga.ga_id WHERE par.ga_id = '"+ str(game_id) +"' AND par.present = 'true'")
+		players_actifs_id = db.select("""SELECT par.pl_id FROM Participate par 
+										 INNER JOIN Game ga ON par.ga_id = ga.ga_id 
+										 WHERE par.ga_id = '"""+ str(game_id) +"""' AND par.present = 'true'""")
 
 		for players in players_actifs_id:	
 			pseudo = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(players["pl_id"]) +"'")[0]["pl_pseudo"]
 			itemByPlayer[pseudo] = func.makeMapItem(players["pl_id"])
 			playerInfo[pseudo] = func.makePlayerInfo(pseudo)
-			drinkByPlayer[pseudo] = func.makeDrinkOffered(pseudo)
+			drinkByPlayer[pseudo] = func.makeDrinkEveryTime(pseudo)
 	
 		ranking = func.rankingPlayer(game_id)
 		region = func.makeRegion(game_id)
@@ -260,7 +300,8 @@ def getMap():
 	else:
 		return '"Game ID Not Found"', 412
 
-	return func.makeJsonResponse({ "map" : { "region" : region, "ranking" : ranking, "itemsByPlayer" : itemByPlayer , "playerInfo" : playerInfo, "drinksByPlayer" : drinkByPlayer } })
+	map = { "region" : region, "ranking" : ranking, "itemsByPlayer" : itemByPlayer , "playerInfo" : playerInfo, "drinksByPlayer" : drinkByPlayer }
+	return func.makeJsonResponse({ "map" : map })
 
 
 @app.route('/map/<playerName>',methods=['GET'])
@@ -268,7 +309,17 @@ def getPlayerMap(playerName):
 	""" Retourne l'ensemble des informations relatives a un joueur
 		...
 	"""
+	
+	player_id = func.recupIdFromName(playerName)
+	game_id = func.recupGameId()
 
+	plInfo = func.makePlayerInfo(playerName)
+	region = func.makeRegion(game_id)
+	itemPlayer = func.makeMapItem(player_id)
+
+	availableIngredients = func.getAvailableIngredients(playerName)
+
+	map = { "availableIngredients" : availableIngredients, "region" : region, "itemPlayer" : itemPlayer }
 	return "Obtenir les details d une partie (Client Web)"
 
 
@@ -296,12 +347,15 @@ def getRecipes():
 
 @app.route('/recipe/<int:rc_id>',methods=['GET'])
 def getRecipeById(rc_id):
-	""" Retourne une recettes
+	""" Retourne une recette
 		...
 	"""
 
 	recipe = db.select("SELECT * FROM Recipe WHERE rec_id = '"+ str(rc_id) +"'")
-	ingredient_list = db.select("SELECT ing.* FROM Ingredient ing INNER JOIN Contains con ON ing.ing_id = con.ing_id INNER JOIN Recipe rec ON rec.rec_id = con.rec_id WHERE rec.rec_id = '"+ str(rc_id) +"'")
+	ingredient_list = db.select("""SELECT ing.* FROM Ingredient ing 
+								   INNER JOIN Contains con ON ing.ing_id = con.ing_id 
+								   INNER JOIN Recipe rec ON rec.rec_id = con.rec_id 
+								   WHERE rec.rec_id = '"""+ str(rc_id) +"""'""")
 
 	if len(recipe) > 0:
 		return func.makeJsonResponse({ "recipe": recipe, "ingredients": ingredient_list } )

@@ -26,8 +26,8 @@ CREATE TABLE Ingredient(
         ing_id      SERIAL NOT NULL ,
         ing_nom     Varchar (255) ,
         ing_prix    Float NOT NULL  ,
-        ing_alcohol Int ,
-        ing_cold    Int ,
+        ing_alcohol BOOL ,
+        ing_cold    BOOL ,
         PRIMARY KEY (ing_id )
 );
 
@@ -39,8 +39,6 @@ CREATE TABLE Ingredient(
 CREATE TABLE Recipe(
         rec_id      SERIAL NOT NULL ,
         rec_nom     Varchar (255) NOT NULL ,
-        rec_alcohol Int ,
-        rec_cold    Int ,
         PRIMARY KEY (rec_id )
 );
 
@@ -85,7 +83,7 @@ CREATE TABLE Pub(
         p_coordY Float NOT NULL ,
         p_rayon  Float NOT NULL ,
         pl_id    Int NOT NULL ,
-        PRIMARY KEY (p_id )
+        PRIMARY KEY (p_id)
 );
 
 
