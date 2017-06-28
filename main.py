@@ -174,21 +174,22 @@ def simulCmd():
 
 	day = func.getDayIdCurr()
 	data = request.get_json()
-	
-	sales = data['sales']
-	for rows in sales:
-		
-		playerId = func.recupIdFromName(rows['player'])
-		recId = func.recupIdRecFromName(rows['item'])
-		
-		db.execute("""
-					UPDATE Transaction SET qte_sale = @(quantity) WHERE da_id = '"""+ str(day) +"""' 
-					AND pl_id = """+ str(playerId) +"""' 
-					AND rec_id = """+ str(recId) +"""';
-				   """)
-			
 
-	return func.makeJsonResponse(OK)
+	print (data)
+	
+	#sales = data['sales']
+	#for rows in sales:
+	#	
+	#	playerId = func.recupIdFromName(rows['player'])
+	#	recId = func.recupIdRecFromName(rows['item'])
+	#	
+	#	db.execute("""
+	#				UPDATE Transaction SET qte_sale = @(quantity) WHERE da_id = '"""+ str(day) +"""' 
+	#				AND pl_id = """+ str(playerId) +"""' 
+	#				AND rec_id = """+ str(recId) +"""';
+	#			   """)
+			
+	return func.makeJsonResponse(data)
 
 
 @app.route('/actions/<playerName>',methods=['POST'])
