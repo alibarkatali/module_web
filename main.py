@@ -185,23 +185,23 @@ def simulCmd():
 	data = request.get_data()
 	datas = json.loads(data)
 
-	for rows in datas.sales:
-	
-		if rows['item'] != None:
-			
-			# Alors le joueur n'a rien mit en vente : la table Transaction n'a pas ete remplit
-			playerId = func.recupIdFromName(rows['player'])
-			recId = func.recupIdRecFromName(rows['item'])
-			qte = rows['quantity']
-		
-			db.execute("""
-					UPDATE Transaction SET qte_sale = '"""+ qte +"""' WHERE da_id = '"""+ str(day) +"""' 
-					AND pl_id = """+ str(playerId) +"""' 
-					AND rec_id = """+ str(recId) +"""';
-				   """)
-			
+	#for rows in datas["sales"]:
+	#
+	#	if rows['item'] != None:
+	#		
+	#		# Alors le joueur n'a rien mit en vente : la table Transaction n'a pas ete remplit
+	#			playerId = func.recupIdFromName(rows['player'])
+	#		recId = func.recupIdRecFromName(rows['item'])
+	#		qte = rows['quantity']
+	#	
+	#		db.execute("""
+	#				UPDATE Transaction SET qte_sale = '"""+ qte +"""' WHERE da_id = '"""+ str(day) +"""' 
+	#				AND pl_id = """+ str(playerId) +"""' 
+	#				AND rec_id = """+ str(recId) +"""';
+	#			   """)
+	#		
 
-	return func.makeJsonResponse(OK)
+	return func.makeJsonResponse(datas)
 
 
 
