@@ -180,26 +180,28 @@ def simulCmd():
 	""" Retourne les ventes du joueur apres simulation (Programme JAVA)
 		...
 	"""
-
+	
 	day = func.getDayIdCurr()
 	data = request.get_data()
 	datas = json.loads(data)
 
-	sales = data['sales']
-	for rows in sales:
+	for rows in datas["sales"]:
+	
+		if len(rows['item']) > 0:
 		
-		playerId = func.recupIdFromName(rows['player'])
-		recId = func.recupIdRecFromName(rows['item'])
-		qte = rows['quantity']
+			# Alors le joueur n'a rien mit en vente : la table Transaction n'a pas ete remplit
+			playerId = func.recupIdFromName(rows['name'])
+			recId = func.recupIdRecFromName(rows['item'])
+			qte = rows['quantity']
 		
-		db.execute("""
-					UPDATE Transaction SET qte_sale = '"""+ qte +"""' WHERE da_id = '"""+ str(day) +"""' 
+			db.execute("""
+					UPDATE Transaction SET qte_sale = '"""+ str(qte) +"""' WHERE da_id = '"""+ str(day) +"""' 
 					AND pl_id = """+ str(playerId) +"""' 
 					AND rec_id = """+ str(recId) +"""';
 				   """)
 			
 
-	return func.makeJsonResponse(OK)
+	return func.makeJsonResponse(datas)
 
 
 
