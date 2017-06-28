@@ -64,7 +64,7 @@ def rejoin():
 
 	db.execute("""	
 					INSERT INTO Participate(present, ga_id, pl_id) 
-					SELECT 'true', '"""+ gameId +"""', player.pl_id FROM Player player 
+					SELECT 'true', '"""+ str(gameId) +"""', player.pl_id FROM Player player 
 					WHERE pl_pseudo = @(name); 
 			  """, data)		
 
