@@ -187,7 +187,7 @@ def simulCmd():
 
 	for rows in datas["sales"]:
 	
-		if rows['item'] != None:
+		if len(rows['item']) > 0:
 		
 			# Alors le joueur n'a rien mit en vente : la table Transaction n'a pas ete remplit
 			playerId = func.recupIdFromName(rows['name'])
@@ -195,7 +195,7 @@ def simulCmd():
 			qte = rows['quantity']
 		
 			db.execute("""
-					UPDATE Transaction SET qte_sale = '"""+ qte +"""' WHERE da_id = '"""+ str(day) +"""' 
+					UPDATE Transaction SET qte_sale = '"""+ str(qte) +"""' WHERE da_id = '"""+ str(day) +"""' 
 					AND pl_id = """+ str(playerId) +"""' 
 					AND rec_id = """+ str(recId) +"""';
 				   """)
