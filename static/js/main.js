@@ -80,7 +80,7 @@ $(document).ready(function () {
 	/* # Mise à jour du timstamp */
 	setTimeout(function() {
 	      getMetrology ();
-	}, 1000);
+	}, 6000);
 
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
