@@ -19,6 +19,10 @@ $(document).ready(function () {
 	/* # Initialisation de la partie */
 	gameInit();
 
+	/* # Mise à jour du timstamp */
+	setTimeout(getMetrology, 1000);
+
+
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Gestionnaires d'événements */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -77,11 +81,7 @@ $(document).ready(function () {
 	/* # supprimer une recette dans le pipe */
 	callbackDelPlayerPipe()
 
-	/* # Mise à jour du timstamp */
-	setTimeout(function() {
-	      getMetrology ();
-	}, 6000);
-
+	
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
