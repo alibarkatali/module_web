@@ -99,11 +99,11 @@ def setMetrology():
 	weatherTomorrow =  None
 
 	# Dernier jour du jeu
-	lastDay = db.select("SELECT da_day FROM Date ORDER BY da_day DESC LIMIT 1")
-	if len(lastDay) == 0:
+	result = db.select("SELECT da_day, da_id FROM Date ORDER BY da_id DESC LIMIT 1")
+	if len(result) == 0:
 		lastDay = 1
 	else:
-		lastDay = lastDay[0]['da_day']
+		lastDay = result[0]['da_day']
 
 	# Le Timestamp
 	timestamp = int(data['timestamp'])
@@ -119,6 +119,7 @@ def setMetrology():
 	dataSql['weatherTomorrow'] = weatherTomorrow
 	dataSql['timestamp'] = timestamp%24
 	dataSql['lastDay'] = lastDay
+	dataSql['da_id'] = result[0]['da_id']
 
 	if timestamp % 24 == 0 :
 		dataSql['day'] = lastDay+1
@@ -127,7 +128,7 @@ def setMetrology():
 		db.execute("""INSERT INTO Date(da_day,da_weather, da_weather_tomorrow,da_timestamp) 
 			VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
 	else:
-		db.execute("""UPDATE Date SET da_timestamp = @(timestamp) WHERE da_day = @(lastDay);""", dataSql)
+		db.execute("""UPDATE Date SET da_timestamp = @(timestamp) WHERE da_day = @(lastDay) AND da_id = ;""", dataSql)
 
 	return func.makeJsonResponse(data,200)
 
