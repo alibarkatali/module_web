@@ -13,7 +13,7 @@ def creerGame():
 
 def supprimerGame(game_id):
 	""" Permet de supprimer une partie
-		On passe son ga_run à false puis on met les participants à false
+		On passe son ga_run a false puis on met les participants a false
 		:param arg1: id du game a tester
 		:type arg1: int
 	"""
@@ -43,7 +43,7 @@ def isCold(rec_id):
 	return booleanVar
 
 def hasAlcohol(rec_id):
-	""" Permet de tester si une recette (boisson) est alcolisée
+	""" Permet de tester si une recette (boisson) est alcolisee
 		:param arg1: id de la recette
 		:type arg1: int
 		:return: return true ou false
