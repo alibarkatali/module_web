@@ -17,9 +17,6 @@ def resetSimulation():
 	""" Permet de reinitialiser la partie en cours
 		...
 	"""
-	
-	
-
 	return '', 200
 
 @app.route('/players',methods=['GET'])
@@ -50,7 +47,6 @@ def rejoin():
 	gameId = func.recupGameId()
 
 	# Je dois recuperer la latitude et longitude de la map normalement
-	
 	data['longitude'] = random.uniform(0, 700)
 	data['latitude'] = random.uniform(0, 400)
 	
