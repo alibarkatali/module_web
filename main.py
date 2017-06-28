@@ -68,9 +68,10 @@ def getMetrology():
 		wToday = weather[0]["da_weather"]
 		wTomorrow = weather[0]["da_weather_tomorrow"]
 		tStam = weather[0]["da_timestamp"]
+		dDay = weather[0]["da_day"]
 
 		outData = {
-		"timestamp" : tStam,
+		"timestamp" : tStam+24*dDay,
 		"weather" : [ {
 		        "weather" : wToday,
 		        "dfn" : 0,
@@ -168,7 +169,28 @@ def simulActions(playerName):
 	if not data['actions']:
 		return '"Not find actions"', 412
 
-	
+	print data
+
+	#if not data['simulated']:
+	#	return '"Not find simulated"', 412
+
+	if playerName :
+
+		listRecipe = []
+		for action in data['actions']:
+			if action['kind'] == "drinks":
+				for prepare in action['prepare']:
+					for k, v in prepare.iteritems():
+						print k, v
+					print prepare
+			#else if :
+
+					#listRecipe[prepare] = 
+					#db.execute("""INSERT INTO Transaction(rec_id,pl_id, qte_prev,price) VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
+
+		# REGARDER DE QUELLES FORMES SONT LES DONNEES POUR LES METTRES DANS LA TABLE Transaction - Easy !!!
+
+		#if data['simulated'] == True:
 
 	return "Instructions du joueur pour le jour suivant",200
 
