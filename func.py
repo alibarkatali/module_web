@@ -7,14 +7,27 @@ db = Db()
 gaNom = [ "Shaddock", "Bashunga", "VaChier", "GitansLand", "Iphone", "Pizza" ]
 
 def creerGame():
+	""" Creer une nouvelle partie. """ 
 	gameNom = random.choice(gaNom)
 	db.execute("INSERT INTO Game(ga_nom, ga_latitude, ga_longitude, ga_centrex, ga_centrey, ga_run) VALUES ('"+ gameNom +"', '500', '700', '350', '250', 'true')")
 
 def supprimerGame(game_id):
+	""" Permet de supprimer une partie
+		On passe son ga_run à false puis on met les participants à false
+		:param arg1: id du game a tester
+		:type arg1: int
+	"""
+		
 	db.execute("UPDATE Game SET ga_run = 'false' WHERE ga_id = '"+ game_id +"'")
 	db.execute("UPDATE Participate SET present = 'false' WHERE ga_id = '"+ game_id +"'")
 
 def isCold(rec_id):
+	""" Permet de tester si une recette (boisson) est froid ou chaude
+		:param arg1: id de la recette
+		:type arg1: int
+		:return: return true ou false
+		:rtype: boolean
+	"""
 	booleanVar = 'true'
 
 	ingredientsList = db.select("""SELECT ing.ing_cold FROM Ingredient ing 
@@ -29,7 +42,14 @@ def isCold(rec_id):
 
 	return booleanVar
 
-def hasAlcohol(rec_id):	
+def hasAlcohol(rec_id):
+	""" Permet de tester si une recette (boisson) est alcolisée
+		:param arg1: id de la recette
+		:type arg1: int
+		:return: return true ou false
+		:rtype: boolean
+	"""
+	
 	booleanVar = 'false'	
 
 	ingredientsList = db.select("""SELECT ing.ing_alcohol FROM Ingredient ing 

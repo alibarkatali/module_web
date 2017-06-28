@@ -17,9 +17,9 @@ db = Db()
 def resetSimulation():
 	""" Permet de reinitialiser la partie en cours
 		...
-	"""	
-	gameId = db.select("SELECT MAX(da_id) From Date")
-	
+	"""
+	gameId = getDayIdCurr()
+
 	if gameId[0]["max"] == None:
 		func.creerGame()
 	else:
@@ -27,14 +27,14 @@ def resetSimulation():
 		func.creerGame()
 
 
-	return '', 200
+	return func.makeJsonResponse(OK)
 
 @app.route('/players',methods=['GET'])
 def getPlayers():
 	""" Retourne la liste des participants dans la partie en cours
 		...
 	"""
-	
+	# On regarde ceux present dans la partie (table Participate)
 	playersInfo = db.select("SELECT pl.pl_pseudo FROM Player pl INNER JOIN Participate par ON par.pl_id = pl.pl_id WHERE par.present = true")
 	
 	return func.makeJsonResponse({ "players" : playersInfo },200)
@@ -59,34 +59,31 @@ def rejoin():
 	longI = db.select("SELECT ga_longitude FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_longitude"] 
 	latI = db.select("SELECT ga_latitude FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_latitude"]
 	
+	# Coordonnees du stand generees aleatoirement
 	data['longitude'] = random.uniform(0, longI)
 	data['latitude'] = random.uniform(0, latI)
-	
+
+	# J'incris le joueur avec son nom et son budget initial (100, fixe)
 	db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(name), 100);""", data)
 
+	# Je lui affilie un stand avec les coordonnees generees
 	db.execute("""
 					INSERT INTO stand(loc_longitude, loc_latitude, loc_rayon, pl_id)
 		       		SELECT @(longitude), @(latitude),20, player.pl_id FROM Player player 
 					WHERE pl_pseudo = @(name); 
 			  """, data)
-
+	# J'update la table Participate afin de dire que ce nouveau candidat participe a la partie courante
 	db.execute("""	
 					INSERT INTO Participate(present, ga_id, pl_id) 
 					SELECT 'true', '"""+ str(gameId) +"""', player.pl_id FROM Player player 
 					WHERE pl_pseudo = @(name); 
 			  """, data)		
 
-	coordinates = db.select("""
-								SELECT loc_longitude, loc_latitude FROM Stand 
-								WHERE pl_id = 
-									(SELECT player.pl_id FROM Player player 
-									WHERE pl_pseudo = '"""+ data['name'] +"""' )
-							""")
-
+	# J'appelle la fonction playerInfo qui cree une donne Json type PlayerInfo
 	playerInfo =  func.makePlayerInfo(data['name'])
 	
 
-	return func.makeJsonResponse({ "name" : data['name'], "location" : { "latitude" : coordinates[0]['loc_longitude'], "longitude" : coordinates[0]['loc_latitude']}, "info" : playerInfo })
+	return func.makeJsonResponse({ "name" : data['name'], "location" : { "latitude" : data['latitude'], "longitude" : data['longitude']}, "info" : playerInfo })
 
 
 @app.route('/metrology',methods=['GET'])
@@ -94,8 +91,8 @@ def getMetrology():
 	""" Retourne le timestamp, la meteo d'aujourd'hui et la meteo de demain
 		...
 	"""
-
-	weather = db.select("SELECT da_id, da_day, da_weather, da_weather_tomorrow, da_timestamp FROM Date ORDER BY da_id DESC LIMIT 1")
+	# On prend la meteo d'aujourd'hui
+	weather = db.select("SELECT * FROM Date ORDER BY da_id DESC LIMIT 1")
 
 	# Mettre test de nullite des donnees
 
@@ -174,6 +171,7 @@ def leave(playerName):
 	"""
 
 	plId = func.recupIdFromName(playerName)
+	# Je le passe à 'false' dans la table Participate
 	db.execute("""UPDATE Participate par SET present = 'false' WHERE par.pl_id = '"""+ str(plId) +"""';""")
 	
 	return func.makeJsonResponse("OK")
@@ -181,7 +179,7 @@ def leave(playerName):
 
 @app.route('/sales', methods=['POST'])
 def simulCmd():
-	""" Retourne les ventes du joueur apres simulation (Programme JAVA)
+	""" Inserer les ventes du joueur apres simulation JAVA
 		...
 	"""
 	
@@ -205,7 +203,7 @@ def simulCmd():
 				   """)
 			
 
-	return func.makeJsonResponse(datas)
+	return func.makeJsonResponse(OK)
 
 
 
@@ -227,8 +225,7 @@ def simulActions(playerName):
 	#	return '"Not find simulated"', 412
 
 	# On recupere l'ID du player
-	data['playerName'] = playerName
-	playerInfo = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = @(playerName)",data)
+	playerInfo = func.recupIdFromName(playerName)
 
 	# Si le player n'existe pas
 	if len(playerInfo) <= 0:
@@ -237,7 +234,7 @@ def simulActions(playerName):
 	tmp['playerId'] = playerInfo[0]['pl_id']
 
 	# On recupere le jour en cours
-	dayInfo = db.select("SELECT da_id FROM Date ORDER BY da_id DESC LIMIT 1")
+	dayInfo = func.getDayIdCurr()
 
 	if len(playerInfo) <= 0:
 		return '"Current day Not Found"', 412
@@ -249,7 +246,7 @@ def simulActions(playerName):
 
 		for action in data['actions']:
 
-			# Action pour ajouter les recttes dans la base de donnees
+			# Action pour ajouter les recettes dans la base de donnees
 			if action['kind'] == "drinks":
 
 				for prepare in action['prepare']:
@@ -287,7 +284,7 @@ def simulActions(playerName):
 
 @app.route('/map',methods=['GET'])
 def getMap():
-	""" Retourne l'ensemble des informations relatives aux joueurs
+	""" Retourne l'ensemble des informations relatives aux joueurs dans la partie
 		...
 	"""
 
