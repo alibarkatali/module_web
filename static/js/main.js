@@ -20,7 +20,7 @@ $(document).ready(function () {
 	gameInit();
 
 	/* # Mise à jour du timstamp */
-	setTimeout(getMetrology, 100);
+	setTimeout(getMetrology, 1);
 
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
