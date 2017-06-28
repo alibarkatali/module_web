@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_cors import CORS
 import random
 import func
+import json
 from db import Db
 
 app = Flask(__name__)
@@ -45,8 +46,7 @@ def rejoin():
 		...
 	"""
 
-	data = request.get_data()
-	datas = json.loads(data)
+	data = request.get_json()
 
 	# Je verifie que le pseudo de ce joueur n'existe deja pas
 	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ data['name'] +"'")
@@ -183,7 +183,8 @@ def simulCmd():
 	"""
 
 	day = func.getDayIdCurr()
-	data = request.get_json()
+	data = request.get_data()
+	datas = json.loads(data)
 
 	sales = data['sales']
 	for rows in sales:
