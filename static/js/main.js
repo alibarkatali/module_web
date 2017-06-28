@@ -18,10 +18,27 @@ $(document).ready(function () {
 
 	/* # Initialisation de la partie */
 	gameInit();
+	
 
 	/* # Mise à jour du timstamp */
-	setTimeout(getMetrology, 1);
+	setTimeout(function () {
+		$.ajax({
+			url: "/metrology", 
+			type: "GET",
+			contentType: 'application/json',
+			success: function(result){
 
+				$('#timer').html(result.timestamp);
+				$.each(result.weather, function( index, value ) {
+					if(value['dfn'] == 0) 
+						$('#weatherToday').html(value['weather']);
+	        		else 
+	        			$('#weatherTomorrow').html(value['weather']);
+				});
+	    	}
+		});
+	}, 100);
+	
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Gestionnaires d'événements */
@@ -252,6 +269,8 @@ $(document).ready(function () {
 
 	  	if($('#blocSimul') != undefined)
 	 		getRepices();
+
+
 	}
 
 	function callbackDelPlayerPipe () {
@@ -277,7 +296,7 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	$("#valAction").on("click",function(){
+	/*$("#valAction").on("click",function(){
       $.ajax("/order",{
       	url: "/actions/<name>",
         method: 'POST',
@@ -287,12 +306,12 @@ $(document).ready(function () {
         	console.log('OK')
         }
       })
-      })
+      })*/
 
 	/**
 	*
 	*/
-	function sendAction() {
+	/*function sendAction() {
 		$.ajax({
 			url: "/actions/<name>",
 			pipePlayers : JSON.stringify(pipePlayers),
@@ -302,6 +321,8 @@ $(document).ready(function () {
 				console.log('OK')
 	    	}
 		});
-	}
+	}*/
 
 })
+
+
