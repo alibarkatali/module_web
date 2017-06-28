@@ -11,11 +11,11 @@ class Db:
     """Initiate a connection to the default postgres database."""
 
     # connexion a la base de donnees locale
-    url = urlparse.urlparse("postgresql://imerir:imerir@localhost/imerir")
+    #url = urlparse.urlparse("postgresql://imerir:imerir@localhost/imerir")
 
     #connexion base de donnees heroku
-    #urlparse.uses_netloc.append("postgres")
-    #url = urlparse.urlparse(os.environ["DATABASE_URL"])
+    urlparse.uses_netloc.append("postgres")
+    url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
     self.conn = psycopg2.connect(
        database=url.path[1:],
