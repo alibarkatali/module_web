@@ -99,7 +99,7 @@ def setMetrology():
 	weatherTomorrow =  None
 
 	# Dernier jour du jeu
-	result = db.select("SELECT da_day, da_id FROM Date ORDER BY da_id DESC LIMIT 1")
+	result = db.select("SELECT * FROM Date ORDER BY da_id DESC LIMIT 1")
 	if len(result) == 0:
 		lastDay = 0
 	else:
