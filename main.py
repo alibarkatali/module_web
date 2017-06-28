@@ -164,9 +164,9 @@ def leave(playerName):
 		...
 	"""
 
-	#pl_id = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = "+playerName+"")[0]['pl_id']
+	pl_id = func.recupIdFromName(pl_id)
 	#data['pl_id'] = pl_id
-	#db.execute("""UPDATE Participate par SET par.present = 'false' WHERE par.pl_id = @(pl_id);""",data)
+	db.execute("""UPDATE Participate par SET par.present = 'false' WHERE par.pl_id = @(pl_id);""")
 	
 	return '', 200
 
@@ -180,7 +180,8 @@ def simulCmd():
 	day = func.getDayIdCurr()
 	data = request.get_json()
 	
-	for rows in data['sales']:
+	sales = data['sales']
+	for rows in sales:
 		
 		playerId = func.recupIdFromName(rows['player'])
 		recId = func.recupIdRecFromName(rows['item'])
@@ -192,7 +193,7 @@ def simulCmd():
 				   """)
 			
 
-	return func.makeJsonResponse(data)
+	return func.makeJsonResponse(OK)
 
 
 @app.route('/actions/<playerName>',methods=['POST'])
