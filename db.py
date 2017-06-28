@@ -15,7 +15,7 @@ class Db:
     #url = urlparse.urlparse("postgresql://imerir:imerir@localhost/imerir")
 
 
-     connexion base de donnees heroku
+    #connexion base de donnees heroku
     urlparse.uses_netloc.append("postgres")
     url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
