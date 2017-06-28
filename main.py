@@ -168,6 +168,18 @@ def simulActions(playerName):
 	if not data['simulated']:
 		return '"Not find simulated"', 412
 
+	listRecipe = []
+	for action in data['actions']:
+		if action['kind'] == "drinks":
+			for prepare in action['prepare']:
+				print (prepare)
+				#listRecipe[prepare] = 
+				#db.execute("""INSERT INTO Transaction(rec_id,pl_id, qte_prev,price) VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
+
+	# REGARDER DE QUELLES FORMES SONT LES DONNEES POUR LES METTRES DANS LA TABLE Transaction - Easy !!!
+
+	#if data['simulated'] == True:
+
 	return "Instructions du joueur pour le jour suivant"
 
 
