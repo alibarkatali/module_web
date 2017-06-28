@@ -128,7 +128,7 @@ def setMetrology():
 		db.execute("""INSERT INTO Date(da_day, da_weather, da_weather_tomorrow, da_timestamp) 
 			VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
 	else:
-		db.execute("""UPDATE Date SET da_timestamp = @(timestamp) WHERE da_day = @(lastDay) AND da_id = dataSql['da_id'];""", dataSql)
+		db.execute("""UPDATE Date da SET da_timestamp = @(timestamp) WHERE da.da_day = @(lastDay) AND da.da_id = @(da_id);""", dataSql)
 
 	return func.makeJsonResponse(data,200)
 
