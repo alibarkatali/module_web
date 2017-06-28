@@ -185,9 +185,10 @@ def simulCmd():
 	data = request.get_data()
 	datas = json.loads(data)
 	
-	print datas
+	print datas['sales']
+	print datas[0]['sales']
 
-	sales = data["sales"]
+	sales = data['sales']
 	for rows in sales:
 		
 		playerId = func.recupIdFromName(rows['player'])
@@ -377,7 +378,7 @@ def getRecipeById(rc_id):
 def getInfoPlayer(playerName):
 	
 	playerInfo = makePlayerInfo(playerName)
-	return playerInfo
+	return func.makeJsonResponse(playerInfo)
 	
 
 if __name__ == "__main__":
