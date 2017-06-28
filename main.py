@@ -169,9 +169,8 @@ def leave(playerName):
 		...
 	"""
 
-	pl_id = func.recupIdFromName(pl_id)
-	#data['pl_id'] = pl_id
-	db.execute("""UPDATE Participate par SET par.present = 'false' WHERE par.pl_id = @(pl_id);""")
+	plId = func.recupIdFromName(pl_id)
+	db.execute("""UPDATE Participate par SET par.present = 'false' WHERE par.pl_id = '"""+ plId +"""';""")
 	
 	return '', 200
 
@@ -191,9 +190,10 @@ def simulCmd():
 		
 		playerId = func.recupIdFromName(rows['player'])
 		recId = func.recupIdRecFromName(rows['item'])
+		qte = rows['quantity']
 		
 		db.execute("""
-					UPDATE Transaction SET qte_sale = @(quantity) WHERE da_id = '"""+ str(day) +"""' 
+					UPDATE Transaction SET qte_sale = '"""+ qte +"""' WHERE da_id = '"""+ str(day) +"""' 
 					AND pl_id = """+ str(playerId) +"""' 
 					AND rec_id = """+ str(recId) +"""';
 				   """)
@@ -371,6 +371,12 @@ def getRecipeById(rc_id):
 	else:
 		return '"Recipe Not Found"', 412
 
+@app.route('/players/info/<playerName>', methods=['GET'])
+def getInfoPlayer(playerName):
+	
+	playerInfo = makePlayerInfo(playerName)
+	return playerInfo
+	
 
 if __name__ == "__main__":
     app.run()
