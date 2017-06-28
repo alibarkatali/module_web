@@ -371,10 +371,10 @@ def getRecipeById(rc_id):
 	else:
 		return '"Recipe Not Found"', 412
 
-@app.route('/players/info/<playerName>', methods=['GET'])
+@app.route('/player/info/<playerName>', methods=['GET'])
 def getInfoPlayer(playerName):
 	
-	playerInfo = makePlayerInfo(playerName)
+	playerInfo = func.makePlayerInfo(playerName)
 	return func.makeJsonResponse(playerInfo)
 	
 
