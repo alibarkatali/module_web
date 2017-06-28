@@ -184,9 +184,6 @@ def simulCmd():
 	day = func.getDayIdCurr()
 	data = request.get_data()
 	datas = json.loads(data)
-	
-	print datas['sales']
-	print datas[0]['sales']
 
 	sales = data['sales']
 	for rows in sales:
@@ -374,10 +371,10 @@ def getRecipeById(rc_id):
 	else:
 		return '"Recipe Not Found"', 412
 
-@app.route('/players/info/<playerName>', methods=['GET'])
+@app.route('/player/info/<playerName>', methods=['GET'])
 def getInfoPlayer(playerName):
 	
-	playerInfo = makePlayerInfo(playerName)
+	playerInfo = func.makePlayerInfo(playerName)
 	return func.makeJsonResponse(playerInfo)
 	
 
