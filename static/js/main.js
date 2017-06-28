@@ -77,6 +77,11 @@ $(document).ready(function () {
 	/* # supprimer une recette dans le pipe */
 	callbackDelPlayerPipe()
 
+	/* # Mise à jour du timstamp */
+	setTimeout(function() {
+	      getMetrology ();
+	}, 1000);
+
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
