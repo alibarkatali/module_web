@@ -11,9 +11,7 @@ class Db:
     """Initiate a connection to the default postgres database."""
 
     # connexion a la base de donnees locale
-	#urlparse.uses_netloc.append("imerir")
     #url = urlparse.urlparse("postgresql://imerir:imerir@localhost/imerir")
-
 
     #connexion base de donnees heroku
     urlparse.uses_netloc.append("postgres")
