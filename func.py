@@ -7,18 +7,14 @@ db = Db()
 gaNom = [ "Shaddock", "Bashunga", "VaChier", "GitansLand", "Iphone", "Pizza" ]
 
 def creerGame():
-	
 	gameNom = random.choice(gaNom)
-
 	db.execute("INSERT INTO Game(ga_nom, ga_latitude, ga_longitude, ga_centrex, ga_centrey, ga_run) VALUES ('"+ gameNom +"', '500', '700', '350', '250', 'true')")
 
 def supprimerGame(game_id):
-
 	db.execute("UPDATE Game SET ga_run = 'false' WHERE ga_id = '"+ game_id +"'")
 	db.execute("UPDATE Participate SET present = 'false' WHERE ga_id = '"+ game_id +"'")
 	
 def isCold(rec_id):
-	
 	booleanVar = 'true'
 	
 	ingredientsList = db.select("""SELECT ing.ing_cold FROM Ingredient ing 
@@ -33,8 +29,7 @@ def isCold(rec_id):
 	
 	return booleanVar
 
-def hasAlcohol(rec_id):
-	
+def hasAlcohol(rec_id):	
 	booleanVar = 'false'	
 
 	ingredientsList = db.select("""SELECT ing.ing_alcohol FROM Ingredient ing 
@@ -50,52 +45,77 @@ def hasAlcohol(rec_id):
 	return booleanVar
 
 def recupIdRecFromName(rec_name):
+	""" Recupere l'id d'une recette a partir de son nom """
 	recId = db.select("SELECT rec_id FROM Recipe WHERE rec_nom = '"+ rec_name +"'")[0]["rec_id"]
 	return recId	
 
 def recupNameRecFromId(rec_id):
+	""" Recupere le nom d'une recette a partir de son id """
 	recName = db.select("SELECT rec_nom From Recipe WHERE rec_id = '"+ str(rec_id) +"'")[0]["rec_nom"]	
 	return recName
 	
 def getDayCurr():
+	""" Recupere la valeur du jour courant """
 	daMax = db.select("SELECT MAX(da_id) From Date")[0]["max"]
 	dayCurr = db.select("SELECT da_day From Date WHERE da_id = '"+ daMax +"'")[0]["da_day"]
 	return dayCurr
 
 def getDayIdCurr():	
+	""" Recupere l'id du jour courant """
 	daMax = db.select("SELECT MAX(da_id) From Date")[0]["max"]
 	return daMax
 
 
 def recupIdFromName(pl_name):
+	""" Recupere l'id d'un player en fonction du nom """
 	plId = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = '"+ pl_name +"'")[0]["pl_id"]
 	return plId
 
+def recupNameFromId(pl_id):
+	""" Recupere le nom d'un player en fonction de l'id """
+	plName = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(pl_id) +"'")[0]["pl_pseudo"]
+	return plName
+
 def recupGameId():
+	""" Recupere l'id du jeu en cours (lorsqu'une seule partie est lancee) """
 	gameId = db.select("SELECT ga_id FROM Game WHERE ga_run = 'true'")[0]["ga_id"]
 	return gameId
 
 def getAvailableIngredients(pl_name):
+	"""" Recupere les ingredients des recettes proposees (decouvertes) pour le player pl_name 
+		 :rtype: collection d'objet Json ingredients	
+	"""
+
 	aIng = []
 	plId = recupIdFromName(pl_name)
 
-	db.select(""" SELECT ing_nom FROM Ingredient ing 
+	listIngredientId = db.select(""" SELECT ing.ing_id FROM Ingredient ing 
 				  INNER JOIN Contains con ON con.ing_id = ing.ing_id 
 				  INNER JOIN Recipe rec ON con.rec_id = rec.rec_id 
 				  INNER JOIN Transaction tr ON tr.rec_id = rec.rec_id 
-				  WHERE tr.pl_id = '"""+ plId +"""'
+				  WHERE tr.pl_id = '"""+ str(plId) +"""'
 			 """)
+	
+	for rows in listIngredientId:
+		aIng.append(makeIngredientInfo(rows['ing_id']))
 
-	return 0
+	return aIng	
+
+def makeIngredientInfo(ing_id):
+	""" Recupere les info de l'ingredient passe en argument
+		:return: donnee Json comportant les informations de l'ingredient
+		:rtype: JSON
+	"""
+
+	info = db.select("SELECT ing_nom, ing_prix, ing_alcohol, ing_cold FROM Ingredient WHERE ing_id = '"+ str(ing_id) +"'")
+	return ({ "name" : info['ing_nom'], "cost" : info['ing_prix'], "hasAlcohol" : info['ing_alcohol'], "isCold" : info['ing_cold'] }) 
 
 def makeRegion(game_id):
-	""" 
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+	""" Recupere les infos concernant la taille ainsi que le centre de la map de la partie courante
+		:param arg1: id du game a tester
+		:type arg1: int
+		:return: donne comportant le centre (x et y), ainsi que le span (latitude et longitude) de la partie voulue
+		:rtype: Json
 	"""
 
 	coord = db.select("SELECT ga_centrex, ga_centrey FROM Game WHERE ga_id = '"+ str(game_id) +"' AND ga_run = 'true'")
@@ -106,12 +126,10 @@ def makeRegion(game_id):
 
 def rankingPlayer(game_id):
 	""" Permet de classer les joueurs, en fonction de leur budget (le plus riche est premier)
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+		:param arg1: id du game en question
+		:type arg1: int
+		:return: retourne une liste avec les noms des players dans l'ordre classes
+		:rtype: Array
 	"""
 
 	ranking = []
@@ -130,13 +148,11 @@ def rankingPlayer(game_id):
 
 
 def makeMapItem(pl_id):
-	""" Permet de creer une donnee Json de type mapItem
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+	""" Recupere les items d'un player sur la map (stand ou pub). Utilise les fonctions makeMapItemStand et Pub.
+		:param arg1: id du joueur
+		:type arg1: int
+		:return: collection des objets appartenant au joueur, avec leur position
+		:rtype: Collection d'objets Json
 	"""
 
 	mapItem = []
@@ -151,29 +167,25 @@ def makeMapItem(pl_id):
 
 
 def makeMapItemStand(pl_id):
-	""" 
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+	""" Recupere les infos sur le stand du joueur (coordonnee, influence)
+		:param arg1: id du joueur
+		:type arg1: int
+		:return: retour infos du stand possede par la joueur
+		:rtype: Json
 	"""
 
 	coordinates = db.select("SELECT loc_longitude, loc_latitude FROM Stand  WHERE pl_id = '"+ str(pl_id) +"'")
 	influence = db.select("SELECT loc_rayon FROM Stand WHERE pl_id = '"+ str(pl_id) +"'")[0]["loc_rayon"]
-	pl_name = db.select("SELECT pl_pseudo FROM Player WHERE pl_id = '"+ str(pl_id) +"'")[0]["pl_pseudo"]
+	pl_name = recupNameFromId(pl_id)
 
 	return ({ "kind" : "stand", "owner" : pl_name, "location" : { "latitude" : coordinates[0]['loc_longitude'], "longitude" : coordinates[0]['loc_latitude']}, "influence" : influence })	
 
 def makeMapItemPub(pub_id):
-	""" 
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+	""" Recupere les infos sur les pubs du joueur (coordonnee, influence)
+		:param arg1: id du joueur
+		:type arg1: int
+		:return: retour infos des pubs possedees par le joueur
+		:rtype: Json
 	"""
 
 	coordinates = db.select("SELECT p_coordx, p_coordy FROM Pub WHERE pub_id = '"+ str(pub_id) +"'")
@@ -186,13 +198,11 @@ def makeMapItemPub(pub_id):
 	
 
 def makePlayerInfo(pl_name):
-	""" Permet de creer une donnee Json de type playerInfo
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+	""" Recupere toutes les infos d'un player
+		:param arg1: nom du joueur
+		:type arg1: chaine de caracteres
+		:return: infos du player : budget, profit & ventes (depuis le debut de la partie), boissons a vendre ce jour
+		:rtype: Json
 	"""
 
 	info = calculeMoneyInfo(pl_name, 0)
@@ -201,19 +211,18 @@ def makePlayerInfo(pl_name):
 	return ({ "cash" : info['cash'], "profit" : info['profit'], "sales" : info['sales'], "drinksOffered" : drinkInfo })
 
 
-def calculeMoneyInfo(player, status=0):
+def calculeMoneyInfo(player_name, status=0):
 	""" Permet de calculer les info monetaires du joueur (son budget courant, ses ventes & son profit depuis le debut de la partie)
-		variable nom du player, et 0 ou 1 : renvoit toutes les infos si 0, que le budget si 1
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
+		:param arg1: nom du joueur
+		:param arg2: si a 1, calcule que le budget, si a 0, calcule en plus le profit et les ventes (defaut)
+		:type arg1: chaine de caracteres
+		:type arg1: int
 		:return: si status = 0 -> { "cash" : cash, "profit" : profit, "sales" : sales } sinon { "cash" : cash }
 		:rtype: Json
 	"""
 
-	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player +"'")[0]["pl_budget_ini"]
-	player_id = db.select("SELECT p.pl_id FROM Player p WHERE pl_pseudo = '"+ player +"'")[0]["pl_id"]
+	budget_ini = db.select("SELECT pl_budget_ini FROM Player WHERE pl_pseudo = '"+ player_name +"'")[0]["pl_budget_ini"]
+	player_id = recupIdFromName(player_name)
 
 	earnings = calculeEarnings(player_id)
 	spending = calculeSpend(player_id)
@@ -228,13 +237,11 @@ def calculeMoneyInfo(player, status=0):
 		return ({ "cash" : cash })
 	
 def makeDrinkEveryTime(pl_name):
-	""" Permet de calculer et de renvoyer les "drinksOffered" d'un player
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+	""" Permet de calculer et de renvoyer les boissons POUVANT etre propose par le player
+		:param arg1: nom du player
+		:type arg1: chaine de caracteres
+		:return: collection des infos de chaque boissons 
+		:rtype: Collection d'objets Json
 	"""
 
 	drinkEveryTime = []
@@ -244,26 +251,20 @@ def makeDrinkEveryTime(pl_name):
 
 	player_id = recupIdFromName(pl_name)
 	drink_id = db.select("SELECT t.rec_id FROM Transaction t WHERE t.pl_id = '"+ str(player_id) +"'")
-
-	#rec_nom = recupNameRecFromId(rec_id)	
 		
 
 	for drink in drink_id:	
-		drinkInfo = makeDrinkInfo(drink["rec_id"])	
-		drinkEveryTime.append(drinkInfo)
-
+		drinkEveryTime.append(makeDrinkInfo(drink["rec_id"]))	
 
 	return (drinkEveryTime)
 	
 
 def makeDrinkOffered(pl_name):
 	""" Permet de calculer et de renvoyer les "drinksOffered" d'un player
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+		:param arg1: nom du joueur
+		:type arg1: chaine de caracteres
+		:return: Collection des boissons mises en ventes par le joueur le jour courant
+		:rtype: Collection d'objets Json
 	"""
 
 	drinkOffered = []
@@ -273,24 +274,21 @@ def makeDrinkOffered(pl_name):
 	drink_id = db.select("SELECT t.rec_id FROM Transaction t WHERE t.pl_id = '"+ str(player_id) +"' AND t.da_id = '"+ str(da_max) +"'")
 		
 	for drink in drink_id:	
-		drinkInfo = makeDrinkInfo(drink["rec_id"])	
-		drinkOffered.append(drinkInfo)
+		drinkOffered.append(makeDrinkInfo(drink["rec_id"]))
 
 	return (drinkOffered)
 	
 
 def makeDrinkInfo(rec_id):
-	""" 
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+	""" Permet de dresser les infos de la boissons passees en argument
+		:param arg1: id de la boissons (recette)
+		:type arg1: int
+		:return: le nom, prix et les informations utiles (alcool, chaud ou froid) de la boissons
+		:rtype: Json
 	"""
 
 	price = calculePriceRec(rec_id)
-	nom = db.select("SELECT rec_nom FROM Recipe WHERE rec_id = '"+ str(rec_id) +"'")[0]["rec_nom"]
+	nom = recupNameRecFromId(rec_id)
 
 	alcohol = hasAlcohol(rec_id)
 	cold = isCold(rec_id)
@@ -302,12 +300,10 @@ def makeDrinkInfo(rec_id):
 
 def calculeEarnings(player_id):
 	""" Permet de calculer les ventes globales (en euros) du joueur depuis le debut de la partie.
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+		:param arg1: id du player
+		:type arg1: int
+		:return: total de l'argent gagne par les ventes
+		:rtype: float
 	"""
 
 	sales = db.select("SELECT SUM(t.qte_sale * t.price) FROM Transaction t WHERE t.pl_id = '" + str(player_id) +"'")[0]["sum"]
@@ -320,12 +316,10 @@ def calculeEarnings(player_id):
 
 def calculeSales(player_id):
 	""" Permet de calculer le nombre de recette vendu du joueur depuis le debut de la partie.
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+		:param arg1: id du joueur
+		:type arg1: int
+		:return: nombre total de recettes vendues
+		:rtype: float
 	"""
 
 	sales = db.select("SELECT SUM(t.qte_sale) FROM Transaction t WHERE t.pl_id = '" + str(player_id) +"'")[0]["sum"]
@@ -338,12 +332,10 @@ def calculeSales(player_id):
 
 def calculeSpend(player_id):
 	""" Permet de calculer les depenses globales (en euros) du joueur depuis le debut de la partie.
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+		:param arg1: id du joueur
+		:type arg1: int
+		:return: depenses globales depuis le debut de la partie (sans la pub pour l'instant)
+		:rtype: float
 	"""
 
 	spending = db.select("""	SELECT SUM(t.qte_prev * 
@@ -362,12 +354,10 @@ def calculeSpend(player_id):
 
 def calculePriceRec(rec_id):
 	""" Permet de calculer le prix d'une recette
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+		:param arg1: id de la recette
+		:type arg1: int
+		:return: prix de la recette
+		:rtype: float
 	"""
 
 	price_rec = db.select("""	SELECT SUM(i.ing_prix) FROM Ingredient i 
@@ -380,12 +370,12 @@ def calculePriceRec(rec_id):
 
 def makeJsonResponse(data,status=200):
 	""" Permet de convert une liste en JSON et ajouter le code de retour.
-		:param arg1: description
-		:param arg2: description
-		:type arg1: type
-		:type arg1: type
-		:return: description de la valeur de retour
-		:rtype: type de la valeur de retour
+		:param arg1: donnee
+		:param arg2: status de la reponse http voulue
+		:type arg1: - 
+		:type arg1: int
+		:return: http response
+		:rtype: http response
 	"""
 
 	return json.dumps(data), status, {'Content-Type': 'application/json'}

@@ -56,15 +56,17 @@ def rejoin():
 
 	gameId = func.recupGameId()
 
-	# Je dois recuperer la latitude et longitude de la map normalement
-	data['longitude'] = random.uniform(0, 700)
-	data['latitude'] = random.uniform(0, 400)
+	longI = db.select("SELECT ga_longitude FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_longitude"] 
+	latI = db.select("SELECT ga_latitude FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_latitude"]
+	
+	data['longitude'] = random.uniform(0, longI)
+	data['latitude'] = random.uniform(0, latI)
 	
 	db.execute("""INSERT INTO Player(pl_pseudo, pl_budget_ini) VALUES (@(name), 100);""", data)
 
 	db.execute("""
 					INSERT INTO stand(loc_longitude, loc_latitude, loc_rayon, pl_id)
-		       		SELECT @(longitude), @(latitude),0, player.pl_id FROM Player player 
+		       		SELECT @(longitude), @(latitude),20, player.pl_id FROM Player player 
 					WHERE pl_pseudo = @(name); 
 			  """, data)
 
@@ -94,6 +96,8 @@ def getMetrology():
 	"""
 
 	weather = db.select("SELECT da_id, da_day, da_weather, da_weather_tomorrow, da_timestamp FROM Date ORDER BY da_id DESC LIMIT 1")
+
+	# Mettre test de nullite des donnees
 
 	if len(weather):
 		wToday = weather[0]["da_weather"]
@@ -169,10 +173,10 @@ def leave(playerName):
 		...
 	"""
 
-	plId = func.recupIdFromName(pl_id)
-	db.execute("""UPDATE Participate par SET par.present = 'false' WHERE par.pl_id = '"""+ plId +"""';""")
+	plId = func.recupIdFromName(playerName)
+	db.execute("""UPDATE Participate par SET present = 'false' WHERE par.pl_id = '"""+ str(plId) +"""';""")
 	
-	return '', 200
+	return func.makeJsonResponse("OK")
 
 
 @app.route('/sales', methods=['POST'])
