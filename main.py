@@ -121,7 +121,6 @@ def setMetrology():
 	dataSql['lastDay'] = lastDay
 	dataSql['da_id'] = result[0]['da_id']
 
-
 	dataSql['day'] = int(timestamp/24)
 	if dataSql['day'] != result[0]['da_day']:
 		# Insertion dans la base
@@ -163,37 +162,74 @@ def simulActions(playerName):
 		...
 	"""
 
+	listRecipe = []
+	tmp = {}
 	data = request.get_json()
 
-
-
+	# Si le player ne demande pas d'actions
 	if not data['actions']:
 		return '"Not find actions"', 412
-
-	print data
 
 	#if not data['simulated']:
 	#	return '"Not find simulated"', 412
 
+	# On recupere l'ID du player
+	data['playerName'] = playerName
+	playerInfo = db.select("SELECT pl_id FROM Player WHERE pl_pseudo = @(playerName)",data)
+
+	# Si le player n'existe pas
+	if len(playerInfo) <= 0:
+		return '"Player ID Not Found"', 412
+
+	tmp['playerId'] = playerInfo[0]['pl_id']
+
+	# On recupere le jour en cours
+	dayInfo = db.select("SELECT da_id FROM Date ORDER BY da_id DESC LIMIT 1")
+
+	if len(playerInfo) <= 0:
+		return '"Current day Not Found"', 412
+
+	tmp['dayId'] = dayInfo[0]['da_id']
+
+	totalCost = 0
 	if playerName :
 
-		listRecipe = []
 		for action in data['actions']:
+
+			# Action pour ajouter les recttes dans la base de donnees
 			if action['kind'] == "drinks":
+
 				for prepare in action['prepare']:
 					for k, v in prepare.iteritems():
-						print k, v
+						listRecipe.append({"recipeId":k,"quantity":v,"price":0})
 					print prepare
-			#else if :
 
-					#listRecipe[prepare] = 
-					#db.execute("""INSERT INTO Transaction(rec_id,pl_id, qte_prev,price) VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
+				for price in action['price']:
+					for k, v in price.iteritems():						
+						for re in listRecipe:
+							if re['recipeId'] == str(k):
+								re['price'] = v
+			print listRecipe
 
-		# REGARDER DE QUELLES FORMES SONT LES DONNEES POUR LES METTRES DANS LA TABLE Transaction - Easy !!!
+			# insertion dans la base de donnees
+			for drinksOffered in listRecipe:
+				
+				tmp['recipeId'] = drinksOffered['recipeId']
+				tmp['quantity'] = drinksOffered['quantity']
+				tmp['price'] = drinksOffered['price']
 
-		#if data['simulated'] == True:
+				totalCost += drinksOffered['quantity'] * drinksOffered['price']
 
-	return "Instructions du joueur pour le jour suivant",200
+				db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
+					VALUES ( @(playerId), @(recipeId), @(dayId), @(price), @(quantity) );""", tmp)
+
+
+	if totalCost <= func.calculeMoneyInfo(playerName,1)['cash']:
+		sufficientFunds = "true"
+	else:
+		sufficientFunds = "false"
+
+	return func.makeJsonResponse({ "sufficientFunds" : sufficientFunds, "totalCost" : totalCost})
 
 
 @app.route('/map',methods=['GET'])
