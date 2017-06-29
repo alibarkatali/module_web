@@ -198,7 +198,7 @@ def simulCmd():
 
 	for rows in datas["sales"]:
 	
-		if rows['item'] != None:
+		if len(rows['item']) > 0:
 		
 			# Alors le joueur bien vendu : la table Transaction a ete remplit
 			playerId = func.recupIdFromName(rows['name'])

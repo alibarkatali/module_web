@@ -66,7 +66,7 @@ def hasAlcohol(rec_id):
 
 def recupIdRecFromName(rec_name):
 	""" Recupere l'id d'une recette a partir de son nom """
-	recId = db.select("SELECT rec_id FROM Recipe WHERE rec_nom = '"+ rec_name +"'")[0]["rec_id"]
+	recId = db.select("SELECT rec_id FROM Recipe WHERE rec_nom = '"+ str(rec_name) +"'")[0]["rec_id"]
 	return recId
 
 def recupNameRecFromId(rec_id):
