@@ -1,77 +1,4 @@
-/*CSS client_jeu*/
-body {
-  background-color:orange;
-  margin:0px;
-  font-family: 'Helvetica';
-  background-size: 100% 110%;
-}
 
-.login {
-  margin:0 auto;
-  max-width:1000px;
-}
-
-.header {
-  color:#000;
-  text-align:center;
-  font-size:large;
-}
-}
-
-.login-form {
-  border:.5px solid #000;
-  background:#4facff;
-  border-radius:10px;
-  box-shadow:0px 0px 10px #000;
-}
-
-.login-form {
-  box-sizing:border-box;
-  padding-top:15px;
-  padding-bottom:10%;
-  margin:5% auto;
-  text-align:center;
-  color:#000;
-}
-
-.login input[type="text"] {
-  max-width:400px;
-  width: 80%;
-  line-height:3em;
-  font-family: 'Helvetica', sans-serif;
-  margin:1em 2em;
-  border-radius:5px;
-  border:2px solid #f2f2f2;
-  outline:none;
-  padding-left:10px;
-}
-
-.login-form input[type="button"] {
-  height:30px;
-  width:100px;
-  background:#fff;
-  border:1px solid #f2f2f2;
-  border-radius:20px;
-  color: slategrey;
-  font-family: 'Helvetica', sans-serif;
-  cursor:pointer;
-}
-
-.center {
-  text-align:center;
-}
-
-/*CSS client_jeu*/
-#gameMap {
-   width: 100%;
-   height: 600px;
-   background-color: grey;
-}
-
-.weather {
-  font-size:small;
-  text-align:left;
-}
 
 /* -- Ali -- */
 .bloccontent{
@@ -148,4 +75,14 @@ body {
   padding-bottom: 5px;
   font-size: 10px;
   color: #fff;
+}
+
+.grandtitre{
+  font-size: 16px;
+  font-weight: bold;
+  border-bottom: 1px solid gray;
+}
+
+.centrerbloc{
+  text-align: center;
 }
