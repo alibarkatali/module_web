@@ -236,9 +236,14 @@ $(document).ready(function () {
 					/* # Cacher le paneau "Actions du lendemain" */
 					$('#infogamebloc').addClass('hidden');
 
+					$('#inscriptionbloc').removeClass('hidden');
+
 					/* # Vider le banier du player */
 					initPipePlayers();
 					$('.suppaction').remove();
+
+					/* # reinitialiser le jeu */
+					gameInit () ;
 
 					console.log(pipePlayers);
 
@@ -324,7 +329,7 @@ $(document).ready(function () {
 		    return "Etes-vous sûr de quitter la partie ?";
 		}
 
-		console.log(window.onbeforeunload);
+		//console.log(window.onbeforeunload);
 	}
 
 	function callbackDelPlayerPipe () {
@@ -360,7 +365,8 @@ $(document).ready(function () {
 					"price" : []
 				}
 			]
-		}
+		};
+		playerName = "";
 	}
 
 	/**
