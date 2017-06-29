@@ -22,8 +22,8 @@ $(document).ready(function () {
 	gameInit();
 	
 	/* # Synchronisations */
-	setInterval(getMetrology, 6000);
-	setInterval(getPlayers, 12000);
+	//setInterval(getMetrology, 6000);
+	//setInterval(getPlayers, 12000);
 
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -89,6 +89,12 @@ $(document).ready(function () {
 	$('#btnquitterpartie').click(function() {
 		resetGame()
 	})
+
+	/* Quitter la partie au chargement de la page */
+	$( window ).ready(function() {
+		if(playerName != "")
+			exitGameByName()
+	});
 
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -270,7 +276,7 @@ $(document).ready(function () {
 	        	resetFormGameJoin();
 
 	        	/* Supprimer le bloque rejoindre la partie */
-	        	$('#inscriptionbloc').remove();
+	        	$('#inscriptionbloc').addClass('hidden');
 
 	        	/* Mise à jour des informations relatives au player */
 	        	$('#username').html(result.name);
