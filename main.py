@@ -57,7 +57,7 @@ def rejoin():
 	info = db.select("SELECT pl_pseudo FROM Player WHERE pl_pseudo = '"+ data['name'] +"'")
 
 	if len(info) > 0 :
-		return func.makeJsonResponse(data,400)
+		return func.makeJsonResponse(data,412)
 
 	longI = db.select("SELECT ga_longitude FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_longitude"] 
 	latI = db.select("SELECT ga_latitude FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_latitude"]

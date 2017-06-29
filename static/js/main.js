@@ -307,33 +307,47 @@ $(document).ready(function () {
 	*/
 	function gameRejoin(name) {
 		var data = {"name": name}
+		var title, msg ,status;
+
 		$.ajax({
 			url: "/players",
 			data : JSON.stringify(data),
 			type: "POST",
 			contentType: 'application/json',
+			  statusCode: {
+			    412: function(result) {
+			    	title = 'Impossible de rejoindre la partie !';
+			    	msg = 'Le pseudo '+result.name+' est déjà utilisé. Merci de saisir un nouveau pseudo.';
+			    	status = 'warning';
+			      	showMessage(title,msg,status);
+			    },
+			    200: function(result) {
+			    	resetFormGameJoin();
+
+		        	/* Supprimer le bloque rejoindre la partie */
+		        	$('#inscriptionbloc').addClass('hidden');
+
+		        	/* Mise à jour des informations relatives au player */
+		        	$('#username').html(result.name);
+		        	playerName = result.name
+		        	$('#budgetplayer').html(result.info.cash)
+
+		        	/* Affichage d'un message de bienvenue */
+		        	var title = 'Coucou '+playerName+'. ';
+		        	var msg = 'C est bon de vous voir :) !';
+		        	var status = 'success';
+		        	showMessage(title,msg,status);
+
+		        	/* Afficher l'interface de simulation */
+		        	$('#infogamebloc').removeClass("hidden");
+		        	$('#btnexitgame').removeClass('hidden');
+
+		        	exitGame();
+			    }
+			  }
+			  
 			success: function(result){
-	        	resetFormGameJoin();
-
-	        	/* Supprimer le bloque rejoindre la partie */
-	        	$('#inscriptionbloc').addClass('hidden');
-
-	        	/* Mise à jour des informations relatives au player */
-	        	$('#username').html(result.name);
-	        	playerName = result.name
-	        	$('#budgetplayer').html(result.info.cash)
-
-	        	/* Affichage d'un message de bienvenue */
-	        	var title = 'Coucou '+playerName+'. ';
-	        	var msg = 'C est bon de vous voir :) !';
-	        	var status = 'success';
-	        	showMessage(title,msg,status);
-
-	        	/* Afficher l'interface de simulation */
-	        	$('#infogamebloc').removeClass("hidden");
-	        	$('#btnexitgame').removeClass('hidden');
-
-	        	exitGame();
+	        	
 
 	    	}
 		});
@@ -491,7 +505,7 @@ $(document).ready(function () {
 
 					}	
 				}
-				/* # Vide le banier */
+				/* # Vide le panier */
 				initPipe();
 				suppItems ();
 	    	}
