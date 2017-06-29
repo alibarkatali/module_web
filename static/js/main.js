@@ -135,8 +135,8 @@ $(document).ready(function () {
 					};
 
 					pipePlayers.actions.push(
-						drinksAction.prepare.push(pipePlayers.actions.prepare.push(tmp1);)
-						drinksAction.price.push(pipePlayers.actions.price.push(tmp2);)
+						drinksAction.prepare.push(pipePlayers.actions.prepare.push(tmp1));
+						drinksAction.price.push(pipePlayers.actions.price.push(tmp2));
 					)
 				}
 
