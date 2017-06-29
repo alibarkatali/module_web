@@ -216,7 +216,8 @@ def simulActions(playerName):
 
 	listRecipe = []
 	tmp = {}
-	data = request.get_json()
+	data = request.get_data()
+	data = json.loads(data)
 
 	print (data)
 
