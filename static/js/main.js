@@ -128,7 +128,7 @@ $(document).ready(function () {
 				pipePlayers.actions[0].prepare.push(tmp1);
 				pipePlayers.actions[0].price.push(tmp2);
 				
-				//console.log(JSON.stringify(pipePlayers))
+				console.log(JSON.stringify(pipePlayers))
 	    	}
 		});
 

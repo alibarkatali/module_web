@@ -18,12 +18,12 @@ def resetSimulation():
 	""" Permet de reinitialiser la partie en cours
 		...
 	"""
-	gameId = getDayIdCurr()
+	gameId = func.recupGameId()
 
-	if gameId[0]["max"] == None:
+	if gameId == "NoGame":
 		func.creerGame()
 	else:
-		func.supprimerGame(gameId[0]["max"])
+		func.supprimerGame(gameId)
 		func.creerGame()
 
 
@@ -46,6 +46,11 @@ def rejoin():
 		...
 	"""
 
+	gameId = func.recupGameId()
+	if gameId == "NoGame":
+		func.creerGame()
+		gameId = func.recupGameId()
+
 	data = request.get_json()
 
 	# Je verifie que le pseudo de ce joueur n'existe deja pas
@@ -53,8 +58,6 @@ def rejoin():
 
 	if len(info) > 0 :
 		return func.makeJsonResponse(data,400)
-
-	gameId = func.recupGameId()
 
 	longI = db.select("SELECT ga_longitude FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_longitude"] 
 	latI = db.select("SELECT ga_latitude FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_latitude"]
@@ -92,7 +95,7 @@ def getMetrology():
 		...
 	"""
 	# On prend la meteo d'aujourd'hui
-	weather = db.select("SELECT * FROM Date ORDER BY da_id DESC LIMIT 1")
+	weather = db.select("SELECT * FROM InfoDay ORDER BY da_id DESC LIMIT 1")
 
 	# Mettre test de nullite des donnees
 
@@ -131,7 +134,7 @@ def setMetrology():
 	weatherTomorrow =  None
 
 	# Dernier jour du jeu
-	result = db.select("SELECT da_id, da_day FROM Date ORDER BY da_id DESC LIMIT 1")
+	result = db.select("SELECT da_id, da_day FROM InfoDay ORDER BY da_id DESC LIMIT 1")
 	if len(result) == 0:
 		lastDay = 1
 	else:
@@ -156,10 +159,10 @@ def setMetrology():
 	dataSql['day'] = int(timestamp/24)
 	if dataSql['day'] != result[0]['da_day']:
 		# Insertion dans la base
-		db.execute("""INSERT INTO Date(da_day, da_weather, da_weather_tomorrow, da_timestamp) 
+		db.execute("""INSERT INTO InfoDay(da_day, da_weather, da_weather_tomorrow, da_timestamp) 
 			VALUES (@(day),@(weatherToday),@(weatherTomorrow),@(timestamp));""", dataSql)
 	else:
-		db.execute("""UPDATE Date da SET da_timestamp = @(timestamp) WHERE da.da_day = @(lastDay) AND da.da_id = @(da_id);""", dataSql)
+		db.execute("""UPDATE InfoDay da SET da_timestamp = @(timestamp) WHERE da.da_day = @(lastDay) AND da.da_id = @(da_id);""", dataSql)
 
 	return func.makeJsonResponse(data,200)
 
@@ -216,9 +219,10 @@ def simulActions(playerName):
 
 	listRecipe = []
 	tmp = {}
-	data = request.get_json()
+	data = request.get_data()
+	datas = simplejson.loads(data)
 
-	print (data)
+	print (datas)
 
 	# Si le player ne demande pas d'actions
 	if not data['actions']:
@@ -368,8 +372,8 @@ def getRecipeById(rc_id):
 
 	recipe = db.select("SELECT * FROM Recipe WHERE rec_id = '"+ str(rc_id) +"'")
 	ingredient_list = db.select("""SELECT ing.* FROM Ingredient ing 
-								   INNER JOIN Contains con ON ing.ing_id = con.ing_id 
-								   INNER JOIN Recipe rec ON rec.rec_id = con.rec_id 
+								   INNER JOIN IngInRec inrec ON ing.ing_id = inrec.ing_id 
+								   INNER JOIN Recipe rec ON rec.rec_id = inrec.rec_id 
 								   WHERE rec.rec_id = '"""+ str(rc_id) +"""'""")
 
 	if len(recipe) > 0:
