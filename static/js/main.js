@@ -21,8 +21,8 @@ $(document).ready(function () {
 	gameInit();
 	
 	/* # Synchronisations */
-	setInterval(getMetrology, 6000);
-	setInterval(getPlayers, 30000);
+	//setInterval(getMetrology, 12000);
+	//setInterval(getPlayers, 30000);
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Gestionnaires d'événements */
@@ -334,7 +334,7 @@ $(document).ready(function () {
 	function sendAction() {
 		$.ajax({
 			url: "/actions/"+playerName,
-			pipePlayers : JSON.stringify(pipePlayers),
+			pipePlayers : pipePlayers,
 			type: "POST",
 			contentType: 'application/json',
 			success: function(result){
