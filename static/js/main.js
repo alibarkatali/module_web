@@ -155,7 +155,7 @@ $(document).ready(function () {
 			success: function(result){
 				var token = lastNumberAssigned++;
 
-				var itemRecette = $('<div id="'+token+'" class="row"><div class="col-md-3">'+result.recipe[0].rec_nom+'</div><div class="col-md-3">'+quantite+'</div><div class="col-md-3">'+prixvente+'</div><div class="col-md-3">'+quantite*prixvente+'<a href="#"><span id="'+token+'-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span></a></div></div>');
+				var itemRecette = $('<div id="'+token+'" class="row suppaction"><div class="col-md-3">'+result.recipe[0].rec_nom+'</div><div class="col-md-3">'+quantite+'</div><div class="col-md-3">'+prixvente+'</div><div class="col-md-3">'+quantite*prixvente+'<a href="#"><span id="'+token+'-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span></a></div></div>');
 				$('#additemrecette').before(itemRecette);
 
 				
@@ -215,7 +215,7 @@ $(document).ready(function () {
 			success: function(result){
 
 				if(result.players.length > 0){
-					var item = $('<ul class="list-group suppaction"></ul>');
+					var item = $('<ul class="list-group"></ul>');
 
 					$('#playerList').html("");
 					for (var i = 0; i < result.players.length; i++) {
@@ -277,7 +277,11 @@ $(document).ready(function () {
 
 					/* # Vider le panier du player */
 					initPipePlayers();
-					$('.suppaction').remove();
+					var itemssupp = $('.suppaction');
+					for (var i = 0; i < itemssupp.length; i++) {
+						itemssupp[i].remove();
+					};
+
 
 					/* # reinitialiser le jeu */
 					gameInit () ;
