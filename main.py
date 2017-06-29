@@ -279,14 +279,19 @@ def simulActions(playerName):
 
 				totalCost += drinksOffered['quantity'] * drinksOffered['price']
 
-				db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
-					VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
+			if totalCost <= func.calculeMoneyInfo(playerName,1)['cash']:
+				sufficientFunds = "true"
+			else:
+				sufficientFunds = "false"	
+
+			# insertion dans la base de donnees
+			if sufficientFunds == "true":
+				for drinksOffered in listRecipe:
+					db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
+						VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
 
 
-	if totalCost <= func.calculeMoneyInfo(playerName,1)['cash']:
-		sufficientFunds = "true"
-	else:
-		sufficientFunds = "false"
+	
 
 	return func.makeJsonResponse({ "sufficientFunds" : sufficientFunds, "totalCost" : totalCost})
 

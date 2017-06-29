@@ -3,6 +3,8 @@ $(document).ready(function () {
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Variables globales */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+
 	lastNumberAssigned = 0;
 	playerName = "";
 
@@ -20,8 +22,9 @@ $(document).ready(function () {
 	gameInit();
 	
 	/* # Synchronisations */
-	setInterval(getMetrology, 3000);
-	setInterval(getPlayers, 5000);
+	//setInterval(getMetrology, 3000);
+	//setInterval(getPlayers, 5000);
+
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Gestionnaires d'événements */
@@ -31,14 +34,17 @@ $(document).ready(function () {
 	$( "#formGameJoin" ).submit(function( event ) {
 	  event.preventDefault();
 
+
 	  /* # le joueur rejoin la partie */
 	  var name = $('#name').val();
 	  gameRejoin(name);
+
 
 	  /* # liste de joueur */
 	  getPlayers();
 
 	});
+
 
 	/* # Ajouter une recette dans le panier du joueur */
 	$( "#formproduction" ).submit(function( event ) {
@@ -54,6 +60,7 @@ $(document).ready(function () {
 		getMetrology();
 	})
 
+
 	/* # Choix d'une recette */
 	if($('#recettadd') != undefined){
 		$('#recettadd').change(function() {
@@ -61,18 +68,23 @@ $(document).ready(function () {
 		})
 	}
 
+
 	/* # supprimer une recette dans le pipe */
 	callbackDelPlayerPipe()
+
 
 	/* # Valider les actions : achat des recettes,... */
 	$('#valideracions').click(function() {
 		sendAction()
 	})
 
+
 	/* # Quitter la partie en cours */
 	$('#btnexitgame').click(function() {
+		
 		exitGameByName()
 	})
+
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
@@ -128,7 +140,7 @@ $(document).ready(function () {
 				pipePlayers.actions[0].prepare.push(tmp1);
 				pipePlayers.actions[0].price.push(tmp2);
 				
-				console.log(JSON.stringify(pipePlayers))
+				//console.log(JSON.stringify(pipePlayers))
 	    	}
 		});
 
@@ -143,7 +155,7 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				var disDay = "Jour "+Math.trunc(result.timestamp)+" - "+result.timestamp%24;
+				var disDay = "Jour "+Math.trunc(result.timestamp/24)+" - "+result.timestamp%24+"H00";
 				$('#timer').html(disDay);
 				$.each(result.weather, function( index, value ) {
 					if(value['dfn'] == 0) 
@@ -154,11 +166,6 @@ $(document).ready(function () {
 	    	}
 		});
 	}
-
-	function loadTime() {
-		
-	}
-	loadTime();
 
 	/**
 	*
@@ -171,7 +178,7 @@ $(document).ready(function () {
 			success: function(result){
 
 				if(result.players.length > 0){
-					var item = $('<ul class="list-group"></ul>');
+					var item = $('<ul class="list-group suppaction"></ul>');
 
 					$('#playerList').html("");
 					for (var i = 0; i < result.players.length; i++) {
@@ -222,7 +229,19 @@ $(document).ready(function () {
 				type: "DELETE",
 				contentType: 'application/json',
 				success: function(result){
-					
+
+					/* # Cacher le bouton "Quitter la partie" */
+					$('#btnexitgame').addClass('hidden');
+
+					/* # Cacher le paneau "Actions du lendemain" */
+					$('#infogamebloc').addClass('hidden');
+
+					/* # Vider le banier du player */
+					initPipePlayers();
+					$('.suppaction').remove();
+
+					console.log(pipePlayers);
+
 		    	}
 			});
 		}
@@ -250,7 +269,7 @@ $(document).ready(function () {
 
 	        	/* Affichage d'un message de bienvenue */
 	        	var title = 'Coucou '+playerName+'. ';
-	        	var msg = 'Toujours aussi BD ?';
+	        	var msg = 'Cest bon de vous revoir :) !';
 	        	var status = 'success';
 	        	showMessage(title,msg,status);
 
@@ -262,6 +281,9 @@ $(document).ready(function () {
 
 	        	/* Afficher l'interface de simulation */
 	        	$('#infogamebloc').removeClass("hidden");
+	        	$('#btnexitgame').removeClass('hidden');
+
+	        	exitGame();
 
 	    	}
 		});
@@ -279,13 +301,13 @@ $(document).ready(function () {
 	*/
 	function gameInit () {
 
-		if(playerName.length > 0){
+		if(playerName != ""){
 			$('#infogamebloc').removeClass("hidden");
 
 			/* # Confirmation du player pour quitter une partie */
 			exitGame();
 		}else{
-			$('#infogamebloc').addClass("hidden");
+			//$('#infogamebloc').addClass("hidden");
 		}
 
 	  	/* # Liste de joueurs */
@@ -298,9 +320,11 @@ $(document).ready(function () {
 	}
 
 	function exitGame () {
-		window.onbeforeunload = function() {
+		window.onbeforeunload = function(event) {
 		    return "Etes-vous sûr de quitter la partie ?";
 		}
+
+		console.log(window.onbeforeunload);
 	}
 
 	function callbackDelPlayerPipe () {
@@ -322,9 +346,21 @@ $(document).ready(function () {
 
 			$(tmp).remove()
 
-			//console.log(pipePlayers)
+			console.log(pipePlayers)
 
 		})
+	}
+
+	function initPipePlayers () {
+		pipePlayers = { "actions" : 
+			[
+				{
+					"kind" : "drinks",
+					"prepare" : [],
+					"price" : []
+				}
+			]
+		}
 	}
 
 	/**
