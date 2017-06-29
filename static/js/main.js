@@ -16,8 +16,6 @@ $(document).ready(function () {
 				}
 			]
 		}
-	//pipePlayers = {};
-
 
 	/* # Initialisation de la partie */
 	gameInit();
@@ -72,6 +70,11 @@ $(document).ready(function () {
 		sendAction()
 	})
 
+	/* # Quitter la partie en cours */
+	$('#btnexitgame').click(function() {
+		exitGameByName()
+	})
+
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -119,6 +122,7 @@ $(document).ready(function () {
 				
 				var tmp1 = {};
 				var tmp2 = {};
+				recette = '"'+recette+'"';
 				tmp1[recette] = quantite;
 				tmp2[recette] = prixvente;
 
