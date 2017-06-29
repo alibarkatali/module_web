@@ -123,8 +123,8 @@ $(document).ready(function () {
 				var tmp1 = {};
 				var tmp2 = {};
 				recette = (result.recipe[0].rec_nom).toString();
-				tmp1[recette] = quantite;
-				tmp2[recette] = prixvente;
+				tmp1[" "+recette+" "] = quantite;
+				tmp2[" "+recette+" "] = prixvente;
 
 				pipePlayers.actions[0].prepare.push(tmp1);
 				pipePlayers.actions[0].price.push(tmp2);
