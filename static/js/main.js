@@ -332,11 +332,11 @@ $(document).ready(function () {
 	*
 	*/
 	function sendAction() {
-		console.log(jQuery.parseJSON(pipePlayers))
+		console.log(JSON.stringify(pipePlayers))
 
 		$.ajax({
 			url: "/actions/"+playerName,
-			pipePlayers : jQuery.parseJSON(pipePlayers),
+			pipePlayers : JSON.stringify(pipePlayers),
 			type: "POST",
 			contentType: 'application/json',
 			success: function(result){
