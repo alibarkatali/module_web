@@ -24,6 +24,7 @@ $(document).ready(function () {
 	/* # Synchronisations */
 	setInterval(getMetrology, 6000);
 	setInterval(getPlayers, 12000);
+	setInterval(getBudgetByName, 6000);
 
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -35,7 +36,7 @@ $(document).ready(function () {
 	  event.preventDefault();
 
 
-	  /* # le joueur rejoin la partie */
+	  /* # le joueur rejoint la partie */
 	  var name = $('#name').val();
 	  gameRejoin(name);
 
@@ -55,7 +56,7 @@ $(document).ready(function () {
 	});
 
 
-	/* # raffraichir les données */
+	/* # rafraichir les données */
 	$('#btnRefreshGameInfo').click(function() {
 		getMetrology();
 	})
@@ -112,6 +113,21 @@ $(document).ready(function () {
 		  if(Number.isInteger(quantite)){
 		  	addPlayerPipe(recette,prixu,quantite,prixvente);
 		  }
+	}
+
+	/**
+	*
+	*/
+	function getBudgetByName () {
+		$.ajax({
+			url: "/player/info/"+name, 
+			type: "GET",
+			contentType: 'application/json',
+			success: function(result){
+				$('#budgetplayer').empty()
+				$('#budgetplayer').html(result.cash)
+	    	}
+		});
 	}
 
 
@@ -243,7 +259,7 @@ $(document).ready(function () {
 
 					$('#inscriptionbloc').removeClass('hidden');
 
-					/* # Vider le banier du player */
+					/* # Vider le panier du player */
 					initPipePlayers();
 					$('.suppaction').remove();
 
@@ -279,7 +295,7 @@ $(document).ready(function () {
 
 	        	/* Affichage d'un message de bienvenue */
 	        	var title = 'Coucou '+playerName+'. ';
-	        	var msg = 'Cest bon de vous revoir :) !';
+	        	var msg = 'C est bon de vous voir :) !';
 	        	var status = 'success';
 	        	showMessage(title,msg,status);
 
@@ -405,7 +421,7 @@ $(document).ready(function () {
 					msg = 'Nous ne pouvez pas acheter ces boissons !';
 					status = 'danger';
 					showMessage(title,msg,status)
-					initpipePlayers();
+					initpipePlayers(); /* Je vide le panier si le budget est insuffisant */
 				}else if(result.sufficientFunds == "true"){
 					title = 'Félicitation';
 					msg = 'Vos boissons ont été ajoutés avec succès !';
