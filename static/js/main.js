@@ -132,6 +132,9 @@ $(document).ready(function () {
 				$('#budgetplayer').empty()
 				$('#budgetplayer').html(result.cash)
 
+				$('#profit').html(result.profit);
+				$('#sales').html(result.sales);
+
 				/* GAME OVER */
 				if (result.cash < 0.6){
 					var title = 'Vous n avez plus d argent !';
@@ -345,7 +348,7 @@ $(document).ready(function () {
 		        	exitGame();
 			    }
 			  }
-			  
+
 			success: function(result){
 	        	
 
