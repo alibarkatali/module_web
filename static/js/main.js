@@ -336,7 +336,7 @@ $(document).ready(function () {
 
 		$.ajax({
 			url: "/actions/"+playerName,
-			pipePlayers : pipePlayers.toString(),
+			data : JSON.stringify(pipePlayers),
 			type: "POST",
 			contentType: 'application/json',
 			success: function(result){
