@@ -22,7 +22,7 @@ $(document).ready(function () {
 	gameInit();
 	
 	/* # Synchronisations */
-	setInterval(getMetrology, 12000);
+	setInterval(getMetrology, 6000);
 	setInterval(getPlayers, 12000);
 
 
