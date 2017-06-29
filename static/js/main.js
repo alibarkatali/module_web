@@ -132,9 +132,9 @@ $(document).ready(function () {
 				$('#budgetplayer').html(result.cash)
 
 				/* GAME OVER */
-				if ( result.cash < 0){
+				if (result.cash < 0.6){
 					var title = 'Vous n avez plus d argent !';
-	        		var msg = 'GAME OVER :(';
+	        		var msg = ' Vous ne pouvez plus acheter de recette. GAME OVER :(';
 	        		var status = 'danger';
 	        		showMessage(title,msg,status);
 					exitGameByName()
@@ -426,6 +426,18 @@ $(document).ready(function () {
 		})
 	}
 
+
+	function initPipe () {
+		pipePlayers = { "actions" : 
+			[
+				{
+					"kind" : "drinks",
+					"prepare" : [],
+					"price" : []
+				}
+			]
+		};
+	}
 	function initPipePlayers () {
 		pipePlayers = { "actions" : 
 			[
@@ -451,16 +463,16 @@ $(document).ready(function () {
 			success: function(result){
 				var title, msg, status;
 
-				//console.log(result.sufficientFunds)
+				console.log(result)
 
 				if(result.sufficientFunds == "false"){
 					title = 'Solde insuffisant :';
 					msg = 'Vous ne pouvez pas acheter ces boissons !';
 					status = 'danger';
 					showMessage(title,msg,status)
-					initPipePlayers(); /* Je vide le panier si le budget est insuffisant */
+					initPipe(); /* Je vide le panier si le budget est insuffisant */
 				}else if(result.sufficientFunds == "true"){
-					if(result.already == 1){
+					if(result.already == '1'){
 						title = 'Attention :';
 						msg = 'Certaine(s) de vos boissons n ont pas ete rajoute car vous les avez deja achetees ce jour-ci !';
 						status = 'warning';
@@ -471,7 +483,7 @@ $(document).ready(function () {
 						status = 'success';
 						showMessage(title,msg,status)
 					}
-					initPipePlayers();
+					initPipe();
 				}
 	    	}
 		});
