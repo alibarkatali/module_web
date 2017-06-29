@@ -317,7 +317,8 @@ $(document).ready(function () {
 			/* # Confirmation du player pour quitter une partie */
 			exitGame();
 		}else{
-			//$('#infogamebloc').addClass("hidden");
+			$('#username').html("");
+			$('#infogamebloc').addClass("hidden");
 		}
 
 	  	/* # Liste de joueurs */
