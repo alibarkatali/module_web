@@ -216,74 +216,74 @@ def simulActions(playerName):
 
 	listRecipe = []
 	tmp = {}
-	data = request.get_data()
+	data = request.get_json()
 
-	#print (data)
+	print (data)
 
 	# Si le player ne demande pas d'actions
-	#if not data['actions']:
-	#	return '"Not find actions"', 412
+	if not data['actions']:
+		return '"Not find actions"', 412
 
 	#if not data['simulated']:
 	#	return '"Not find simulated"', 412
 
 	# On recupere l'ID du player
-	#playerInfo = func.recupIdFromName(playerName)
+	playerInfo = func.recupIdFromName(playerName)
 
 	# Si le player n'existe pas
-	#if playerInfo == None:
-	#	return '"Player ID Not Found"', 412
+	if playerInfo == None:
+		return '"Player ID Not Found"', 412
 
-	#tmp['playerId'] = playerInfo
+	tmp['playerId'] = playerInfo
 
 	# On recupere le jour en cours
-	#dayInfo = func.getDayIdCurr()
+	dayInfo = func.getDayIdCurr()
 
-	#if dayInfo == None:
-	#	return '"Current day Not Found"', 412
+	if dayInfo == None:
+		return '"Current day Not Found"', 412
 
-	#tmp['dayId'] = dayInfo
+	tmp['dayId'] = dayInfo
 
-	#totalCost = 0
-	#if playerName :
-#
-	#	for action in data['actions']:
-#
-	#		# Action pour ajouter les recettes dans la base de donnees
-	#		if action['kind'] == "drinks":
-#
-	#			for prepare in action['prepare']:
-	#				for k, v in prepare.iteritems():
-	#					listRecipe.append({"recipe":k,"quantity":v,"price":0})
-	#				print prepare
-#
-	#			for price in action['price']:
-	#				for k, v in price.iteritems():						
-	#					for re in listRecipe:
-	#						if re['recipe'] == str(k):
-	#							re['price'] = v
-	#		print listRecipe
-#
-	#		# insertion dans la base de donnees
-	#		for drinksOffered in listRecipe:
-	#			
-	#			tmp['recipe'] = func.recupIdRecFromName(drinksOffered['recipe'])
-	#			tmp['quantity'] = drinksOffered['quantity']
-	#			tmp['price'] = drinksOffered['price']
-#
-	#			totalCost += drinksOffered['quantity'] * drinksOffered['price']
-#
-	#			db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
-	#				VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
-#
-#
-	#if totalCost <= func.calculeMoneyInfo(playerName,1)['cash']:
-	#	sufficientFunds = "true"
-	#else:
-	#	sufficientFunds = "false"
-#
-	#return func.makeJsonResponse({ "sufficientFunds" : sufficientFunds, "totalCost" : totalCost})
-	return func.makeJsonResponse(data)
+	totalCost = 0
+	if playerName :
+
+		for action in data['actions']:
+
+			# Action pour ajouter les recettes dans la base de donnees
+			if action['kind'] == "drinks":
+
+				for prepare in action['prepare']:
+					for k, v in prepare.iteritems():
+						listRecipe.append({"recipe":k,"quantity":v,"price":0})
+					print prepare
+
+				for price in action['price']:
+					for k, v in price.iteritems():						
+						for re in listRecipe:
+							if re['recipe'] == str(k):
+								re['price'] = v
+			print listRecipe
+
+			# insertion dans la base de donnees
+			for drinksOffered in listRecipe:
+				
+				tmp['recipe'] = func.recupIdRecFromName(drinksOffered['recipe'])
+				tmp['quantity'] = drinksOffered['quantity']
+				tmp['price'] = drinksOffered['price']
+
+				totalCost += drinksOffered['quantity'] * drinksOffered['price']
+
+				db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
+					VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
+
+
+	if totalCost <= func.calculeMoneyInfo(playerName,1)['cash']:
+		sufficientFunds = "true"
+	else:
+		sufficientFunds = "false"
+
+	return func.makeJsonResponse({ "sufficientFunds" : sufficientFunds, "totalCost" : totalCost})
+
 
 @app.route('/map',methods=['GET'])
 def getMap():

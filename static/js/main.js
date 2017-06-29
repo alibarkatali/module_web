@@ -129,7 +129,7 @@ $(document).ready(function () {
 				pipePlayers.actions[0].prepare.push(tmp1);
 				pipePlayers.actions[0].price.push(tmp2);
 				
-				console.log(JSON.stringify(pipePlayers))
+				//console.log(JSON.stringify(pipePlayers))
 	    	}
 		});
 
@@ -323,7 +323,7 @@ $(document).ready(function () {
 
 			$(tmp).remove()
 
-			console.log(pipePlayers)
+			//console.log(pipePlayers)
 
 		})
 	}
@@ -332,7 +332,7 @@ $(document).ready(function () {
 	*
 	*/
 	function sendAction() {
-		console.log(JSON.stringify(pipePlayers))
+		console.log(pipePlayers)
 
 		$.ajax({
 			url: "/actions/"+playerName,
