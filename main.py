@@ -291,11 +291,11 @@ def simulActions(playerName):
 			else:
 				sufficientFunds = "false"	
 
-			# insertion dans la base de donnees
-			if sufficientFunds == "true":
-				for drinksOffered in listRecipe:
-					db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
-						VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
+		# insertion dans la base de donnees
+		if sufficientFunds == "true":
+			for drinksOffered in listRecipe:
+				db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
+					VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
 
 
 	
