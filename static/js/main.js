@@ -87,7 +87,7 @@ $(document).ready(function () {
 	})
 
 	/* # Réinitialiser le jeu */
-	$$('#btnquitterpartie').click(function() {
+	$('#btnquitterpartie').click(function() {
 		resetGame()
 	})
 
@@ -356,11 +356,31 @@ $(document).ready(function () {
 			url: "/reset",
 			type: "GET",
 			success: function(result){
-				if(result == "OK")
-				var title = 'Réinitialisation de la partie. ';
-				var msg = ' La partie a été réinitialisation avec succès !';
-				var status = 'success';
-				showMessage(title,msg,status);
+				if(result == "ok"){
+
+					/* # Cacher le bouton "Quitter la partie" */
+					$('#btnexitgame').addClass('hidden');
+
+					/* # Cacher le paneau "Actions du lendemain" */
+					$('#infogamebloc').addClass('hidden');
+
+					$('#inscriptionbloc').removeClass('hidden');
+
+					/* # Vider le banier du player */
+					initPipePlayers();
+					$('.suppaction').remove();
+
+					/* # reinitialiser le jeu */
+					gameInit () ;
+
+					setTimeout(function () {
+						var title = 'Réinitialisation de la partie. ';
+						var msg = ' La partie a été réinitialisation avec succès !';
+						var status = 'success';
+						showMessage(title,msg,status);
+					},1000)
+				}
+				
 	    	}
 		});
 	}

@@ -18,8 +18,8 @@ def supprimerGame(game_id):
 		:type arg1: int
 	"""
 		
-	db.execute("UPDATE Game SET ga_run = 'false' WHERE ga_id = '"+ game_id +"'")
-	db.execute("UPDATE Participate SET present = 'false' WHERE ga_id = '"+ game_id +"'")
+	db.execute("UPDATE Game SET ga_run = 'false' WHERE ga_id = '"+ str(game_id) +"'")
+	db.execute("UPDATE Participate SET present = 'false' WHERE ga_id = '"+ str(game_id) +"'")
 
 def isCold(rec_id):
 	""" Permet de tester si une recette (boisson) est froid ou chaude
