@@ -198,17 +198,24 @@ def simulCmd():
 
 	for rows in datas["sales"]:
 	
-		if len(rows['item']) > 0:
+		if rows['item'] != None:
 		
-			# Alors le joueur n'a rien mit en vente : la table Transaction n'a pas ete remplit
+			# Alors le joueur bien vendu : la table Transaction a ete remplit
 			playerId = func.recupIdFromName(rows['name'])
 			recId = func.recupIdRecFromName(rows['item'])
-			qte = rows['quantity']
+			qte = rows['quantity'] 
+	
+			# Java ne me remonte qu'une seule quantite vendue par joueur meme s'il a vendu 4 boissons differentes
+			# Je recupere le nombre de boissons que le joueur a voulu vendre 
+			# Je divise le nombre de qte par le nombre de boissons
+
+			nbre = db.select("SELECT * FROM Transaction WHERE da_id = '"+ str(day) +"' AND pl_id = '"+ str(playerId) +"'")	
+			nbreBoisson = len(nbre)
+			newQte = int(qte/nbreBoisson)
 		
 			db.execute("""
-					UPDATE Transaction SET qte_sale = '"""+ str(qte) +"""' WHERE da_id = '"""+ str(day) +"""' 
-					AND pl_id = '"""+ str(playerId) +"""' 
-					AND rec_id = '"""+ str(recId) +"""';
+					UPDATE Transaction SET qte_sale = '"""+ str(newQte) +"""' WHERE da_id = '"""+ str(day) +"""' 
+					AND pl_id = '"""+ str(playerId) +"""';
 				   """)
 			
 
