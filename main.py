@@ -252,27 +252,27 @@ def simulActions(playerName):
 
 				for prepare in action['prepare']:
 					for k, v in prepare.iteritems():
-						listRecipe.append({"recipeId":k,"quantity":v,"price":0})
+						listRecipe.append({"recipe":k,"quantity":v,"price":0})
 					print prepare
 
 				for price in action['price']:
 					for k, v in price.iteritems():						
 						for re in listRecipe:
-							if re['recipeId'] == str(k):
+							if re['recipe'] == str(k):
 								re['price'] = v
 			print listRecipe
 
 			# insertion dans la base de donnees
 			for drinksOffered in listRecipe:
 				
-				tmp['recipeId'] = drinksOffered['recipeId']
+				tmp['recipe'] = func.recupIdRecFromName(drinksOffered['recipe'])
 				tmp['quantity'] = drinksOffered['quantity']
 				tmp['price'] = drinksOffered['price']
 
 				totalCost += drinksOffered['quantity'] * drinksOffered['price']
 
 				db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
-					VALUES ( @(playerId), @(recipeId), @(dayId), @(price), @(quantity) );""", tmp)
+					VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
 
 
 	if totalCost <= func.calculeMoneyInfo(playerName,1)['cash']:

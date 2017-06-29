@@ -122,7 +122,7 @@ $(document).ready(function () {
 				
 				var tmp1 = {};
 				var tmp2 = {};
-				recette = '"'+recette+'"';
+				recette = result.recipe[0].rec_nom;
 				tmp1[recette] = quantite;
 				tmp2[recette] = prixvente;
 
