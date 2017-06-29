@@ -342,12 +342,14 @@ $(document).ready(function () {
 			success: function(result){
 				var title, msg, status;
 
-				if(result.sufficientFunds == "false"){
+				console.log(result.sufficientFunds)
+
+				if(result.sufficientFunds == false){
 					title = 'Solde insuffisant';
 					msg = 'Nous ne pouvez pas acheter ces boissons !';
 					status = 'danger';
 					showMessage(title,msg,status)
-				}else if(result.sufficientFunds == "true"){
+				}else if(result.sufficientFunds == true){
 					title = 'Félicitation';
 					msg = 'Vos boissons ont été ajoutés avec succès !';
 					status = 'success';
