@@ -24,7 +24,6 @@ $(document).ready(function () {
 	/* # Synchronisations */
 	setInterval(getMetrology, 6000);
 	setInterval(getPlayers, 12000);
-	setInterval(getBudgetByName, 6000);
 
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -39,7 +38,6 @@ $(document).ready(function () {
 	  /* # le joueur rejoint la partie */
 	  var name = $('#name').val();
 	  gameRejoin(name);
-
 
 	  /* # liste de joueur */
 	  getPlayers();
@@ -120,12 +118,21 @@ $(document).ready(function () {
 	*/
 	function getBudgetByName () {
 		$.ajax({
-			url: "/player/info/"+name, 
+			url: "/player/info/"+playerName, 
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
 				$('#budgetplayer').empty()
 				$('#budgetplayer').html(result.cash)
+
+				/* GAME OVER */
+				if ( result.cash < 0){
+					var title = 'Vous n avez plus d argent !';
+	        		var msg = 'GAME OVER :(';
+	        		var status = 'danger';
+	        		showMessage(title,msg,status);
+					exitGameByName()
+				}
 	    	}
 		});
 	}
@@ -176,6 +183,9 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
+				if (playerName != ""){
+					getBudgetByName()
+				}
 				var disDay = "Jour "+Math.trunc(result.timestamp/24)+" - "+result.timestamp%24+"H00";
 				$('#timer').html(disDay);
 				$.each(result.weather, function( index, value ) {
@@ -437,16 +447,24 @@ $(document).ready(function () {
 				//console.log(result.sufficientFunds)
 
 				if(result.sufficientFunds == "false"){
-					title = 'Solde insuffisant';
-					msg = 'Nous ne pouvez pas acheter ces boissons !';
+					title = 'Solde insuffisant :';
+					msg = 'Vous ne pouvez pas acheter ces boissons !';
 					status = 'danger';
 					showMessage(title,msg,status)
-					initpipePlayers(); /* Je vide le panier si le budget est insuffisant */
+					initPipePlayers(); /* Je vide le panier si le budget est insuffisant */
 				}else if(result.sufficientFunds == "true"){
-					title = 'Félicitation';
-					msg = 'Vos boissons ont été ajoutés avec succès !';
-					status = 'success';
-					showMessage(title,msg,status)
+					if(result.already == 1):
+						title = 'Attention :';
+						msg = 'Certaine(s) de vos boissons n ont pas ete rajoute car vous les avez deja achetees ce jour-ci !';
+						status = 'warning';
+						showMessage(title,msg,status)
+					else:
+						title = 'Félicitations :';
+						msg = 'Vos boissons ont été ajoutés avec succès !';
+						status = 'success';
+						showMessage(title,msg,status)
+					
+					initPipePlayers();
 				}
 	    	}
 		});

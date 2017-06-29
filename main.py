@@ -236,11 +236,12 @@ def simulActions(playerName):
 	""" Permet d'effectuer les actions possibles des joueurs
 		...
 	"""
-
+	already = 0
 	listRecipe = []
 	tmp = {}
 	data = request.get_json()
 
+	print data
 	# Si le player ne demande pas d'actions
 	if not data['actions']:
 		return '"Not find actions"', 412
@@ -276,38 +277,38 @@ def simulActions(playerName):
 				for prepare in action['prepare']:
 					for k, v in prepare.iteritems():
 						listRecipe.append({"recipe":k,"quantity":v,"price":0})
-					print prepare
 
 				for price in action['price']:
 					for k, v in price.iteritems():						
 						for re in listRecipe:
 							if re['recipe'] == k:
 								re['price'] = v
-			print listRecipe
 
 			# Je regarde avant d'inserer le cout total de son action, s'il n'a pas le budget suffisant je ne le valide pas
 			for drinksOffered in listRecipe:
 				recipeId = func.recupIdRecFromName(drinksOffered['recipe'])
 				totalCost += drinksOffered['quantity'] * func.calculePriceRec(recipeId)
 
-			if totalCost <= func.calculeMoneyInfo(playerName,1)['cash']:
-				sufficientFunds = "true"
-			else:
-				sufficientFunds = "false"	
+			if totalCost > func.calculeMoneyInfo(playerName,1)['cash']:
+				return func.makeJsonResponse({ "sufficientFunds" : "false", "totalCost" : totalCost})	
 
 			# insertion dans la base de donnees
-			if sufficientFunds == "true":
-				for drinksOffered in listRecipe:
+			for drinksOffered in listRecipe:
 
-					tmp['recipe'] = func.recupIdRecFromName(drinksOffered['recipe'])
-					tmp['quantity'] = drinksOffered['quantity']
-					tmp['price'] = drinksOffered['price']
+				tmp['recipe'] = func.recupIdRecFromName(drinksOffered['recipe'])
+				tmp['quantity'] = drinksOffered['quantity']
+				tmp['price'] = drinksOffered['price']
+			
+				# Je teste si le joueur n'a pas deja effectue cette action dans le jour (sinon ca plante, duplication primary key)
+				info = db.execute("SELECT pl_id, da_id, rec_id FROM Transaction WHERE pl_id = '"+ str(tmp['playerId']) +"' AND da_id = '"+ str(tmp['dayId']) +"' AND rec_id = '"+ str(tmp['recipe']) +"'")[0]["pl_id"]
 
+				if info == None:
 					db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
-							VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
+						VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
+				else:
+					already = 1
 
-	return func.makeJsonResponse({ "sufficientFunds" : sufficientFunds, "totalCost" : totalCost})
-
+		return func.makeJsonResponse({ "sufficientFunds" : "true", "totalCost" : totalCost, "already" : already})
 
 @app.route('/map',methods=['GET'])
 def getMap():
