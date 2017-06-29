@@ -145,5 +145,5 @@ ALTER TABLE Participate ADD CONSTRAINT FK_Participe_ga_id FOREIGN KEY (ga_id) RE
 ALTER TABLE Participate ADD CONSTRAINT FK_Participe_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
 ALTER TABLE Transaction ADD CONSTRAINT FK_Transaction_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
 ALTER TABLE Transaction ADD CONSTRAINT FK_Transaction_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
-ALTER TABLE Transaction ADD CONSTRAINT FK_Transaction_da_id FOREIGN KEY (da_id) REFERENCES Date(da_id);
+ALTER TABLE Transaction ADD CONSTRAINT FK_Transaction_da_id FOREIGN KEY (da_id) REFERENCES InfoDay(da_id);
 ALTER TABLE Player ADD CONSTRAINT UQ_Player_pl_pseudo UNIQUE (pl_pseudo);

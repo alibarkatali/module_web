@@ -219,9 +219,10 @@ def simulActions(playerName):
 
 	listRecipe = []
 	tmp = {}
-	data = request.get_json()
+	data = request.get_data()
+	datas = simplejson.loads(data)
 
-	print (data)
+	print (datas)
 
 	# Si le player ne demande pas d'actions
 	if not data['actions']:

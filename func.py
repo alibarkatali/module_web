@@ -83,7 +83,10 @@ def getDayCurr():
 def getDayIdCurr():	
 	""" Recupere l'id du jour courant """
 	daMax = db.select("SELECT MAX(da_id) From InfoDay")[0]["max"]
-	return daMax
+	if daMax == None:
+		return "NoDay"
+	else:
+		return daMax
 
 def recupIdFromName(pl_name):
 	""" Recupere l'id d'un player en fonction du nom """
@@ -97,12 +100,15 @@ def recupNameFromId(pl_id):
 
 def recupGameId():
 	""" Recupere l'id du jeu en cours (lorsqu'une seule partie est lancee) """
-	gameId = db.select("SELECT MAX(ga_id) FROM Game")[0]["ga_id"]
-	gameRun = db.select("SELECT ga_run FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_run"]
-	if gameRun: 
-		return gameId
-	else:
+	gameId = db.select("SELECT MAX(ga_id) FROM Game")[0]["max"]
+	if gameId == None:
 		return "NoGame"
+	else:
+		gameRun = db.select("SELECT ga_run FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_run"]
+		if gameRun: 
+			return gameId
+		else:
+			return "NoGame"
 
 def getAvailableIngredients(pl_name):
 	"""" Recupere les ingredients des recettes proposees (decouvertes) pour le player pl_name 
@@ -292,12 +298,17 @@ def makeDrinkOffered(pl_name):
 
 	drinkOffered = []
 	
-	player_id = recupIdFromName(pl_name)
-	da_max = getDayIdCurr()
-	drink_id = db.select("SELECT t.rec_id FROM Transaction t WHERE t.pl_id = '"+ str(player_id) +"' AND t.da_id = '"+ str(da_max) +"'")
+	playerId = recupIdFromName(pl_name)
+	daMax = getDayIdCurr()
+	if daMax == "NoDay":
+		#Si aucun jour n'est passe, je lui retourne juste la limonade en tant que drinkOffered
+		limoId = recupIdRecFromName('Limonade')
+		drinkOffered.append(makeDrinkInfo(limoId))
+	else:
+		drinkId = db.select("SELECT t.rec_id FROM Transaction t WHERE t.pl_id = '"+ str(playerId) +"' AND t.da_id = '"+ str(daMax) +"'")
 		
-	for drink in drink_id:	
-		drinkOffered.append(makeDrinkInfo(drink["rec_id"]))
+		for drink in drinkId:	
+			drinkOffered.append(makeDrinkInfo(drink["rec_id"]))
 
 	return (drinkOffered)
 	
