@@ -89,6 +89,12 @@ $(document).ready(function () {
 		resetGame()
 	})
 
+	/* Quitter la partie au chargement de la page */
+	$( window ).ready(function() {
+		if(playerName != "")
+			exitGameByName()
+	});
+
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
@@ -296,7 +302,7 @@ $(document).ready(function () {
 	        	resetFormGameJoin();
 
 	        	/* Supprimer le bloque rejoindre la partie */
-	        	$('#inscriptionbloc').remove();
+	        	$('#inscriptionbloc').addClass('hidden');
 
 	        	/* Mise à jour des informations relatives au player */
 	        	$('#username').html(result.name);
@@ -343,7 +349,8 @@ $(document).ready(function () {
 			/* # Confirmation du player pour quitter une partie */
 			exitGame();
 		}else{
-			//$('#infogamebloc').addClass("hidden");
+			$('#username').html("");
+			$('#infogamebloc').addClass("hidden");
 		}
 
 	  	/* # Liste de joueurs */
@@ -453,17 +460,17 @@ $(document).ready(function () {
 					showMessage(title,msg,status)
 					initPipePlayers(); /* Je vide le panier si le budget est insuffisant */
 				}else if(result.sufficientFunds == "true"){
-					if(result.already == 1):
+					if(result.already == 1){
 						title = 'Attention :';
 						msg = 'Certaine(s) de vos boissons n ont pas ete rajoute car vous les avez deja achetees ce jour-ci !';
 						status = 'warning';
 						showMessage(title,msg,status)
-					else:
+					}else{
 						title = 'Félicitations :';
 						msg = 'Vos boissons ont été ajoutés avec succès !';
 						status = 'success';
 						showMessage(title,msg,status)
-					
+					}
 					initPipePlayers();
 				}
 	    	}

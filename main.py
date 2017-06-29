@@ -300,9 +300,9 @@ def simulActions(playerName):
 				tmp['price'] = drinksOffered['price']
 			
 				# Je teste si le joueur n'a pas deja effectue cette action dans le jour (sinon ca plante, duplication primary key)
-				info = db.execute("SELECT pl_id, da_id, rec_id FROM Transaction WHERE pl_id = '"+ str(tmp['playerId']) +"' AND da_id = '"+ str(tmp['dayId']) +"' AND rec_id = '"+ str(tmp['recipe']) +"'")[0]["pl_id"]
+				info = db.select("SELECT pl_id, da_id, rec_id FROM Transaction WHERE pl_id = '"+ str(tmp['playerId']) +"' AND da_id = '"+ str(tmp['dayId']) +"' AND rec_id = '"+ str(tmp['recipe']) +"'")
 
-				if info == None:
+				if len(info) == 0:
 					db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
 						VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
 				else:
