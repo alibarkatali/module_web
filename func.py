@@ -31,8 +31,8 @@ def isCold(rec_id):
 	booleanVar = 'true'
 
 	ingredientsList = db.select("""SELECT ing.ing_cold FROM Ingredient ing 
-								  INNER JOIN Contains con ON con.ing_id = ing.ing_id 
-								  INNER JOIN Recipe rec ON rec.rec_id = con.rec_id
+								  INNER JOIN IngInRec inrec ON inrec.ing_id = ing.ing_id 
+								  INNER JOIN Recipe rec ON rec.rec_id = inrec.rec_id
 								  WHERE rec.rec_id = '"""+ str(rec_id) +"""'
 								""")
 
@@ -53,8 +53,8 @@ def hasAlcohol(rec_id):
 	booleanVar = 'false'	
 
 	ingredientsList = db.select("""SELECT ing.ing_alcohol FROM Ingredient ing 
-								  INNER JOIN Contains con ON con.ing_id = ing.ing_id 
-								  INNER JOIN Recipe rec ON rec.rec_id = con.rec_id
+								  INNER JOIN IngInRec inrec ON inrec.ing_id = ing.ing_id 
+								  INNER JOIN Recipe rec ON rec.rec_id = inrec.rec_id
 								  WHERE rec.rec_id = '"""+ str(rec_id) +"""'
 								""")
 
@@ -76,13 +76,13 @@ def recupNameRecFromId(rec_id):
 
 def getDayCurr():
 	""" Recupere la valeur du jour courant """
-	daMax = db.select("SELECT MAX(da_id) From Date")[0]["max"]
-	dayCurr = db.select("SELECT da_day From Date WHERE da_id = '"+ daMax +"'")[0]["da_day"]
+	daMax = db.select("SELECT MAX(da_id) From InfoDay")[0]["max"]
+	dayCurr = db.select("SELECT da_day From InfoDay WHERE da_id = '"+ daMax +"'")[0]["da_day"]
 	return dayCurr
 
 def getDayIdCurr():	
 	""" Recupere l'id du jour courant """
-	daMax = db.select("SELECT MAX(da_id) From Date")[0]["max"]
+	daMax = db.select("SELECT MAX(da_id) From InfoDay")[0]["max"]
 	return daMax
 
 def recupIdFromName(pl_name):
@@ -97,8 +97,12 @@ def recupNameFromId(pl_id):
 
 def recupGameId():
 	""" Recupere l'id du jeu en cours (lorsqu'une seule partie est lancee) """
-	gameId = db.select("SELECT ga_id FROM Game WHERE ga_run = 'true'")[0]["ga_id"]
-	return gameId
+	gameId = db.select("SELECT MAX(ga_id) FROM Game")[0]["ga_id"]
+	gameRun = db.select("SELECT ga_run FROM Game WHERE ga_id = '"+ str(gameId) +"'")[0]["ga_run"]
+	if gameRun: 
+		return gameId
+	else:
+		return "NoGame"
 
 def getAvailableIngredients(pl_name):
 	"""" Recupere les ingredients des recettes proposees (decouvertes) pour le player pl_name 
@@ -109,8 +113,8 @@ def getAvailableIngredients(pl_name):
 	plId = recupIdFromName(pl_name)
 
 	listIngredientId = db.select(""" SELECT ing.ing_id FROM Ingredient ing 
-				  INNER JOIN Contains con ON con.ing_id = ing.ing_id 
-				  INNER JOIN Recipe rec ON con.rec_id = rec.rec_id 
+				  INNER JOIN IngInRec inrec ON inrec.ing_id = ing.ing_id 
+				  INNER JOIN Recipe rec ON inrec.rec_id = rec.rec_id 
 				  INNER JOIN Transaction tr ON tr.rec_id = rec.rec_id 
 				  WHERE tr.pl_id = '"""+ str(plId) +"""'
 			 """)
@@ -359,8 +363,8 @@ def calculeSpend(player_id):
 
 	spending = db.select("""	SELECT SUM(t.qte_prev * 
 									(SELECT SUM(i.ing_prix) FROM Ingredient i 
-									INNER JOIN Contains c ON i.ing_id = c.ing_id 
-									INNER JOIN Recipe r ON r.rec_id = c.rec_id 
+									INNER JOIN IngInRec inrec ON i.ing_id = inrec.ing_id 
+									INNER JOIN Recipe r ON r.rec_id = inrec.rec_id 
 									WHERE r.rec_id = t.rec_id) ) 
 								FROM Transaction t 
 								WHERE t.pl_id = '"""+ str(player_id) +"""'""")[0]["sum"]
@@ -380,8 +384,8 @@ def calculePriceRec(rec_id):
 	"""
 
 	price_rec = db.select("""	SELECT SUM(i.ing_prix) FROM Ingredient i 
-								INNER JOIN Contains c ON i.ing_id = c.ing_id 
-								INNER JOIN Recipe r ON r.rec_id = c.rec_id 
+								INNER JOIN IngInRec inrec ON i.ing_id = inrec.ing_id 
+								INNER JOIN Recipe r ON r.rec_id = inrec.rec_id 
 								WHERE r.rec_id	 = '"""+ str(rec_id) +"""'""")[0]['sum']
 
 	return price_rec
