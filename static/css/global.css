@@ -86,3 +86,24 @@
 .centrerbloc{
   text-align: center;
 }
+
+.itemplayerinfo{
+  display: block;
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 5px;
+  border: 1px solid #c1cbd2;
+}
+
+.itemplayerinfo:hover{
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.margin-none{
+  margin: 0px !important;
+}
+
+.padding-none{
+  padding: 0px !important;
+}
