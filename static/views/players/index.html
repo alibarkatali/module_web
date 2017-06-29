@@ -4,86 +4,156 @@
 	<title></title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="../../css/global.css">
+	<link rel="stylesheet" href="../../css/bootstrap.min.css">
+	
 </head>
 <body>
-	<div id="gameMap">
-		MAP
-	</div>
-	
-	<div id="gameInfo">
-		<h1>Informations du jour</h1>
-		<div id="gameInfo">
-		Météo d'aujourd'hui : <span id="weatherToday"></span><br>
-		Météo de demain : <span id="weatherTomorrow"></span><br>
-		Temps : <span id="timer"></span><br>
-		Budget : <span id="cash"></span><br>
-		<input type="button" id="btnRefreshGameInfo" value="Refresh">
+	<nav class="navbar navbar-default navbar-fixed-top">
+	  <div class="container">
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="#">Shaddock Simulator</a>
+	    </div>
+
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li><a class="btn btn-danger hidden" id="btnexitgame" href="#">Quitter la partie</a></li>
+				<li><a id="username" href="#"></a></li>
+			</ul>
+	    </div>
+	  </div>
+	</nav>
+
+	<div class="container-fluid bloccontent">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="row">
+					<div class="col-md-3 infobloc weatherToday">
+						<span id="weatherToday" class="meteotxt"></span>
+						<em class="smallTitle">Weather Today</em>
+					</div>
+
+					<div class="col-md-3 infobloc weatherTomorrow">
+						<span id="weatherTomorrow" class="meteotxt"></span>
+						<em class="smallTitle">Weather Tomorow</em>
+					</div>
+					
+					<div class="col-md-3 infobloc timer">
+						<span id="timer" class="tempstxt"></span>
+						<em class="smallTitle">Time</em>
+					</div>
+
+					<div class="col-md-3 infobloc budgetplayer">
+						<span id="budgetplayer" class="budgettxt">
+							0
+						</span>
+						<em class="smallTitle">Cost</em>
+					</div>
+				</div>
+			</div>
 		</div>
 
-		<h1>Actions pour le lendemain</h1>
-
-		<div id="blocSimul">
-			<h1>Mes achats</h1>
-			<table>
-				<tr>
-					<th>Boisson</th>
-					<th>Coût Unitaire</th>
-					<th>Quantité</th>
-					<th>TTC</th>
-					<th>action</th>
-				</tr>
-				<tr>
-					<td> 
-						<select id="recipes" name="recipes">
-							<option value="">-- selection produit --</option>
-						</select> 
-					</td>
-					<td> 
-						<input type="text" name="cost" id="cost"> 
-					</td>
-					<td> 
-						<input type="text" name="quantity" id="quantity"> 
-					</td>
-					<td> 
-						<input type="text" name="ttc" id="ttc"> 
-					</td>
-					<td> 
-						<input type="" name="" id=""> 
-					</td>
-				</tr>
-
-				<tr>
-					<td colspan="4">Totaux</td>
-					<td>0</td>
-				</tr>
-			</table>
-
-			<h1>Mes ventes prévisionnelles (Pour demain)</h1>
-			<table>
-				<tr>
-					<th>Boisson</th>
-					<th>Quantité</th>
-					<th>TTC</th>
-				</tr>
-				<tr>
-					<td>0</td>
-					<td>0</td>
-					<td>0</td>
-				</tr>
-			</table>
+		<div id="inscriptionbloc" class="row">
+			<div class="col-md-6 col-md-offset-3 centrerbloc">
+				<h2 class="">Rejoindre la partie en cours</h2>
+			  	<div class="centrerbloc">
+			  		<form id="formGameJoin" class="centrerbloc" method="POST">
+						<input type="text" name="name" id="name" placeholder="Votre pseudo">
+						<input type="submit" name="gamestart" value="Demarrer la partie">
+					</form>
+			  	</div>
+			</div>
 		</div>
 
-		<div id="ingredientsInfo">
+		<div id="infogamebloc" class="row hidden">
+			<div class="col-md-3">
 
+			</div>
+			<div class="col-md-6">
+				<h1 class="grandtitre">Action du lendemain</h1>
+				<div class="row">
+					<form id="formproduction">
+						<div class="col-md-3">
+							<select id="recettadd" class=""></select>
+						</div>
+						<div class="col-md-3">
+							<input id="quantity" type="number" class="" placeholder="Quantité">
+						</div>
+						<div class="col-md-3">
+							<input id="prixvente" type="number" class="" placeholder="Prix Vente">
+						</div>
+						<div class="col-md-3">
+							<input type="submit" id="btnaddrecette" value="Ajouter la recette">
+						</div>
+					</form>
+				</div>
+
+
+				<div class="row">
+					<div class="col-md-3">
+						Recette
+					</div>
+					<div class="col-md-3">
+						Quantité
+					</div>
+					<div class="col-md-3">
+						Prix Vente
+					</div>
+					<div class="col-md-3">
+						Total Vente
+					</div>
+				</div>
+
+				<div id="additemrecette" class="row">
+					<div class="col-md-3">
+						Totaux
+					</div>
+					<div id="totalqte" class="col-md-3">
+						-
+					</div>
+					<div id="totalprixvent" class="col-md-3">
+						-
+					</div>
+					<div id="totalventeprev" class="col-md-3">
+						0
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col_md-6">Somme dépensée :</div>
+					<div class="col_md-6">Budget restant :</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4">
+						<button id="valideracions" type="button" class="btn btn-default btn-lg btn-block">Valider</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3 padding-none">
+				<h1 class="grandtitre">Joueurs en ligne</h1>
+				<div class="row">
+					<div id="playerList" class="col-md-12">
+						
+					</div>
+				</div>
+				<a class="btn btn-danger" id="btnquitterpartie" href="#">Réinitialiser la partie</a>
+			</div>
 		</div>
 
-	</div>
-	<div id="playersInfo">
-		<h1>Liste des joueurs</h1>
-		<ul id="playerList"></ul>
 	</div>
 
 	<script type="text/javascript" src="../../js/jquery.js"></script>
+	<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../js/bootstrap-notify.min.js"></script>
 	<script type="text/javascript" src="../../js/main.js"></script>
+	
+	
 </body>
 </html>

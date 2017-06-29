@@ -1,7 +1,30 @@
 $(document).ready(function () {
 
+	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+	/* # Variables globales */
+	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+
+	lastNumberAssigned = 0;
+	playerName = "";
+
+	pipePlayers = { "actions" : 
+			[
+				{
+					"kind" : "drinks",
+					"prepare" : [],
+					"price" : []
+				}
+			]
+		}
+
 	/* # Initialisation de la partie */
 	gameInit();
+	
+	/* # Synchronisations */
+	setInterval(getMetrology, 6000);
+	setInterval(getPlayers, 12000);
+
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Gestionnaires d'événements */
@@ -11,30 +34,123 @@ $(document).ready(function () {
 	$( "#formGameJoin" ).submit(function( event ) {
 	  event.preventDefault();
 
+
 	  /* # le joueur rejoin la partie */
-	  var playerName = $('#playerName').val();
-	  gameRejoin(playerName);
+	  var name = $('#name').val();
+	  gameRejoin(name);
+
 
 	  /* # liste de joueur */
 	  getPlayers();
 
 	});
 
+
+	/* # Ajouter une recette dans le panier du joueur */
+	$( "#formproduction" ).submit(function( event ) {
+	  event.preventDefault();
+
+	  getInfoRecette()
+	  
+	});
+
+
+	/* # raffraichir les données */
 	$('#btnRefreshGameInfo').click(function() {
 		getMetrology();
 	})
 
-	if($('#recipes') != undefined){
-		$('#recipes').change(function() {
+
+	/* # Choix d'une recette */
+	if($('#recettadd') != undefined){
+		$('#recettadd').change(function() {
 			getRepiceByName($(this).val())
 		})
 	}
 
 
+	/* # supprimer une recette dans le pipe */
+	callbackDelPlayerPipe()
+
+
+	/* # Valider les actions : achat des recettes,... */
+	$('#valideracions').click(function() {
+		sendAction()
+	})
+
+
+	/* # Quitter la partie en cours */
+	$('#btnexitgame').click(function() {
+		
+		exitGameByName()
+	})
+
+	/* # Réinitialiser le jeu */
+	$('#btnquitterpartie').click(function() {
+		resetGame()
+	})
+
+
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-	
+
+	var rand = function() {
+	    return Math.random().toString(36).substr(2); // remove `0.`
+	};
+
+	var token = function() {
+	    return rand() + rand(); // to make it longer
+	};
+
+	function getInfoRecette(){
+		var recette = $('#recettadd').val();
+		  var prixu = $('#prixunitaire').text()
+		  var quantite = parseInt($('#quantity').val());
+		  var prixvente = parseFloat($('#prixvente').val());
+
+		  if(Number.isInteger(quantite)){
+		  	addPlayerPipe(recette,prixu,quantite,prixvente);
+		  }
+	}
+
+
+	/**
+	*
+	*/
+	function addPlayerPipe(recette,prixu,quantite,prixvente) {
+		$.ajax({
+			url: "/recipe/"+recette,
+			type: "GET",
+			contentType: 'application/json',
+			success: function(result){
+				var token = lastNumberAssigned++;
+
+				var itemRecette = $('<div id="'+token+'" class="row"><div class="col-md-3">'+result.recipe[0].rec_nom+'</div><div class="col-md-3">'+quantite+'</div><div class="col-md-3">'+prixvente+'</div><div class="col-md-3">'+quantite*prixvente+'<a href="#"><span id="'+token+'-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span></a></div></div>');
+				$('#additemrecette').before(itemRecette);
+
+				
+				/* # Event : supprimer une recette dans le pipe */
+				callbackDelPlayerPipe()
+
+				/* # Ajout dans la liste pipePlayers */
+				// {"actions" : [{"kind" : "drinks","prepare" : [{"1":50},{"3":20}],"price" : [{"1":8},{"3":2}]} ]}
+				
+				var tmp1 = {};
+				var tmp2 = {};
+				recette = (result.recipe[0].rec_nom).toString();
+				tmp1[recette] = quantite;
+				tmp2[recette] = prixvente;
+
+				pipePlayers.actions[0].prepare.push(tmp1);
+				pipePlayers.actions[0].price.push(tmp2);
+				
+				//console.log(JSON.stringify(pipePlayers))
+	    	}
+		});
+
+	}
+
 	/**
 	*
 	*/
@@ -44,9 +160,14 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				$('#timer').html(result.timestamp);
-	        	$('#weatherToday').html(result.weatherToday);
-	        	$('#weatherTomorrow').html(result.weatherTomorow);
+				var disDay = "Jour "+Math.trunc(result.timestamp/24)+" - "+result.timestamp%24+"H00";
+				$('#timer').html(disDay);
+				$.each(result.weather, function( index, value ) {
+					if(value['dfn'] == 0) 
+						$('#weatherToday').html(value['weather']);
+	        		else 
+	        			$('#weatherTomorrow').html(value['weather']);
+				});
 	    	}
 		});
 	}
@@ -60,13 +181,13 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				//console.log(result)
-				if(result.length > 0){
-					var item = $('<ul></ul>');
+
+				if(result.players.length > 0){
+					var item = $('<ul class="list-group suppaction"></ul>');
 
 					$('#playerList').html("");
-					for (var i = 0; i < result.length; i++) {
-						item.append($('<li>'+ result[i] +'</li>'))
+					for (var i = 0; i < result.players.length; i++) {
+						item.append($('<li class="list-group-item">'+ result.players[i].pl_pseudo +'</li>'))
 					};
 					$('#playerList').append(item);
 				}else{
@@ -82,45 +203,98 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				
 
-				$.each(result, function( index, value ) {
-					console.log(value)
-					$('#recipes').append($('<option value="'+ value['name'] +'">'+ value['name'] +'</option>'))
-				});
-
-				//$('#recipes').html("");
-				/*for (var i = 0; i < result.length; i++) {
+				$.each(result.recipes, function( index, value ) {
 					
-				};*/
+					$('#recettadd').append($('<option value="'+ value['rec_id'] +'">'+ value['rec_nom'] +'</option>'))
+				});
 	    	}
 		});
 	}
 
-	function getRepiceByName(name) {
+	function getRepiceByName(rc_id) {
 		$.ajax({
-			url: "/recipes/"+name, 
+			url: "/recipe/"+rc_id,
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-				console.log(result)
-
+				
+				var totalCost = 0;
+				$.each(result.ingredients, function( index, value ) {
+					totalCost += value['ing_prix'];
+				});
+				$('#prixunitaire').html(totalCost)
 	    	}
 		});
 	}
-	
+
+	function exitGameByName(rc_id) {
+			$.ajax({
+				url: "/players/"+playerName,
+				type: "DELETE",
+				contentType: 'application/json',
+				success: function(result){
+
+					/* # Cacher le bouton "Quitter la partie" */
+					$('#btnexitgame').addClass('hidden');
+
+					/* # Cacher le paneau "Actions du lendemain" */
+					$('#infogamebloc').addClass('hidden');
+
+					$('#inscriptionbloc').removeClass('hidden');
+
+					/* # Vider le banier du player */
+					initPipePlayers();
+					$('.suppaction').remove();
+
+					/* # reinitialiser le jeu */
+					gameInit () ;
+
+					console.log(pipePlayers);
+
+		    	}
+			});
+		}
+
 	/**
 	*
 	*/
-	function gameRejoin(playerName) {
-		var data = {"playerName": playerName}
+	function gameRejoin(name) {
+		var data = {"name": name}
 		$.ajax({
-			url: "/players", 
+			url: "/players",
 			data : JSON.stringify(data),
 			type: "POST",
 			contentType: 'application/json',
 			success: function(result){
-	        	resetFormGameJoin()
+	        	resetFormGameJoin();
+
+	        	/* Supprimer le bloque rejoindre la partie */
+	        	$('#inscriptionbloc').remove();
+
+	        	/* Mise à jour des informations relatives au player */
+	        	$('#username').html(result.name);
+	        	playerName = result.name
+	        	$('#budgetplayer').html(result.info.cash)
+
+	        	/* Affichage d'un message de bienvenue */
+	        	var title = 'Coucou '+playerName+'. ';
+	        	var msg = 'Cest bon de vous revoir :) !';
+	        	var status = 'success';
+	        	showMessage(title,msg,status);
+
+	        	/*console.log(result.info.profit)
+	        	console.log(result.info.sales)
+	        	console.log(result.info.drinksOffered)
+	        	console.log(result.info.longitude)
+	        	console.log(result.info.latitude)*/
+
+	        	/* Afficher l'interface de simulation */
+	        	$('#infogamebloc').removeClass("hidden");
+	        	$('#btnexitgame').removeClass('hidden');
+
+	        	exitGame();
+
 	    	}
 		});
 	}
@@ -129,21 +303,147 @@ $(document).ready(function () {
 	* 
 	*/
 	function resetFormGameJoin () {
-		$('#playerName').val("");
+		$('#name').val("");
 	}
 
 	/**
 	* 
 	*/
 	function gameInit () {
-		/* # récupération de la météo */
-	  	getMetrology ();
+
+		if(playerName != ""){
+			$('#infogamebloc').removeClass("hidden");
+
+			/* # Confirmation du player pour quitter une partie */
+			exitGame();
+		}else{
+			$('#username').html("");
+			$('#infogamebloc').addClass("hidden");
+		}
 
 	  	/* # Liste de joueurs */
 	  	getPlayers();
 
 	  	if($('#blocSimul') != undefined)
 	 		getRepices();
+
+
+	}
+
+	function exitGame () {
+		window.onbeforeunload = function(event) {
+		    return "Etes-vous sûr de quitter la partie ?";
+		}
+	}
+
+	function resetGame() {
+		$.ajax({
+			url: "/reset",
+			type: "GET",
+			success: function(result){
+				if(result == "ok"){
+
+					/* # Cacher le bouton "Quitter la partie" */
+					$('#btnexitgame').addClass('hidden');
+
+					/* # Cacher le paneau "Actions du lendemain" */
+					$('#infogamebloc').addClass('hidden');
+
+					$('#inscriptionbloc').removeClass('hidden');
+
+					/* # Vider le banier du player */
+					initPipePlayers();
+					$('.suppaction').remove();
+
+					/* # reinitialiser le jeu */
+					gameInit () ;
+
+					setTimeout(function () {
+						var title = 'Réinitialisation de la partie. ';
+						var msg = ' La partie a été réinitialisation avec succès !';
+						var status = 'success';
+						showMessage(title,msg,status);
+					},1000)
+				}
+				
+	    	}
+		});
+	}
+
+	function callbackDelPlayerPipe () {
+		/* # supprimer une recette dans le pipe */
+		$('.btnSuppRecette').click(function (event) {
+			var tmp  = '#'+event.target.id.split("-")[0];
+			
+
+			$.each(pipePlayers.actions[0].prepare, function( index, value ) {
+				if (parseInt(index) == parseInt(event.target.id.split("-")[0]))
+					pipePlayers.actions[0].prepare.splice(index, 1);
+			});
+
+			$.each(pipePlayers.actions[0].price, function( index, value ) {
+				if (parseInt(index) == parseInt(event.target.id.split("-")[0]))
+					pipePlayers.actions[0].price.splice(index, 1);
+			});
+
+
+			$(tmp).remove()
+
+			console.log(pipePlayers)
+
+		})
+	}
+
+	function initPipePlayers () {
+		pipePlayers = { "actions" : 
+			[
+				{
+					"kind" : "drinks",
+					"prepare" : [],
+					"price" : []
+				}
+			]
+		};
+		playerName = "";
+	}
+
+	/**
+	*
+	*/
+	function sendAction() {
+		$.ajax({
+			url: "/actions/"+playerName,
+			data : JSON.stringify(pipePlayers),
+			type: "POST",
+			contentType: 'application/json',
+			success: function(result){
+				var title, msg, status;
+
+				//console.log(result.sufficientFunds)
+
+				if(result.sufficientFunds == "false"){
+					title = 'Solde insuffisant';
+					msg = 'Nous ne pouvez pas acheter ces boissons !';
+					status = 'danger';
+					showMessage(title,msg,status)
+					initpipePlayers();
+				}else if(result.sufficientFunds == "true"){
+					title = 'Félicitation';
+					msg = 'Vos boissons ont été ajoutés avec succès !';
+					status = 'success';
+					showMessage(title,msg,status)
+				}
+	    	}
+		});
+	}
+
+	function showMessage (title,msg,status) {
+		$.notify({
+					title: title,
+					message: msg
+				},{
+					type: status
+				});
 	}
 
 })

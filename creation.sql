@@ -1,5 +1,5 @@
---------------------------------------------------------------
---        Script SQL
+------------------------------------------------------------
+--        Script MySQL.
 ------------------------------------------------------------
 
 
@@ -8,27 +8,27 @@
 ------------------------------------------------------------
 
 CREATE TABLE Player(
-        pl_pseudo   Varchar (255) NOT NULL ,
-        pl_password Varchar (255) ,
-        pl_id       Int NOT NULL,
-        pl_mail     Varchar (255) ,
-        pl_date     Date ,
-        ga_id      Int ,
-        PRIMARY KEY (pl_id)
+        pl_pseudo     Varchar (255) NOT NULL ,
+        pl_password   Varchar (255) ,
+        pl_id         SERIAL NOT NULL ,
+        pl_mail       Varchar (255) ,
+        pl_date       Date ,
+        pl_budget_ini Float NOT NULL ,
+        PRIMARY KEY (pl_id )
 );
 
 
 ------------------------------------------------------------
--- Table: Ingredient
+-- Table: Ingrédient
 ------------------------------------------------------------
 
 CREATE TABLE Ingredient(
         ing_id      SERIAL NOT NULL ,
         ing_nom     Varchar (255) ,
-        ing_prix    Float ,
-        ing_alcohol Int ,
-        ing_cold    Int ,
-        PRIMARY KEY (ing_id)
+        ing_prix    Float NOT NULL  ,
+        ing_alcohol BOOL ,
+        ing_cold    BOOL ,
+        PRIMARY KEY (ing_id )
 );
 
 
@@ -39,9 +39,7 @@ CREATE TABLE Ingredient(
 CREATE TABLE Recipe(
         rec_id      SERIAL NOT NULL ,
         rec_nom     Varchar (255) NOT NULL ,
-        rec_alcohol Int ,
-        rec_cold    Int ,
-        PRIMARY KEY (rec_id)
+        PRIMARY KEY (rec_id )
 );
 
 
@@ -52,11 +50,12 @@ CREATE TABLE Recipe(
 CREATE TABLE Game(
         ga_id       SERIAL NOT NULL ,
         ga_nom      Varchar (255) NOT NULL ,
-        ga_centreX  Float NOT NULL ,
-        ga_centreY  Float NOT NULL ,
-        ga_largeur  Float NOT NULL ,
-        ga_longueur Float NOT NULL ,
-        PRIMARY KEY (ga_id)
+        ga_centreX  Float ,
+        ga_centreY  Float ,
+        ga_latitude  Float NOT NULL ,
+        ga_longitude Float NOT NULL ,
+        ga_run      Bool ,
+        PRIMARY KEY (ga_id )
 );
 
 
@@ -65,12 +64,12 @@ CREATE TABLE Game(
 ------------------------------------------------------------
 
 CREATE TABLE Stand(
-        loc_coordX Float ,
-        loc_id     SERIAL NOT NULL ,
-        loc_coordY Float NOT NULL ,
-        loc_rayon  Float NOT NULL ,
-        pl_id       Int NOT NULL ,
-        PRIMARY KEY (loc_id)
+        loc_longitude  	Float NOT NULL,
+        loc_id     	SERIAL NOT NULL ,
+        loc_latitude 	Float NOT NULL ,
+        loc_rayon  	Float NOT NULL ,
+        pl_id      	Int NOT NULL ,
+        PRIMARY KEY (loc_id )
 );
 
 
@@ -79,38 +78,12 @@ CREATE TABLE Stand(
 ------------------------------------------------------------
 
 CREATE TABLE Pub(
-        p_id        SERIAL NOT NULL ,
-        p_coordX    Float NOT NULL ,
-        p_coordY    Float NOT NULL ,
-        p_rayon     Float NOT NULL ,
-        pl_id Int NOT NULL ,
+        p_id     SERIAL NOT NULL ,
+        p_coordX Float NOT NULL ,
+        p_coordY Float NOT NULL ,
+        p_rayon  Float NOT NULL ,
+        pl_id    Int NOT NULL ,
         PRIMARY KEY (p_id)
-);
-
-
-------------------------------------------------------------
--- Table: Achete
-------------------------------------------------------------
-
-CREATE TABLE Achete(
-        quantite Int ,
-        pl_id     SERIAL NOT NULL ,
-        rec_id   Int NOT NULL ,
-        PRIMARY KEY (pl_id, rec_id)
-);
-
-
-------------------------------------------------------------
--- Table: Produit
-------------------------------------------------------------
-
-CREATE TABLE Produit(
-        nombre Int ,
-        prix   Float NOT NULL ,
-        vendu  Int ,
-        rec_id Int NOT NULL ,
-        pl_id   Int NOT NULL ,
-        PRIMARY KEY (rec_id, pl_id )
 );
 
 
@@ -118,18 +91,59 @@ CREATE TABLE Produit(
 -- Table: Contains
 ------------------------------------------------------------
 
-CREATE TABLE Contains(
+CREATE TABLE IngInRec(
         ing_id Int NOT NULL ,
         rec_id Int NOT NULL ,
-        PRIMARY KEY (Ing_id, rec_id )
+        PRIMARY KEY (ing_id ,rec_id )
 );
 
-ALTER TABLE Player ADD CONSTRAINT FK_Player_ga_id FOREIGN KEY (ga_id) REFERENCES Game(ga_id);
+
+------------------------------------------------------------
+-- Table: Participe
+------------------------------------------------------------
+
+CREATE TABLE Participate(
+        present Bool NOT NULL ,
+        ga_id   Int NOT NULL ,
+        pl_id   Int NOT NULL ,
+        PRIMARY KEY (ga_id ,pl_id )
+);
+
+
+------------------------------------------------------------
+-- Table: Date
+------------------------------------------------------------
+
+CREATE TABLE InfoDay(
+        da_id      SERIAL NOT NULL ,
+        da_day     Int NOT NULL ,
+        da_weather Varchar (255) ,
+        da_weather_tomorrow Varchar (255),
+	da_timestamp Int,
+	PRIMARY KEY (da_id)
+);
+
+------------------------------------------------------------
+-- Table: Transaction
+------------------------------------------------------------
+
+CREATE TABLE Transaction(
+        qte_prev Int ,
+        qte_sale Int ,
+        price    Float ,
+        pl_id    Int NOT NULL ,
+        rec_id   Int NOT NULL ,
+ 	da_id    Int NOT NULL ,
+        PRIMARY KEY (pl_id ,rec_id ,da_id )
+);
+
 ALTER TABLE Stand ADD CONSTRAINT FK_Stand_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
 ALTER TABLE Pub ADD CONSTRAINT FK_Pub_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
-ALTER TABLE Achete ADD CONSTRAINT FK_Achete_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
-ALTER TABLE Achete ADD CONSTRAINT FK_Achete_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
-ALTER TABLE Produit ADD CONSTRAINT FK_Produit_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
-ALTER TABLE Produit ADD CONSTRAINT FK_Produit_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
-ALTER TABLE Contains ADD CONSTRAINT FK_Contains_ing_id FOREIGN KEY (ing_id) REFERENCES Ingredient(ing_id);
-ALTER TABLE Contains ADD CONSTRAINT FK_Contains_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
+ALTER TABLE IngInRec ADD CONSTRAINT FK_IngInRec_ing_id FOREIGN KEY (ing_id) REFERENCES Ingredient(ing_id);
+ALTER TABLE IngInRec ADD CONSTRAINT FK_IngInRec_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
+ALTER TABLE Participate ADD CONSTRAINT FK_Participe_ga_id FOREIGN KEY (ga_id) REFERENCES Game(ga_id);
+ALTER TABLE Participate ADD CONSTRAINT FK_Participe_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
+ALTER TABLE Transaction ADD CONSTRAINT FK_Transaction_pl_id FOREIGN KEY (pl_id) REFERENCES Player(pl_id);
+ALTER TABLE Transaction ADD CONSTRAINT FK_Transaction_rec_id FOREIGN KEY (rec_id) REFERENCES Recipe(rec_id);
+ALTER TABLE Transaction ADD CONSTRAINT FK_Transaction_da_id FOREIGN KEY (da_id) REFERENCES InfoDay(da_id);
+ALTER TABLE Player ADD CONSTRAINT UQ_Player_pl_pseudo UNIQUE (pl_pseudo);

@@ -40,7 +40,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/rootbali/python/Shaddock/venv"
+VIRTUAL_ENV="/home/imerir/Desktop/ProjetInte2017/module_web/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
