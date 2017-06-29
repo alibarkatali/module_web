@@ -4,24 +4,25 @@ $(document).ready(function () {
 	/* # Variables globales */
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	lastNumberAssigned = 0;
+	playerName = "";
 
-	pipePlayers ={ "actions" : [
-			{
-				"kind" : "drinks",
-				"prepare" : [],
-				"price" : []
-			}
-		]
-	}
-	pipePlayers = {};
 
+	pipePlayers = { "actions" : 
+			[
+				{
+					"kind" : "drinks",
+					"prepare" : [],
+					"price" : []
+				}
+			]
+		}
 
 	/* # Initialisation de la partie */
 	gameInit();
 	
 	/* # Synchronisations */
-	setInterval(getMetrology, 6000);
-	setInterval(getPlayers, 30000);
+	//setInterval(getMetrology, 12000);
+	//setInterval(getPlayers, 30000);
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Gestionnaires d'événements */
@@ -44,16 +45,10 @@ $(document).ready(function () {
 	$( "#formproduction" ).submit(function( event ) {
 	  event.preventDefault();
 
-	  var recette = $('#recettadd').val();
-	  var prixu = $('#prixunitaire').text()
-	  var quantite = parseInt($('#quantity').val());
-	  var prixvente = parseFloat($('#prixvente').val());
-
-	  if(Number.isInteger(quantite)){
-	  	addPlayerPipe(recette,prixu,quantite,prixvente);
-	  }
+	  getInfoRecette()
 	  
 	});
+
 
 	/* # raffraichir les données */
 	$('#btnRefreshGameInfo').click(function() {
@@ -67,20 +62,18 @@ $(document).ready(function () {
 		})
 	}
 
-	/* # maj données de la liste du joueur */
-	$('#btnaddrecette').click(function() {
-		valAction();
-	})
-
-	/* # maj actions du joueur */
-	$('#valAction').click(function() {
-		valAction();
-	})
-
 	/* # supprimer une recette dans le pipe */
 	callbackDelPlayerPipe()
 
-	
+	/* # Valider les actions : achat des recettes,... */
+	$('#valideracions').click(function() {
+		sendAction()
+	})
+
+	/* # Quitter la partie en cours */
+	$('#btnexitgame').click(function() {
+		exitGameByName()
+	})
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Les fonctions */
@@ -94,6 +87,17 @@ $(document).ready(function () {
 	    return rand() + rand(); // to make it longer
 	};
 
+	function getInfoRecette(){
+		var recette = $('#recettadd').val();
+		  var prixu = $('#prixunitaire').text()
+		  var quantite = parseInt($('#quantity').val());
+		  var prixvente = parseFloat($('#prixvente').val());
+
+		  if(Number.isInteger(quantite)){
+		  	addPlayerPipe(recette,prixu,quantite,prixvente);
+		  }
+	}
+
 
 	/**
 	*
@@ -105,30 +109,27 @@ $(document).ready(function () {
 			contentType: 'application/json',
 			success: function(result){
 				var token = lastNumberAssigned++;
-				var elemTr = $('<tr id="'+token+'"></tr>');
 
-				elemTr.append($('<td></td>').html(result.recipe[0].rec_nom));
-				elemTr.append($('<td></td>').html(prixu));
-				elemTr.append($('<td></td>').html(prixvente));
-				elemTr.append($('<td></td>').html(quantite));
-				elemTr.append($('<td></td>').html(quantite*prixu));
-				elemTr.append($('<td></td>').html(quantite*prixvente));
-				elemTr.append($('<td></td>').html($('<a href="#"><span id="'+token+'-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span></a>')));
-				$('#playerpipe').append(elemTr);
+				var itemRecette = $('<div id="'+token+'" class="row"><div class="col-md-3">'+result.recipe[0].rec_nom+'</div><div class="col-md-3">'+quantite+'</div><div class="col-md-3">'+prixvente+'</div><div class="col-md-3">'+quantite*prixvente+'<a href="#"><span id="'+token+'-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span></a></div></div>');
+				$('#additemrecette').before(itemRecette);
 
+				
 				/* # Event : supprimer une recette dans le pipe */
 				callbackDelPlayerPipe()
 
 				/* # Ajout dans la liste pipePlayers */
+				// {"actions" : [{"kind" : "drinks","prepare" : [{"1":50},{"3":20}],"price" : [{"1":8},{"3":2}]} ]}
+				
 				var tmp1 = {};
 				var tmp2 = {};
+				recette = (result.recipe[0].rec_nom).toString();
 				tmp1[recette] = quantite;
 				tmp2[recette] = prixvente;
 
-				pipePlayers.prepare.push(tmp1);
-				pipePlayers.price.push(tmp2);
+				pipePlayers.actions[0].prepare.push(tmp1);
+				pipePlayers.actions[0].price.push(tmp2);
 				
-				console.log(pipePlayers)
+				//console.log(JSON.stringify(pipePlayers))
 	    	}
 		});
 
@@ -193,7 +194,7 @@ $(document).ready(function () {
 			success: function(result){
 
 				$.each(result.recipes, function( index, value ) {
-					//console.log(value)
+					
 					$('#recettadd').append($('<option value="'+ value['rec_id'] +'">'+ value['rec_nom'] +'</option>'))
 				});
 	    	}
@@ -216,6 +217,17 @@ $(document).ready(function () {
 		});
 	}
 
+	function exitGameByName(rc_id) {
+			$.ajax({
+				url: "/players/"+playerName,
+				type: "DELETE",
+				contentType: 'application/json',
+				success: function(result){
+					
+		    	}
+			});
+		}
+
 	/**
 	*
 	*/
@@ -234,13 +246,20 @@ $(document).ready(function () {
 
 	        	/* Mise à jour des informations relatives au player */
 	        	$('#username').html(result.name);
+	        	playerName = result.name
 	        	$('#budgetplayer').html(result.info.cash)
 
-	        	console.log(result.info.profit)
+	        	/* Affichage d'un message de bienvenue */
+	        	var title = 'Coucou '+playerName+'. ';
+	        	var msg = 'Toujours aussi BD ?';
+	        	var status = 'success';
+	        	showMessage(title,msg,status);
+
+	        	/*console.log(result.info.profit)
 	        	console.log(result.info.sales)
 	        	console.log(result.info.drinksOffered)
 	        	console.log(result.info.longitude)
-	        	console.log(result.info.latitude)
+	        	console.log(result.info.latitude)*/
 
 	        	/* Afficher l'interface de simulation */
 	        	$('#infogamebloc').removeClass("hidden");
@@ -261,12 +280,14 @@ $(document).ready(function () {
 	*/
 	function gameInit () {
 
-		$('#infogamebloc').addClass("hidden");
-		//$('#mapbloc').removeClass("col-md-7");
-		//$('#mapbloc').addClass("col-md-12");
+		if(playerName.length > 0){
+			$('#infogamebloc').removeClass("hidden");
 
-		/* # récupération de la météo */
-	  	//getMetrology ();
+			/* # Confirmation du player pour quitter une partie */
+			exitGame();
+		}else{
+			$('#infogamebloc').addClass("hidden");
+		}
 
 	  	/* # Liste de joueurs */
 	  	getPlayers();
@@ -277,22 +298,32 @@ $(document).ready(function () {
 
 	}
 
+	function exitGame () {
+		window.onbeforeunload = function() {
+		    return "Etes-vous sûr de quitter la partie ?";
+		}
+	}
+
 	function callbackDelPlayerPipe () {
 		/* # supprimer une recette dans le pipe */
 		$('.btnSuppRecette').click(function (event) {
 			var tmp  = '#'+event.target.id.split("-")[0];
+			
+
+			$.each(pipePlayers.actions[0].prepare, function( index, value ) {
+				if (parseInt(index) == parseInt(event.target.id.split("-")[0]))
+					pipePlayers.actions[0].prepare.splice(index, 1);
+			});
+
+			$.each(pipePlayers.actions[0].price, function( index, value ) {
+				if (parseInt(index) == parseInt(event.target.id.split("-")[0]))
+					pipePlayers.actions[0].price.splice(index, 1);
+			});
+
+
 			$(tmp).remove()
 
-			$.each(pipePlayers.prepare, function( index, value ) {
-				//if(index == event.target.id.split("-")[0])
-				console.log(value[0])
-			});
-
-			/*jQuery.grep(pipePlayers.prepare, function(n,i) {
-				console.log(n)
-			  return n == event.target.id.split("-")[0];
-			});
-			console.log(pipePlayers)*/
+			//console.log(pipePlayers)
 
 		})
 	}
@@ -300,33 +331,39 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	/*$("#valAction").on("click",function(){
-      $.ajax("/order",{
-      	url: "/actions/<name>",
-        method: 'POST',
-        contentType: 'application/json',
-        pipePlayers : JSON.stringify(pipePlayers),
-        success : function(pipePlayers){
-        	console.log('OK')
-        }
-      })
-      })*/
+	function sendAction() {
+		console.log(pipePlayers)
 
-	/**
-	*
-	*/
-	/*function sendAction() {
 		$.ajax({
-			url: "/actions/<name>",
+			url: "/actions/"+playerName,
 			pipePlayers : JSON.stringify(pipePlayers),
 			type: "POST",
 			contentType: 'application/json',
-			success: function(pipePlayers){
-				console.log('OK')
+			success: function(result){
+				var title, msg, status;
+
+				if(result.sufficientFunds == "false"){
+					title = 'Solde insuffisant';
+					msg = 'Nous ne pouvez pas acheter ces boissons !';
+					status = 'danger';
+					showMessage(title,msg,status)
+				}else if(result.sufficientFunds == "true"){
+					title = 'Félicitation';
+					msg = 'Vos boissons ont été ajoutés avec succès !';
+					status = 'success';
+					showMessage(title,msg,status)
+				}
 	    	}
 		});
-	}*/
+	}
+
+	function showMessage (title,msg,status) {
+		$.notify({
+					title: title,
+					message: msg
+				},{
+					type: status
+				});
+	}
 
 })
-
-

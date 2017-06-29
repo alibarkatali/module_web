@@ -174,10 +174,11 @@ def leave(playerName):
 	"""
 
 	plId = func.recupIdFromName(playerName)
+
 	# Je le passe a 'false' dans la table Participate
 	db.execute("""UPDATE Participate par SET present = 'false' WHERE par.pl_id = '"""+ str(plId) +"""';""")
 	
-	return func.makeJsonResponse("OK")
+	return "",200
 
 
 @app.route('/sales', methods=['POST'])
@@ -220,6 +221,8 @@ def simulActions(playerName):
 	tmp = {}
 	data = request.get_json()
 
+	print (data)
+
 	# Si le player ne demande pas d'actions
 	if not data['actions']:
 		return '"Not find actions"', 412
@@ -231,18 +234,18 @@ def simulActions(playerName):
 	playerInfo = func.recupIdFromName(playerName)
 
 	# Si le player n'existe pas
-	if len(playerInfo) <= 0:
+	if playerInfo == None:
 		return '"Player ID Not Found"', 412
 
-	tmp['playerId'] = playerInfo[0]['pl_id']
+	tmp['playerId'] = playerInfo
 
 	# On recupere le jour en cours
 	dayInfo = func.getDayIdCurr()
 
-	if len(playerInfo) <= 0:
+	if dayInfo == None:
 		return '"Current day Not Found"', 412
 
-	tmp['dayId'] = dayInfo[0]['da_id']
+	tmp['dayId'] = dayInfo
 
 	totalCost = 0
 	if playerName :
@@ -254,27 +257,27 @@ def simulActions(playerName):
 
 				for prepare in action['prepare']:
 					for k, v in prepare.iteritems():
-						listRecipe.append({"recipeId":k,"quantity":v,"price":0})
+						listRecipe.append({"recipe":k,"quantity":v,"price":0})
 					print prepare
 
 				for price in action['price']:
 					for k, v in price.iteritems():						
 						for re in listRecipe:
-							if re['recipeId'] == str(k):
+							if re['recipe'] == str(k):
 								re['price'] = v
 			print listRecipe
 
 			# insertion dans la base de donnees
 			for drinksOffered in listRecipe:
 				
-				tmp['recipeId'] = drinksOffered['recipeId']
+				tmp['recipe'] = func.recupIdRecFromName(drinksOffered['recipe'])
 				tmp['quantity'] = drinksOffered['quantity']
 				tmp['price'] = drinksOffered['price']
 
 				totalCost += drinksOffered['quantity'] * drinksOffered['price']
 
 				db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
-					VALUES ( @(playerId), @(recipeId), @(dayId), @(price), @(quantity) );""", tmp)
+					VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
 
 
 	if totalCost <= func.calculeMoneyInfo(playerName,1)['cash']:
