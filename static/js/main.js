@@ -234,6 +234,12 @@ $(document).ready(function () {
 	        	playerName = result.name
 	        	$('#budgetplayer').html(result.info.cash)
 
+	        	/* Affichage d'un message de bienvenue */
+	        	var title = 'Coucou '+playerName+'. ';
+	        	var msg = 'Toujours aussi BD ?';
+	        	var status = 'success';
+	        	showMessage(title,msg,status);
+
 	        	/*console.log(result.info.profit)
 	        	console.log(result.info.sales)
 	        	console.log(result.info.drinksOffered)
