@@ -297,9 +297,6 @@ def simulActions(playerName):
 					db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
 						VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
 
-
-	
-
 	return func.makeJsonResponse({ "sufficientFunds" : sufficientFunds, "totalCost" : totalCost})
 
 
