@@ -405,6 +405,7 @@ $(document).ready(function () {
 					msg = 'Nous ne pouvez pas acheter ces boissons !';
 					status = 'danger';
 					showMessage(title,msg,status)
+					initpipePlayers();
 				}else if(result.sufficientFunds == "true"){
 					title = 'Félicitation';
 					msg = 'Vos boissons ont été ajoutés avec succès !';
