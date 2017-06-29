@@ -154,7 +154,12 @@ def setMetrology():
 	dataSql['weatherTomorrow'] = weatherTomorrow
 	dataSql['timestamp'] = timestamp%24
 	dataSql['lastDay'] = lastDay
-	dataSql['da_id'] = result[0]['da_id']
+
+	if len(result) != 0:
+		dataSql['da_id'] = result[0]['da_id']
+	else:
+		dataSql['da_id'] = db.execute("""INSERT INTO InfoDay(da_day, da_weather, da_weather_tomorrow, da_timestamp) 
+			VALUES (1,@(weatherToday),@(weatherTomorrow),@(timestamp)) returning da_id;""", dataSql)[0]['da_id']
 
 	dataSql['day'] = int(timestamp/24)
 	if dataSql['day'] != result[0]['da_day']:
