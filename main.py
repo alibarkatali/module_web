@@ -18,6 +18,7 @@ def resetSimulation():
 	""" Permet de reinitialiser la partie en cours
 		...
 	"""
+
 	gameId = func.recupGameId()
 
 	if gameId == "NoGame":
@@ -26,8 +27,7 @@ def resetSimulation():
 		func.supprimerGame(gameId)
 		func.creerGame()
 
-
-	return func.makeJsonResponse("OK")
+	return "ok",200
 
 @app.route('/players',methods=['GET'])
 def getPlayers():
@@ -291,11 +291,11 @@ def simulActions(playerName):
 			else:
 				sufficientFunds = "false"	
 
-			# insertion dans la base de donnees
-			if sufficientFunds == "true":
-				for drinksOffered in listRecipe:
-					db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
-						VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
+		# insertion dans la base de donnees
+		if sufficientFunds == "true":
+			for drinksOffered in listRecipe:
+				db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
+					VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
 
 	return func.makeJsonResponse({ "sufficientFunds" : sufficientFunds, "totalCost" : totalCost})
 

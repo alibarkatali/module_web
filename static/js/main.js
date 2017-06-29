@@ -22,7 +22,7 @@ $(document).ready(function () {
 	gameInit();
 	
 	/* # Synchronisations */
-	setInterval(getMetrology, 12000);
+	setInterval(getMetrology, 6000);
 	setInterval(getPlayers, 12000);
 
 
@@ -83,6 +83,11 @@ $(document).ready(function () {
 	$('#btnexitgame').click(function() {
 		
 		exitGameByName()
+	})
+
+	/* # Réinitialiser le jeu */
+	$$('#btnquitterpartie').click(function() {
+		resetGame()
 	})
 
 
@@ -328,8 +333,20 @@ $(document).ready(function () {
 		window.onbeforeunload = function(event) {
 		    return "Etes-vous sûr de quitter la partie ?";
 		}
+	}
 
-		//console.log(window.onbeforeunload);
+	function resetGame() {
+		$.ajax({
+			url: "/reset",
+			type: "GET",
+			success: function(result){
+				if(result == "OK")
+				var title = 'Réinitialisation de la partie. ';
+				var msg = ' La partie a été réinitialisation avec succès !';
+				var status = 'success';
+				showMessage(title,msg,status);
+	    	}
+		});
 	}
 
 	function callbackDelPlayerPipe () {
@@ -373,8 +390,6 @@ $(document).ready(function () {
 	*
 	*/
 	function sendAction() {
-		//console.log(pipePlayers.toString())
-
 		$.ajax({
 			url: "/actions/"+playerName,
 			data : JSON.stringify(pipePlayers),

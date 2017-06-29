@@ -140,127 +140,12 @@
 				<h1 class="grandtitre">Joueurs en ligne</h1>
 				<div class="row">
 					<div id="playerList" class="col-md-12">
-						
+						<a class="btn btn-danger hidden" id="btnquitterpartie" href="#">Quitter la partie</a>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div id="infogamebloc" class="row hidden">
-			<div id="mapbloc" class="col-md-7">
-				<!-- Nav tabs -->
-			  <ul class="nav nav-tabs" role="tablist">
-			    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Map</a></li>
-			    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Liste de joueurs</a></li>
-			  </ul>
-
-			  <!-- Tab panes -->
-			  <div class="tab-content">	
-			    <div role="tabpanel" class="tab-pane active" id="home">
-			    	<!-- MAP -->
-					<div class="col-md-12">
-						<div class="header">
-							<p class="title1">Stands & Panneaux Pub</p>
-						</div>
-						<div id="gameMap"></div>
-						
-					</div>
-			    </div>
-			    <div role="tabpanel" class="tab-pane" id="profile">
-			    	
-			    	<!-- JOUEURS EN LIGNE -->
-					<div class="col-md-12">
-						<div class="header">
-							<p class="title1">Joueurs en ligne<span id="day">#jour</span></p>
-						</div>
-						<div >
-							<ul id="playerList" class="list-group">
-							  
-							</ul>
-						</div>
-						<button id="reinitial" type="button" class="btn btn-xs btn-danger pull-right">
-							Réinitialisation du jeu
-						</button>
-					</div>
-			    </div>
-			  </div>
-			</div>
-
-			<div class="col-md-5">
-				
-				<!-- INFORMATION DU JOUR -->
-				<div id="playgamebloc" class="col-md-12">
-					<div class="header">
-				      <p class="title1">Information du jour <span id="day">#jour</span></p>      
-				    </div>
-
-				      <h4>Action du lendemain</h4> 
-				      <div class="">
-				        
-				        <p id="alignCenter">Préparation de vos boissons</p>  
-				        <div class="row">
-				        	<form id="formproduction">
-				        		<div class="col-md-3">
-				        			
-				        		</div>
-				        		<div class="col-md-2">
-				        			<span id="prixunitaire"></span>
-				        		</div>
-				        		<div class="col-md-2">
-				        			
-				        		</div>
-				        		<div class="col-md-2">
-				        			
-				        		</div>
-				        		<div class="col-md-3">
-				        			
-				        		</div>
-			        		</form>
-				        </div>
-
-				        <div class="bloccentre">
-						  
-						  	<table id="playerpipe" class="table table-striped">
-					        <thead>
-					        	<tr>
-					        		<th>Boisson</th>
-					        		<th>Coût U</th>
-					        		<th>Prix V</th>
-					        		<th>QTT</th>
-					        		<th>Coût T</th>
-					        		<th>Prix VT</th>
-					        		<th>Eff ligne</th>
-					        	</tr>
-					        </thead>
-					        <tbody>
-					          <!--<tr id="0">
-					          	<td>..</td>
-					          	<td>..</td>
-					          	<td>..</td>
-					          	<td>..</td>
-					          	<td>..</td>
-					          	<td>..</td>
-					          	<td>
-					          		<a  href="#" class="">
-					          			<span id="0-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span>
-					          		</a>
-					          	</td>
-					          </tr>-->
-					          
-					        </tbody>
-					        </table>
-						 
-						</div>
-
-
-				        <div class="alignLeft">
-				          <p>Somme totale du stand : <span id="sumStand">"total"</span>€</p>
-				        </div>
-				        <button id="valAction" type="button" class="btn btn-lg btn-success center-block">Valider l'action</button>
-				      </div>
-				</div>
-			</div>
-		</div>
 	</div>
 
 	<script type="text/javascript" src="../../js/jquery.js"></script>
