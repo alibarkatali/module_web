@@ -317,15 +317,16 @@ $(document).ready(function () {
 			data : JSON.stringify(data),
 			type: "POST",
 			contentType: 'application/json',
-			  statusCode: {
-			    412: function(result) {
-			    	title = 'Impossible de rejoindre la partie !';
+			 
+		    success: function(result,textStatus) {
+
+		    	if(textStatus == 412){
+		    		title = 'Impossible de rejoindre la partie !';
 			    	msg = 'Le pseudo '+result.name+' est déjà utilisé. Merci de saisir un nouveau pseudo.';
 			    	status = 'warning';
 			      	showMessage(title,msg,status);
-			    },
-			    200: function(result) {
-			    	resetFormGameJoin();
+		    	}else{
+		    		resetFormGameJoin();
 
 		        	/* Supprimer le bloque rejoindre la partie */
 		        	$('#inscriptionbloc').addClass('hidden');
@@ -346,8 +347,10 @@ $(document).ready(function () {
 		        	$('#btnexitgame').removeClass('hidden');
 
 		        	exitGame();
-			    }
-			  }
+		    	}
+		    	
+		    }
+			  
 		});
 	}
 
