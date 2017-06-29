@@ -171,10 +171,11 @@ def leave(playerName):
 	"""
 
 	plId = func.recupIdFromName(playerName)
+	
 	# Je le passe a 'false' dans la table Participate
 	db.execute("""UPDATE Participate par SET present = 'false' WHERE par.pl_id = '"""+ str(plId) +"""';""")
 	
-	return func.makeJsonResponse("OK")
+	return "",200
 
 
 @app.route('/sales', methods=['POST'])

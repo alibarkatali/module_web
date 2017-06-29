@@ -213,6 +213,17 @@ $(document).ready(function () {
 		});
 	}
 
+	function exitGameByName(rc_id) {
+			$.ajax({
+				url: "/players/"+playerName,
+				type: "DELETE",
+				contentType: 'application/json',
+				success: function(result){
+					
+		    	}
+			});
+		}
+
 	/**
 	*
 	*/
@@ -350,5 +361,3 @@ $(document).ready(function () {
 	}
 
 })
-
-
