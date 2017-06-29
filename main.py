@@ -212,12 +212,20 @@ def simulCmd():
 			nbre = db.select("SELECT * FROM Transaction WHERE da_id = '"+ str(day) +"' AND pl_id = '"+ str(playerId) +"'")	
 			nbreBoisson = len(nbre)
 			newQte = int(qte/nbreBoisson)
-		
-			db.execute("""
-					UPDATE Transaction SET qte_sale = '"""+ str(newQte) +"""' WHERE da_id = '"""+ str(day) +"""' 
-					AND pl_id = '"""+ str(playerId) +"""';
-				   """)
 			
+			# Je recupere les quantitees mises en ventes par le joueur
+			qtePrev = db.select("SELECT qte_prev, rec_id FROM Transaction WHERE da_id = '"+ str(day) +"' AND pl_id = '"+ str(playerId) +"'")
+			for prev in qtePrev:
+				if prev['qte_prev'] > newQte:
+					db.execute("""
+					UPDATE Transaction SET qte_sale = '"""+ str(newQte) +"""' WHERE da_id = '"""+ str(day) +"""' 
+					AND pl_id = '"""+ str(playerId) +"""' AND rec_id = '"""+ str(prev['rec_id']) +"""';
+				    """)				
+				else:
+					db.execute("""
+					UPDATE Transaction SET qte_sale = '"""+ str(prev['qte_prev']) +"""' WHERE da_id = '"""+ str(day) +"""' 
+					AND pl_id = '"""+ str(playerId) +"""' AND rec_id = '"""+ str(prev['rec_id']) +"""';
+				    """)
 
 	return func.makeJsonResponse("OK")
 
@@ -277,28 +285,26 @@ def simulActions(playerName):
 								re['price'] = v
 			print listRecipe
 
-			# insertion dans la base de donnees
+			# Je regarde avant d'inserer le cout total de son action, s'il n'a pas le budget suffisant je ne le valide pas
 			for drinksOffered in listRecipe:
-				
-				tmp['recipe'] = func.recupIdRecFromName(drinksOffered['recipe'])
-				tmp['quantity'] = drinksOffered['quantity']
-				tmp['price'] = drinksOffered['price']
-
-				totalCost += drinksOffered['quantity'] * drinksOffered['price']
+				recipeId = func.recupIdRecFromName(drinksOffered['recipe'])
+				totalCost += drinksOffered['quantity'] * func.calculePriceRec(recipeId)
 
 			if totalCost <= func.calculeMoneyInfo(playerName,1)['cash']:
 				sufficientFunds = "true"
 			else:
 				sufficientFunds = "false"	
 
-		# insertion dans la base de donnees
-		if sufficientFunds == "true":
-			for drinksOffered in listRecipe:
-				db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
-					VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
+			# insertion dans la base de donnees
+			if sufficientFunds == "true":
+				for drinksOffered in listRecipe:
 
+					tmp['recipe'] = func.recupIdRecFromName(drinksOffered['recipe'])
+					tmp['quantity'] = drinksOffered['quantity']
+					tmp['price'] = drinksOffered['price']
 
-	
+					db.execute("""INSERT INTO Transaction(pl_id, rec_id, da_id, price, qte_prev) 
+							VALUES ( @(playerId), @(recipe), @(dayId), @(price), @(quantity) );""", tmp)
 
 	return func.makeJsonResponse({ "sufficientFunds" : sufficientFunds, "totalCost" : totalCost})
 

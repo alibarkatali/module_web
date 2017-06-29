@@ -19,7 +19,7 @@ INSERT INTO recipe(rec_nom) VALUES ('Diabolo Menthe');
 INSERT INTO recipe(rec_nom) VALUES ('Diabolo Grenadine');
 INSERT INTO recipe(rec_nom) VALUES ('Diabolo Citron');
 INSERT INTO recipe(rec_nom) VALUES ('Biere');
-INSERT INTO recipe(rec_nom) VALUES ('Café');
+INSERT INTO recipe(rec_nom) VALUES ('Cafe');
 INSERT INTO recipe(rec_nom) VALUES ('Monaco');
 
 INSERT INTO IngInRec(ing_id, rec_id) VALUES ('1', '1');
