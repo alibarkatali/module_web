@@ -7,15 +7,7 @@ $(document).ready(function () {
 	playerName = "";
 
 
-	pipePlayers = { "actions" : 
-			[
-				{
-					"kind" : "drinks",
-					"prepare" : [],
-					"price" : []
-				}
-			]
-		}
+	pipePlayers = { "actions" : []}
 
 	/* # Initialisation de la partie */
 	gameInit();
@@ -120,14 +112,40 @@ $(document).ready(function () {
 				/* # Ajout dans la liste pipePlayers */
 				// {"actions" : [{"kind" : "drinks","prepare" : [{"1":50},{"3":20}],"price" : [{"1":8},{"3":2}]} ]}
 				
-				var tmp1 = {};
-				var tmp2 = {};
+				var tmp1 = [];
+				var tmp2 = [];
 				recette = (result.recipe[0].rec_nom).toString();
 				tmp1[recette] = quantite;
 				tmp2[recette] = prixvente;
 
-				pipePlayers.actions[0].prepare.push(tmp1);
-				pipePlayers.actions[0].price.push(tmp2);
+				if(pipePlayers.actions != undefined && pipePlayers.actions.length > 0){
+					if(pipePlayers.actions[0].prepare != undefined){
+						pipePlayers.actions[0].prepare.push(tmp1);
+					}
+
+					if(pipePlayers.actions[0].price != undefined){
+						pipePlayers.actions[0].price.push(tmp2);
+					}
+				}else{
+					pipePlayers["actions"] = {}
+					var drinksAction = {
+						"kind" : "drinks",
+						"prepare" : [],
+						"price" : []
+					};
+
+					pipePlayers.actions.push(
+						drinksAction.prepare.push(pipePlayers.actions.prepare.push(tmp1);)
+						drinksAction.price.push(pipePlayers.actions.price.push(tmp2);)
+					)
+				}
+
+				console.log(pipePlayers)
+
+				
+
+				
+				
 				
 				//console.log(JSON.stringify(pipePlayers))
 	    	}
