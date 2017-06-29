@@ -27,7 +27,7 @@ def resetSimulation():
 		func.creerGame()
 
 
-	return func.makeJsonResponse(OK)
+	return func.makeJsonResponse("OK")
 
 @app.route('/players',methods=['GET'])
 def getPlayers():
@@ -212,7 +212,7 @@ def simulCmd():
 				   """)
 			
 
-	return func.makeJsonResponse(OK)
+	return func.makeJsonResponse("OK")
 
 
 
