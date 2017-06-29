@@ -320,7 +320,7 @@ $(document).ready(function () {
 			 
 		    success: function(result,textStatus) {
 
-		    	if(textStatus == 412){
+		    	if(textStatus == "412"){
 		    		title = 'Impossible de rejoindre la partie !';
 			    	msg = 'Le pseudo '+result.name+' est déjà utilisé. Merci de saisir un nouveau pseudo.';
 			    	status = 'warning';
