@@ -18,6 +18,7 @@ def resetSimulation():
 	""" Permet de reinitialiser la partie en cours
 		...
 	"""
+
 	gameId = func.recupGameId()
 
 	if gameId == "NoGame":
@@ -26,8 +27,7 @@ def resetSimulation():
 		func.supprimerGame(gameId)
 		func.creerGame()
 
-
-	return func.makeJsonResponse("OK")
+	return "ok",200
 
 @app.route('/players',methods=['GET'])
 def getPlayers():
