@@ -336,7 +336,7 @@ $(document).ready(function () {
 
 		$.ajax({
 			url: "/actions/"+playerName,
-			pipePlayers : JSON.stringify(pipePlayers),
+			pipePlayers : pipePlayers,
 			type: "POST",
 			contentType: 'application/json',
 			success: function(result){
@@ -357,7 +357,7 @@ $(document).ready(function () {
 		});
 	}
 
-	function showMessage (title,msg,status) {
+	function showMessage(title,msg,status) {
 		$.notify({
 					title: title,
 					message: msg
