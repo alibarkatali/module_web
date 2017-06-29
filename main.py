@@ -171,7 +171,7 @@ def leave(playerName):
 	"""
 
 	plId = func.recupIdFromName(playerName)
-	
+
 	# Je le passe a 'false' dans la table Participate
 	db.execute("""UPDATE Participate par SET present = 'false' WHERE par.pl_id = '"""+ str(plId) +"""';""")
 	
@@ -229,18 +229,18 @@ def simulActions(playerName):
 	playerInfo = func.recupIdFromName(playerName)
 
 	# Si le player n'existe pas
-	if len(playerInfo) <= 0:
+	if playerInfo == None:
 		return '"Player ID Not Found"', 412
 
-	tmp['playerId'] = playerInfo[0]['pl_id']
+	tmp['playerId'] = playerInfo
 
 	# On recupere le jour en cours
 	dayInfo = func.getDayIdCurr()
 
-	if len(playerInfo) <= 0:
+	if dayInfo == None:
 		return '"Current day Not Found"', 412
 
-	tmp['dayId'] = dayInfo[0]['da_id']
+	tmp['dayId'] = dayInfo
 
 	totalCost = 0
 	if playerName :
