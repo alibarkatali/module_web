@@ -283,7 +283,7 @@ def simulActions(playerName):
 	#	sufficientFunds = "false"
 #
 	#return func.makeJsonResponse({ "sufficientFunds" : sufficientFunds, "totalCost" : totalCost})
-	return makeJsonResponse(data)
+	return func.makeJsonResponse(data)
 
 @app.route('/map',methods=['GET'])
 def getMap():
