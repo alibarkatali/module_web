@@ -6,7 +6,6 @@ $(document).ready(function () {
 	lastNumberAssigned = 0;
 	playerName = "";
 
-
 	pipePlayers = { "actions" : 
 			[
 				{
@@ -21,8 +20,8 @@ $(document).ready(function () {
 	gameInit();
 	
 	/* # Synchronisations */
-	//setInterval(getMetrology, 12000);
-	//setInterval(getPlayers, 30000);
+	setInterval(getMetrology, 3000);
+	setInterval(getPlayers, 5000);
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Gestionnaires d'événements */
@@ -129,7 +128,7 @@ $(document).ready(function () {
 				pipePlayers.actions[0].prepare.push(tmp1);
 				pipePlayers.actions[0].price.push(tmp2);
 				
-				console.log(JSON.stringify(pipePlayers))
+				//console.log(JSON.stringify(pipePlayers))
 	    	}
 		});
 
@@ -332,7 +331,7 @@ $(document).ready(function () {
 	*
 	*/
 	function sendAction() {
-		console.log(pipePlayers.toString())
+		//console.log(pipePlayers.toString())
 
 		$.ajax({
 			url: "/actions/"+playerName,
@@ -342,14 +341,14 @@ $(document).ready(function () {
 			success: function(result){
 				var title, msg, status;
 
-				console.log(result.sufficientFunds)
+				//console.log(result.sufficientFunds)
 
-				if(result.sufficientFunds == false){
+				if(result.sufficientFunds == "false"){
 					title = 'Solde insuffisant';
 					msg = 'Nous ne pouvez pas acheter ces boissons !';
 					status = 'danger';
 					showMessage(title,msg,status)
-				}else if(result.sufficientFunds == true){
+				}else if(result.sufficientFunds == "true"){
 					title = 'Félicitation';
 					msg = 'Vos boissons ont été ajoutés avec succès !';
 					status = 'success';
