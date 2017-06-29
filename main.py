@@ -264,7 +264,7 @@ def simulActions(playerName):
 				for price in action['price']:
 					for k, v in price.iteritems():						
 						for re in listRecipe:
-							if re['recipe'] == str(k):
+							if re['recipe'] == k:
 								re['price'] = v
 			print listRecipe
 

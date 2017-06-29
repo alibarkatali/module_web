@@ -6,7 +6,6 @@ $(document).ready(function () {
 	lastNumberAssigned = 0;
 	playerName = "";
 
-
 	pipePlayers = { "actions" : 
 			[
 				{
@@ -21,8 +20,8 @@ $(document).ready(function () {
 	gameInit();
 	
 	/* # Synchronisations */
-	//setInterval(getMetrology, 12000);
-	//setInterval(getPlayers, 30000);
+	setInterval(getMetrology, 3000);
+	setInterval(getPlayers, 5000);
 
 	/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 	/* # Gestionnaires d'événements */
@@ -332,15 +331,17 @@ $(document).ready(function () {
 	*
 	*/
 	function sendAction() {
-		console.log(pipePlayers)
+		//console.log(pipePlayers.toString())
 
 		$.ajax({
 			url: "/actions/"+playerName,
-			pipePlayers : JSON.stringify(pipePlayers),
+			data : JSON.stringify(pipePlayers),
 			type: "POST",
 			contentType: 'application/json',
 			success: function(result){
 				var title, msg, status;
+
+				//console.log(result.sufficientFunds)
 
 				if(result.sufficientFunds == "false"){
 					title = 'Solde insuffisant';
