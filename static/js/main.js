@@ -348,11 +348,6 @@ $(document).ready(function () {
 		        	exitGame();
 			    }
 			  }
-
-			success: function(result){
-	        	
-
-	    	}
 		});
 	}
 
