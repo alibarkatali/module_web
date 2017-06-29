@@ -218,6 +218,8 @@ def simulActions(playerName):
 	tmp = {}
 	data = request.get_json()
 
+	print (data)
+
 	# Si le player ne demande pas d'actions
 	if not data['actions']:
 		return '"Not find actions"', 412
