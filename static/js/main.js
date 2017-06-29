@@ -332,7 +332,7 @@ $(document).ready(function () {
 	*
 	*/
 	function sendAction() {
-		console.log(jQuery.parseJSON(pipePlayers)
+		console.log(jQuery.parseJSON(pipePlayers))
 
 		$.ajax({
 			url: "/actions/"+playerName,
