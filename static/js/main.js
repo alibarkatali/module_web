@@ -119,6 +119,7 @@ $(document).ready(function () {
 		  }
 	}
 
+
 	/**
 	*
 	*/
@@ -144,6 +145,7 @@ $(document).ready(function () {
 	}
 
 
+
 	/**
 	*
 	*/
@@ -158,13 +160,10 @@ $(document).ready(function () {
 				var itemRecette = $('<div id="'+token+'" class="row suppaction"><div class="col-md-3">'+result.recipe[0].rec_nom+'</div><div class="col-md-3">'+quantite+'</div><div class="col-md-3">'+prixvente+'</div><div class="col-md-3">'+quantite*prixvente+'<a href="#"><span id="'+token+'-btn" class="btnSuppRecette glyphicon glyphicon-trash"></span></a></div></div>');
 				$('#additemrecette').before(itemRecette);
 
-				
 				/* # Event : supprimer une recette dans le pipe */
 				callbackDelPlayerPipe()
 
-				/* # Ajout dans la liste pipePlayers */
-				// {"actions" : [{"kind" : "drinks","prepare" : [{"1":50},{"3":20}],"price" : [{"1":8},{"3":2}]} ]}
-				
+				/* # Ajout dans la liste pipePlayers */				
 				var tmp1 = {};
 				var tmp2 = {};
 				recette = (result.recipe[0].rec_nom).toString();
@@ -174,11 +173,12 @@ $(document).ready(function () {
 				pipePlayers.actions[0].prepare.push(tmp1);
 				pipePlayers.actions[0].price.push(tmp2);
 				
-				//console.log(JSON.stringify(pipePlayers))
 	    	}
 		});
 
 	}
+
+
 
 	/**
 	*
@@ -203,6 +203,8 @@ $(document).ready(function () {
 	    	}
 		});
 	}
+
+
 
 	/**
 	*
@@ -229,6 +231,8 @@ $(document).ready(function () {
 		});
 	}
 
+
+
 	function getRepices() {
 		$.ajax({
 			url: "/recipes", 
@@ -243,6 +247,8 @@ $(document).ready(function () {
 	    	}
 		});
 	}
+
+
 
 	function getRepiceByName(rc_id) {
 		$.ajax({
@@ -260,37 +266,41 @@ $(document).ready(function () {
 		});
 	}
 
+
+
 	function exitGameByName(rc_id) {
-			$.ajax({
-				url: "/players/"+playerName,
-				type: "DELETE",
-				contentType: 'application/json',
-				success: function(result){
+		$.ajax({
+			url: "/players/"+playerName,
+			type: "DELETE",
+			contentType: 'application/json',
+			success: function(result){
 
-					/* # Cacher le bouton "Quitter la partie" */
-					$('#btnexitgame').addClass('hidden');
+				/* # Cacher le bouton "Quitter la partie" */
+				$('#btnexitgame').addClass('hidden');
 
-					/* # Cacher le paneau "Actions du lendemain" */
-					$('#infogamebloc').addClass('hidden');
+				/* # Cacher le paneau "Actions du lendemain" */
+				$('#infogamebloc').addClass('hidden');
 
-					$('#inscriptionbloc').removeClass('hidden');
+				$('#inscriptionbloc').removeClass('hidden');
 
-					/* # Vider le panier du player */
-					initPipePlayers();
-					var itemssupp = $('.suppaction');
-					for (var i = 0; i < itemssupp.length; i++) {
-						itemssupp[i].remove();
-					};
+				/* # Vider le panier du player */
+				initPipePlayers();
+
+				/* # reinitialiser le jeu */
+				gameInit () ;
+
+	    	}
+		});
+	}
+
+	function suppItems () {
+		var itemssupp = $('.suppaction');
+		for (var i = 0; i < itemssupp.length; i++) {
+			itemssupp[i].remove();
+		};
+	}
 
 
-					/* # reinitialiser le jeu */
-					gameInit () ;
-
-					console.log(pipePlayers);
-
-		    	}
-			});
-		}
 
 	/**
 	*
@@ -318,12 +328,6 @@ $(document).ready(function () {
 	        	var msg = 'C est bon de vous voir :) !';
 	        	var status = 'success';
 	        	showMessage(title,msg,status);
-
-	        	/*console.log(result.info.profit)
-	        	console.log(result.info.sales)
-	        	console.log(result.info.drinksOffered)
-	        	console.log(result.info.longitude)
-	        	console.log(result.info.latitude)*/
 
 	        	/* Afficher l'interface de simulation */
 	        	$('#infogamebloc').removeClass("hidden");
@@ -389,7 +393,7 @@ $(document).ready(function () {
 
 					/* # Vider le banier du player */
 					initPipePlayers();
-					$('.suppaction').remove();
+					suppItems ();
 
 					/* # reinitialiser le jeu */
 					gameInit () ;
@@ -424,9 +428,6 @@ $(document).ready(function () {
 
 
 			$(tmp).remove()
-
-			console.log(pipePlayers)
-
 		})
 	}
 
@@ -442,6 +443,8 @@ $(document).ready(function () {
 			]
 		};
 	}
+
+
 	function initPipePlayers () {
 		pipePlayers = { "actions" : 
 			[
@@ -455,6 +458,7 @@ $(document).ready(function () {
 		playerName = "";
 	}
 
+
 	/**
 	*
 	*/
@@ -466,8 +470,6 @@ $(document).ready(function () {
 			contentType: 'application/json',
 			success: function(result){
 				var title, msg, status;
-
-				console.log(result)
 
 				if(result.sufficientFunds == "false"){
 					title = 'Solde insuffisant :';
@@ -486,9 +488,12 @@ $(document).ready(function () {
 						msg = 'Vos boissons ont été ajoutés avec succès !';
 						status = 'success';
 						showMessage(title,msg,status)
-					}
-					initPipe();
+
+					}	
 				}
+				/* # Vide le banier */
+				initPipe();
+				suppItems ();
 	    	}
 		});
 	}
