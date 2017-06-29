@@ -143,8 +143,8 @@ $(document).ready(function () {
 			type: "GET",
 			contentType: 'application/json',
 			success: function(result){
-
-				$('#timer').html(result.timestamp);
+				var disDay = "Jour "+Math.trunc(result.timestamp)+" - "+result.timestamp%24;
+				$('#timer').html(disDay);
 				$.each(result.weather, function( index, value ) {
 					if(value['dfn'] == 0) 
 						$('#weatherToday').html(value['weather']);

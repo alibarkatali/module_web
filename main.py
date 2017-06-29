@@ -207,8 +207,8 @@ def simulCmd():
 		
 			db.execute("""
 					UPDATE Transaction SET qte_sale = '"""+ str(qte) +"""' WHERE da_id = '"""+ str(day) +"""' 
-					AND pl_id = """+ str(playerId) +"""' 
-					AND rec_id = """+ str(recId) +"""';
+					AND pl_id = '"""+ str(playerId) +"""' 
+					AND rec_id = '"""+ str(recId) +"""';
 				   """)
 			
 
