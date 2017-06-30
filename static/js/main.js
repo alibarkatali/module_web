@@ -317,31 +317,41 @@ $(document).ready(function () {
 			data : JSON.stringify(data),
 			type: "POST",
 			contentType: 'application/json',
+			 
+		    success: function(result,textStatus) {
+		
+	    		resetFormGameJoin();
 
-	 		success: function(result) {
-		    		resetFormGameJoin();
+	        	/* Supprimer le bloque rejoindre la partie */
+	        	$('#inscriptionbloc').addClass('hidden');
 
-		        	/* Supprimer le bloque rejoindre la partie */
-		        	$('#inscriptionbloc').addClass('hidden');
+	        	/* Mise à jour des informations relatives au player */
+	        	$('#username').html(result.name);
+	        	playerName = result.name
+	        	$('#budgetplayer').html(result.info.cash)
 
-		        	/* Mise à jour des informations relatives au player */
-		        	$('#username').html(result.name);
-		        	playerName = result.name
-		        	$('#budgetplayer').html(result.info.cash)
+	        	/* Affichage d'un message de bienvenue */
+	        	var title = 'Coucou '+playerName+'. ';
+	        	var msg = 'C est bon de vous voir :) !';
+	        	var status = 'success';
+	        	showMessage(title,msg,status);
 
-		        	/* Affichage d'un message de bienvenue */
-		        	var title = 'Coucou '+playerName+'. ';
-		        	var msg = 'C est bon de vous voir :) !';
-		        	var status = 'success';
-		        	showMessage(title,msg,status);
+	        	/* Afficher l'interface de simulation */
+	        	$('#infogamebloc').removeClass("hidden");
+	        	$('#btnexitgame').removeClass('hidden');
 
-		        	/* Afficher l'interface de simulation */
-		        	$('#infogamebloc').removeClass("hidden");
-		        	$('#btnexitgame').removeClass('hidden');
-
-		        	exitGame();
-		    	}
+	        	exitGame();
 		    	
+		    	
+		    },
+		    complete : function(jqXHR,textStatus ){
+		    	
+		    	if(textStatus == "error"){
+		    		title = 'Impossible de rejoindre la partie !';
+			    	msg = 'Le pseudo est déjà utilisé. Merci de saisir un nouveau pseudo.';
+			    	status = 'warning';
+			      	showMessage(title,msg,status);
+		    	}
 		    }
 			  
 		});
