@@ -1,0 +1,204 @@
+<DOCTYPE html>
+<html lang="fr">
+<head>
+  <title>Jeu</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="CSS.css">
+  <link href='https://fonts.googleapis.com/css?family=Ubuntu:500' rel='stylesheet' type='text/css'>
+</head>
+
+<h1 id="titleHeader">JEU LIMONADE FACE/OFF</h1>
+<!-- information sur la partie en cours -->
+<div class="container-fluid bloccontent">
+  <div class="row">
+    <div class="col-sm-2">
+      <div class="hero-widget well well-sm">
+        <div class="text infobloc weatherToday">
+          <em class="smallTitle">météo du jour</em>
+          <span id="weatherToday" class="meteotxt"></span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="hero-widget well well-sm">
+        <div class="text infobloc weatherTomorrow">
+          <em class="smallTitle">météo de demain</em>
+          <span id="weatherTomorrow" class="meteotxt"></span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="hero-widget well well-sm">
+        <div class="text infobloc timer">
+          <em class="smallTitle">temps</em>
+          <span id="timer" class="tempstxt"></span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="hero-widget well well-sm">
+        <div class="text infobloc budgetplayer">
+          <em class="smallTitle">Budget</em>
+          <span id="budgetplayer" class="budgettxt"></span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="hero-widget well well-sm">
+        <div class="text infobloc profit">
+          <em class="smallTitle">Profit</em>
+          <span id="profit" class="profittxt"></span>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="hero-widget well well-sm">
+        <div class="text infobloc sales">
+          <em class="smallTitle">Budget</em>
+          <span id="sales" class="salestxt"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- rejoindre la partie -->
+  <div id="inscriptionbloc" class="row">
+    <div class="col-md-6 col-md-offset-3 center">
+      <h2 class="">Rejoindre la partie en cours</h2>
+        <div class="center">
+          <form id="formGameJoin" class="center" method="POST">
+          <input type="text" name="name" id="name" placeholder="Votre pseudo">
+          <input type="submit" name="gamestart" value="Demarrer la partie">
+        </form>
+        </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="hero-widget well well-sm">
+        
+        <h1 class="grandtitre">Joueurs en ligne</h1>
+        <div class="row">
+          <div id="playerList" class="col-md-12">   
+          </div>
+        </div>
+
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane" id="profile">           
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="hero-widget well well-sm">
+        <!-- Information du lendemain -->
+        <h3 class="center">Action pour le lendemain</h3> 
+          <p class="alignLeft">Préparation de vos boissons :</p>  
+          <div class="row">
+          <form id="formproduction">
+            <div class="col-md-3">
+                  <select id="recettadd" class=""></select>
+                </div>
+                <div class="col-md-3">
+                  <input id="quantity" type="number" class="" placeholder="Quantité">
+                </div>
+                <div class="col-md-3">
+                  <input id="prixvente" type="number" class="" placeholder="Prix Vente">
+                </div>
+                <div class="col-md-3">
+                  <input type="submit" id="btnaddrecette" value="Ajouter la recette">
+                </div>
+              </form>
+            </div>
+          <div class="bloccenter margintobloc">
+          <div class="row">
+            <div class="col-md-3">
+              Recette
+            </div>
+            <div class="col-md-3">
+              Quantité
+            </div>
+            <div class="col-md-3">
+              Prix Vente
+            </div>
+            <div class="col-md-3">
+              Total Vente
+            </div>
+          </div>
+           </div>
+          <button id="valideracions" type="button" class="btn btn-lg btn-success center-block">Valider l'action</button>
+      </div>
+      <button class="btn btn-xs btn-danger pull-left" id="btnexitgame" href="#">Quitter la partie</button>
+      <button id="reinitial" type="button" class="btn btn-xs btn-danger pull-right">Réinitialisation du jeu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script>
+
+function getMetrology () {
+    $.ajax({
+      url: "/metrology", 
+      type: "GET",
+      contentType: 'application/json',
+      success: function(result){
+        var disDay = "Jour "+Math.trunc(result.timestamp/24)+" - "+result.timestamp%24+"H00";
+        $('#timer').html(disDay);
+        $.each(result.weather, function( index, value ) {
+          var meteo = result.weather;
+          if(value['dfn'] == 0) 
+            switch (meteo) {
+              case "Rainy":
+                $('#weatherToday').html('<img src="image/rain_light.png"/>');
+              break;
+
+              case "Cloudy":
+                $('#weatherToday').html('<img src="image/cloudy.png"/>');
+              break;
+
+              case "Heatwave":
+                $('#weatherToday').html('<img src="image/sunny.png"/>');
+              break;
+
+              case "Sunny":
+                $('#weatherToday').html('<img src="image/partly_cloudy.png"/>');
+              break;
+
+              case "Thunderstorm":
+                $('#weatherToday').html('<img src="image/rain.png"/>');
+              break;
+          }if else{
+            switch (meteo) {
+              case "Rainy":
+                $('#weatherTomorrow').html('<img src="image/rain_light.png"/>');
+              break;
+
+              case "Cloudy":
+                $('#weatherTomorrow').html('<img src="image/cloudy.png"/>');
+              break;
+
+              case "Heatwave":
+                $('#weatherTomorrow').html('<img src="image/sunny.png"/>');
+              break;
+
+              case "Sunny":
+                $('#weatherTomorrow').html('<img src="image/partly_cloudy.png"/>');
+              break;
+
+              case "Thunderstorm":
+                $('#weatherTomorrow').html('<img src="image/rain.png"/>');
+              break;
+        });
+        }
+    });
+  }
+</script>
+
+</body>
+</html>
