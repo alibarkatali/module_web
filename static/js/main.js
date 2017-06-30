@@ -344,7 +344,8 @@ $(document).ready(function () {
 		    	
 		    	
 		    },
-		    complete : function(jqXHR jqXHR,textStatus ){
+		    complete : function(jqXHR,textStatus ){
+		    	
 		    	if(textStatus == 412){
 		    		title = 'Impossible de rejoindre la partie !';
 			    	msg = 'Le pseudo '+result.name+' est déjà utilisé. Merci de saisir un nouveau pseudo.';
