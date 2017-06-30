@@ -317,15 +317,8 @@ $(document).ready(function () {
 			data : JSON.stringify(data),
 			type: "POST",
 			contentType: 'application/json',
-			 
-		    success: function(result,textStatus) {
 
-		    	if(textStatus == 412){
-		    		title = 'Impossible de rejoindre la partie !';
-			    	msg = 'Le pseudo '+result.name+' est déjà utilisé. Merci de saisir un nouveau pseudo.';
-			    	status = 'warning';
-			      	showMessage(title,msg,status);
-		    	}else{
+	 		success: function(result) {
 		    		resetFormGameJoin();
 
 		        	/* Supprimer le bloque rejoindre la partie */
