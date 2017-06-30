@@ -107,3 +107,8 @@
 .padding-none{
   padding: 0px !important;
 }
+
+.smallTitle{
+  font-size: 16px;
+  color: black;
+}
