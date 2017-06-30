@@ -1,16 +1,59 @@
+body {
+  margin:0px;
+  font-family: 'Helvetica';
+  background-size: 1000px 600px;
+  background-color: grey;
+  opacity: 0.85;
+}
 
+#titleHeader {
+  color:#000;
+  text-align:center;
+  font-size:100px;
+}
 
-/* -- Ali -- */
+.hero-widget { 
+  text-align: center; 
+  padding-top: 10px; 
+  padding-bottom: 15px; 
+  background-color: white
+}
+
+.smallTitle{
+  display: block;
+  font-size: 25px;
+  color: #000;
+}
+
+.center {
+  text-align:center;
+}
+
+#gameMap {
+   width: 100%;
+   height: 600px;
+   background-color: white;
+}
+
+.alignLeft {
+  font-size:large;
+  text-align:left;
+  text-decoration: underline;
+}
+
+.form-control {
+  width: 120px;
+}
+
+tr {
+  width: 100%;
+  display: inline-table;
+  font-size:smaller;
+}
+
 .bloccontent{
   margin-top: 60px;
 }
-
-/*.infobloc{
-  display: block;
-  width: 100%;
-  height: 60px;
-  background-color: #fff;
-}*/
 
 .infobloc{
   height: 100px;
@@ -24,7 +67,7 @@
 .title1{
   display: block;
   width: 100%;
-  background-color: #d8d8d8;
+  background-color: #fff;
   padding-top: 10px;
   padding-bottom: 0px;
   padding-left: 0px;
@@ -32,83 +75,20 @@
   margin: 0px;
 }
 
-.bloccentre{
+.bloccenter{
   display: block;
   width: 100%;
   background-color: #fff;
-  /*box-shadow: 1px 1px 12px #DFDFDF;*/
-  padding: 10px;
-}
-
-.ombrebloc{
-  padding: 0px;
-  box-shadow: 1px 1px 12px #DFDFDF;
-}
-
-.weatherToday{
-  background-color: #b000b5;
-}
-
-.weatherTomorrow{
-  background-color: #9b54ba;
-}
-
-.timer{
-  background-color: #009a6e;
-}
-
-.budgetplayer{
-  background-color: #fa8072;
 }
 
 .margintobloc{
-  margin-top: 40px;
-}
-
-#playgamebloc{
-  margin-top: 45px;
+  margin-top: 10px;
 }
 
 .smallTitle{
   display: block;
   padding-top: 0px;
   padding-bottom: 5px;
-  font-size: 10px;
-  color: #fff;
-}
-
-.grandtitre{
-  font-size: 16px;
-  font-weight: bold;
-  border-bottom: 1px solid gray;
-}
-
-.centrerbloc{
-  text-align: center;
-}
-
-.itemplayerinfo{
-  display: block;
-  width: 100%;
-  background-color: #f8f9fa;
-  padding: 5px;
-  border: 1px solid #c1cbd2;
-}
-
-.itemplayerinfo:hover{
-  background-color: #ffffff;
-  cursor: pointer;
-}
-
-.margin-none{
-  margin: 0px !important;
-}
-
-.padding-none{
-  padding: 0px !important;
-}
-
-.titre2{
-  font-size: 16px;
-  color: black;
+  font-size: 20px;
+  color: #000;
 }
